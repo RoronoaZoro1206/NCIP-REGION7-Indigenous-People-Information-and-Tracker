@@ -557,6 +557,49 @@ p#yit-breadcrumb { font-size:11px; line-height: 70px; clear:both; display: inlin
 .slogan h3 { font-size: 18px; margin: 10px 0 30px; }
 .slogan h3 span { font-size: 18px; color: #848484; }
 
+.slogan .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 16px;
+}
+
+.slogan .header {
+    margin-bottom: 32px;
+}
+
+.slogan .header h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.slogan p {
+    font-size: 1rem;
+}
+
+.slogan .central-office, .regional-offices .office {
+    margin-top: 30px;
+}
+
+.slogan .office-title {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.slogan .office a {
+    font-size: 1rem;
+}
+
+.slogan hr {
+    border: 0;
+    border-top: 2px solid #000000;
+    margin: 32px 0;
+}
+
+.slogan .regional-offices h2 {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
 /* ===== SIDEBAR ===== */
 .sidebar ul, .sidebar ol {
     list-style: none;
@@ -576,6 +619,7 @@ p#yit-breadcrumb { font-size:11px; line-height: 70px; clear:both; display: inlin
     background-color: #fff;
     margin-top: 20px;
     margin-bottom: 0px;
+    border-top-right-radius: 100px;
 }
 
 #footer .container {
@@ -586,6 +630,15 @@ p#yit-breadcrumb { font-size:11px; line-height: 70px; clear:both; display: inlin
 #footer h3 {
     margin-top: 10px;
     margin-bottom: 25px;
+}
+
+#footer .ncip-logo {
+    height: 30px; 
+    width: 30px; 
+    border-radius: 50%; 
+    vertical-align: middle; 
+    margin-right: 8px;
+    object-fit: cover; 
 }
 
 #footer .widget ul, #footer .widget ol { margin-top: -10px; }
@@ -1005,17 +1058,17 @@ ul#almost_all_categories_widget li { display: block; }
 .last-tweets p:last-child { margin-bottom: 0px; }
 .last-tweets p.meta { padding: 0; margin-top: 0px; color: #828080; }
 .last-tweets p, .last-tweets p a { font-size: 12px !important; line-height: 20px; }
-.last-tweets #follow-twitter {
-    background: url(images/icons/socials/twitter.png) no-repeat 120px bottom;
+.last-tweets #follow-facebook {
+    background: url(images/icons/socials/facebook.png) no-repeat 120px bottom;
     height: 34px;
     line-height: 34px;
     text-align: right;
 }
 
-.last-tweets #follow-twitter a { color: #676768; font-size: 10px !important; }
-#ie8 .last-tweets #follow-twitter { background-position: 70px bottom; }
+.last-tweets #follow-facebook a { color: #676768; font-size: 10px !important; }
+#ie8 .last-tweets #follow-facebook { background-position: 70px bottom; }
 
-#footer .last-tweets #follow-twitter { background-position: left bottom !important; }
+#footer .last-tweets #follow-facebook { background-position: left bottom !important; }
 
 /* === TEXT IMAGE */
 .text-image img{ max-width: 100%; }
@@ -1582,6 +1635,7 @@ ul.filters.faq li, ul.filters.faq li a { font-size: 15px }
     background-color: #ff0000;
 }
 #back-top a {}
+
 /* ============ END BACK TO TOP BUTTON ==================*/
 
 

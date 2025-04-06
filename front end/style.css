@@ -157,16 +157,27 @@ h1 span, h2 span, h3 span, h4 span, h5 span, h6 span { color: #919303; }
 /* Responsive fix for smaller screens */
 @media (max-width: 768px) {
     #logo {
-        flex-direction: row; /* Stack logos and text on small screens */
-        align-items: center; /* Center everything */
+        flex-direction: row; 
+        align-items: center; 
     } #logo-container {
-        flex-direction: row; /* Keep logos side by side */
+        flex-direction: row; 
     } #tagline {
         border-left: none;
         margin-left: 0;
         padding-left: 0;
         display: block !important;
     }
+    #footer .ncip-logo {
+        display: block !important;
+        margin: 0 auto !important;
+        float: none !important;
+    }
+
+    #footer .underline2 {
+        top: 55px !important;
+    }
+
+
 }
 
 
@@ -684,6 +695,7 @@ p#yit-breadcrumb { font-size:11px; line-height: 70px; clear:both; display: inlin
     left: 10px;
     animation: moving 2s linear infinite;
 }
+
 @keyframes moving {
     0% {
         left: 0px;

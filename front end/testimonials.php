@@ -1,0 +1,996 @@
+    <!DOCTYPE html>
+    <!--[if IE 6]>
+    <html id="ie6" class="ie"lang="en-US">
+    <![endif]-->
+    <!--[if IE 7]>
+    <html id="ie7"  class="ie"lang="en-US">
+    <![endif]-->
+    <!--[if IE 8]>
+    <html id="ie8"  class="ie"lang="en-US">
+    <![endif]-->
+    <!--[if IE 9]>
+    <html id="ie9"  class="ie"lang="en-US">
+    <![endif]-->
+    <!--[if gt IE 9]>
+    <html class="ie"lang="en-US">
+    <![endif]-->
+
+    <!-- This doesn't work but i prefer to leave it here... maybe in the future the MS will support it... i hope... -->
+    <!--[if IE 10]>
+    <html id="ie10"  class="ie"lang="en-US">
+    <![endif]-->
+
+
+    <!--[if !IE]>
+    <html lang="en-US">
+    <![endif]-->
+
+    <!-- START HEAD -->
+    <head>
+        <meta charset="UTF-8" />
+
+        <!-- this line will appear only if the website is visited with an iPad -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.2, user-scalable=yes" />
+
+
+
+        <title>Libra | Just another Your Inspiration Themes site</title>
+
+        <!-- RESET STYLESHEET -->
+        <link rel="stylesheet" type="text/css" media="all" href="css/reset.css" />
+        <!-- BOOTSTRAP STYLESHEET -->
+        <link rel="stylesheet" type="text/css" media="all" href="css/bootstrap.css" />
+        <!-- MAIN THEME STYLESHEET -->
+        <link rel="stylesheet" type="text/css" media="all" href="style.css" />
+
+        <!-- [favicon] begin -->
+        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+        <link rel="icon" type="image/x-icon" href="favicon.ico" />
+        <!-- [favicon] end -->
+
+        <!-- Touch icons more info: http://mathiasbynens.be/notes/touch-icons -->
+        <!-- For iPad3 with retina display: -->
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="apple-touch-icon-144x.png" />
+        <!-- For first- and second-generation iPad: -->
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114x.png" />
+        <!-- For first- and second-generation iPad: -->
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-72x.png">
+        <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+        <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-57x.png" />
+
+
+        <link rel='stylesheet' id='thickbox-css'  href='js/thickbox/thickbox.css' type='text/css' media='all' />
+        <link rel='stylesheet' id='google-fonts-css'  href='http://fonts.googleapis.com/css?family=Playfair+Display%7COpen+Sans+Condensed%3A300%7COpen+Sans%7CShadows+Into+Light%7CMuli%7CDroid+Sans%7CArbutus+Slab%7CAbel&#038;ver=3.5.1' type='text/css' media='all' />
+        <link rel='stylesheet' id='responsive-css'  href='css/responsive.css' type='text/css' media='all' />
+        <link rel='stylesheet' id='polaroid-slider-css'  href='sliders/polaroid/css/polaroid.css' type='text/css' media='all' />
+        <link rel='stylesheet' id='usquare-slider-css'  href='sliders/usquare/css/frontend/usquare_style.css' type='text/css' media='all' />
+        <link rel='stylesheet' id='ahortcodes-css'  href='css/shortcodes.css' type='text/css' media='all' />
+        <link rel='stylesheet' id='contact-form-css'  href='css/contact_form.css' type='text/css' media='all' />
+        <link rel='stylesheet' id='flexslider-elegant-css'  href='sliders/flexslider-elegant/css/flexslider.css' type='text/css' media='all' />
+        <link rel='stylesheet' id='flexslider-css'  href='sliders/flexslider/css/slider.css' type='text/css' media='all' />
+        <link rel='stylesheet' id='custom-css'  href='css/custom.css' type='text/css' media='all' />
+
+        <style type="text/css">
+            body { background-color: #ffffff; background-image: url('images/bg-pattern.png'); background-repeat: repeat; background-position: top left; background-attachment: scroll; }
+        </style>
+
+        <script type='text/javascript' src='js/jquery/jquery.js'></script>
+
+
+    </head>
+    <!-- END HEAD -->
+    <!-- START BODY -->
+    <body class="home page no_js responsive stretched">
+
+    <!-- START BG SHADOW -->
+    <div class="bg-shadow">
+
+    <!-- START WRAPPER -->
+        <div id="wrapper" class="container group">
+
+            <!-- START TOP BAR -->
+            <div id="topbar">
+                <div class="container">
+                    <div class="row">
+                        <div id="nav" class="span12 light">
+
+                            <!-- START MAIN NAVIGATION -->
+
+                            <ul id="menu-menu" class="level-1">
+                                <li>
+                                    <a href="index.html">HOME</a>
+                                    <ul class="sub-menu">
+                                        <li><a href="home-ii.html">Home II</a></li>
+                                        <li><a href="home-iii.html">Home III</a></li>
+                                        <li><a href="home-iv.html">Home IV</a></li>
+                                        <li><a href="home-v.html">Home V</a></li>
+                                        <li><a href="home-vi.html">Home VI</a></li>
+                                        <li><a href="home-vii.html">Home VII</a></li>
+                                        <li><a href="home-viii.html">Home VIII</a></li>
+                                        <li><a href="home-ix.html">Home IX</a></li>
+                                        <li><a href="home-x.html">Home X</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">SLIDERS</a>
+                                    <ul class="sub-menu">
+                                        <li><a href="revolution-slider.html">Revolution Slider</a></li>
+                                        <li><a href="flexslider-classic.html">Flexslider Classic</a></li>
+                                        <li><a href="flexslider-elegant.html">Flexslider Elegant</a></li>
+                                        <li><a href="elastic.html">Elastic</a></li>
+                                        <li><a href="flash.html">Flash</a></li>
+                                        <li><a href="rotating.html">Rotating</a></li>
+                                        <li><a href="thumbnails.html">Thumbnails</a></li>
+                                        <li><a href="usquare.html">Usquare</a></li>
+                                        <li><a href="polaroid.html">Polaroid</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">FEATURES</a>
+                                    <ul class="sub-menu">
+                                        <li><a href="services-module.html">Services Module</a></li>
+                                        <li><a href="blog-modules.html">Blog modules</a></li>
+                                        <li><a href="portfolio-and-video-modules.html">Portfolio and video modules</a></li>
+                                        <li><a href="libra-features.html">Libra features</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">PORTFOLIO</a>
+                                    <ul class="sub-menu">
+                                        <li><a href="portfolio-libra.html">Libra</a></li>
+                                        <li><a href="portfolio-pinterest.html">Pinterest</a></li>
+                                        <li><a href="portfolio-slide-detail.html">Slide Detail</a></li>
+                                        <li><a href="portfolio-filterable.html">Filterable</a></li>
+                                        <li><a href="portfolio-2-columns.html">2 Columns</a></li>
+                                        <li><a href="portfolio-3-columns.html">3 Columns</a></li>
+                                        <li><a href="portfolio-4-columns.html">4 Columns</a></li>
+                                        <li><a href="portfolio-big-image.html">Big Image</a></li>
+                                        <li><a href="portfolio-slider.html">Slider</a></li>
+                                        <li><a href="portfolio-project-detail-1.html">Project Detail #1</a></li>
+                                        <li><a href="portfolio-project-detail-2.html">Project detail #2</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">PAGES</a>
+                                    <ul class="sub-menu">
+                                        <li class="current_page_item">
+                                            <a href="testimonials.html">Testimonials</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Blog</a>
+                                            <ul class="sub-menu">
+                                                <li><a href="blog-libra-big.html">Libra Big</a></li>
+                                                <li><a href="blog-libra-small.html">Libra Small</a></li>
+                                                <li><a href="blog-elegant.html">Elegant</a></li>
+                                                <li><a href="blog-big-thumbnails.html">Big Thumbnails</a></li>
+                                                <li><a href="blog-small-thumbnails.html">Small Thumbnails</a></li>
+                                                <li><a href="blog-pinterest.html">Pinterest</a></li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="pages-faq.html">FAQ</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">About</a>
+                                            <ul class="sub-menu">
+                                                <li><a href="accordion-style.html">Accordion Style</a></li>
+                                                <li><a href="circle-style.html">Circle Style</a></li>
+                                                <li><a href="u-square-style.html">U-square style</a></li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="error-404.html">Error 404</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">SHORTCODES</a>
+                                    <ul class="sub-menu">
+                                        <li><a href="shortcodes-alert-box-buttons.html">Alert box &amp; Buttons</a></li>
+                                        <li><a href="shortcodes-charts.html">Charts</a></li>
+                                        <li><a href="shortcodes-icon-section.html">Icon section</a></li>
+                                        <li><a href="shortcodes-media-widgets.html">Media &amp; Widgets</a></li>
+                                        <li><a href="shortcodes-mix-various.html">Mix &amp; Various</a></li>
+                                        <li><a href="shortcodes-table-box-prices.html">Table &amp; Box prices</a></li>
+                                        <li><a href="shortcodes-typography.html">Typography</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">CONTACT</a>
+                                    <ul class="sub-menu">
+                                        <li><a href="get-in-touch.html">With MAP</a></li>
+                                        <li><a href="get-in-touch-2.html">Without MAP</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <!-- END MAIN NAVIGATION -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+             <!-- END TOP BAR -->
+
+        <!-- START HEADER -->
+        <div id="header" class="group margin-bottom">
+
+            <div class="group container">
+                <div class="row" id="logo-headersidebar-container">
+                    <!-- START LOGO -->
+                    <div id="logo" class="span6 group">
+                        <a id="logo-img" href="index.html" title="Libra">
+                            <img src="images/libra-logo1.png" title="Libra" alt="Libra" />
+                        </a>
+                        <p id='tagline'>Just another Your Inspiration Themes site</p>
+                    </div>
+                    <!-- END LOGO -->
+
+                    <!-- START HEADER SIDEBAR -->
+                    <div id="header-sidebar" class="span6 group">
+                        <div class="widget-first widget header-text-image">
+                            <div class="text-image" style="text-align:left">
+                                <img src="images/phone1.png" alt="CUSTOMER SUPPORT" />
+                            </div>
+
+                            <div class="text-content">
+                                <h3>CUSTOMER SUPPORT</h3>
+                                <p>+39 - 0973 - 645724</p>
+                            </div>
+                        </div>
+
+                        <div class="widget-last widget widget_text">
+                            <div class="textwidget">
+                            <div class="socials-default-small facebook-small default">
+                                <a href="https://www.facebook.com/CebuPO" target="_blank" class="socials-default-small default facebook" >facebook</a>
+                            </div>
+
+                            <div class="socials-default-small instagram-small default">
+                                <a href="https://www.instagram.com/ncipcebupo/" target="_blank" class="socials-default-small default instagram" >instagram</a>
+                            </div>
+
+                            <div class="socials-default-small google-small default">
+                            <a href="mailto:region67.cebupo@ncip.gov.ph" target="_blank" class="socials-default-small default google">Gmail</a>
+                            </div>
+
+                                <div class="socials-default-small twitter-small default">
+                                    <a href="#" class="socials-default-small default twitter" >twitter</a>
+                                </div>
+
+                                <div class="socials-default-small flickr-small default">
+                                    <a href="#" class="socials-default-small default flickr" >flickr</a>
+                                </div>
+
+                                <div class="socials-default-small rss-small default">
+                                    <a href="#" class="socials-default-small default rss" >rss</a>
+                                </div>
+
+                                <div class="socials-default-small pinterest-small default">
+                                    <a href="#" class="socials-default-small default pinterest" >pinterest</a>
+
+                                </div>
+                             </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END HEADER -->
+
+        <!-- START PRIMARY -->
+        <div id="primary" class="sidebar-no">
+            <div class="container group">
+                <div class="row">
+                <!-- START CONTENT -->
+                    <div id="content-page" class="span12 content group">
+                        <div class="page type-page status-publish  group">
+                            <h2>
+                                Circle <span class="title-highlight">Style</span>
+                            </h2>
+                            <!-- LIBRA STYLE -->
+
+                            <div class="row">
+                                <div class="span3">
+                                    <div class="testimonial-circle-style">
+                                        <div class="testimonial-text">
+                                            <p>
+                                                Quisque turpis purus, semper luctus molestie elementum, egestas et nibh. Nulla in sapien
+                                                elit, et eleifend risus.
+                                                Quisque at elit id libero vulputate facilisis. Suspendisse potenti. Vestibulum malesuada
+                                                molestie rutrum. Aenean eget
+                                                nulla lectus, quis varius tellus. Donec interdum ullamcorper odiosemper.
+                                            </p>
+                                        </div>
+                                        <div class="testimonial-name ">
+                                            <a href="testimonial-detail.html" class="name">Nando Pappalardo</a>
+                                            <a class="website" href="http://www.netsons.com">www.netsons.com</a>
+                                        </div>
+                                        <div class="testimonial-quote"></div>
+                                        <div class="thumbnail">
+                                            <img width="100" height="100" src="images/pages/nando1-100x100.png" class="attachment-thumb-testimonial-circle wp-post-image" alt="nando"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span3">
+                                    <div class="testimonial-circle-style">
+                                        <div class="testimonial-text">
+                                            <p>
+                                                Quisque turpis purus, semper luctus molestie elementum, egestas et nibh. Nulla in sapien
+                                                elit, et eleifend risus. Quisque at elit id libero vulputate facilisis. Suspendisse
+                                                potenti. Vestibulum malesuada molestie rutrum. Aenean eget nulla lectus, quis varius
+                                                tellus. Donec interdum ullamcorper odiosemper.
+                                            </p>
+                                        </div>
+                                        <div class="testimonial-name ">
+                                            <a href="testimonial-detail.html" class="name">Sara Presenti</a>
+                                            <a class="website" href="http://www.netsons.com">www.netsons.com</a>
+                                        </div>
+                                        <div class="testimonial-quote"></div>
+                                        <div class="thumbnail">
+                                            <img width="100" height="100" src="images/pages/sara1-100x100.png" class="attachment-thumb-testimonial-circle wp-post-image" alt="sara"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span3">
+                                    <div class="testimonial-circle-style">
+                                        <div class="testimonial-text">
+                                            <p>
+                                                Quisque turpis purus, semper luctus molestie elementum, egestas et nibh. Nulla in sapien
+                                                elit, et eleifend risus. Quisque at elit id libero vulputate facilisis. Suspendisse
+                                                potenti. Vestibulum malesuada molestie rutrum. Aenean eget nulla lectus, quis varius
+                                                tellus. Donec interdum ullamcorper odiosemper.
+                                            </p>
+                                        </div>
+                                        <div class="testimonial-name ">
+                                            <a href="testimonial-detail.html" class="name">Nicola Mustone</a>
+                                            <a class="website" href="http://www.netsons.com">www.netsons.com</a></div>
+                                        <div class="testimonial-quote"></div>
+                                        <div class="thumbnail">
+                                            <img width="100" height="100" src="images/pages/nicola1-100x100.png" class="attachment-thumb-testimonial-circle wp-post-image" alt="nicola"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="span3">
+                                    <div class="testimonial-circle-style">
+                                        <div class="testimonial-text">
+                                            <p>
+                                                Quisque turpis purus, semper luctus molestie elementum, egestas et nibh. Nulla in sapien
+                                                elit, et eleifend risus. Quisque at elit id libero vulputate facilisis. Suspendisse
+                                                potenti. Vestibulum malesuada molestie rutrum. Aenean eget nulla lectus, quis varius
+                                                tellus. Donec interdum ullamcorper odiosemper.
+                                            </p>
+                                        </div>
+                                        <div class="testimonial-name ">
+                                            <a href="testimonial-detail.html" class="name">Antonino Scarfi</a>
+                                            <a class="website" href="http://www.netsons.com">www.netsons.com</a>
+                                        </div>
+                                        <div class="testimonial-quote"></div>
+                                        <div class="thumbnail">
+                                            <img width="100" height="100" src="images/pages/anto1-100x100.png" class="attachment-thumb-testimonial-circle wp-post-image" alt="anto"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <h2>Quote <span class="title-highlight">Style</span></h2>
+
+                            <!-- CHEOPE STYLE -->
+
+                            <div class="row">
+                                <div class="span3">
+                                    <div class="testimonial-quote-style">
+                                        <blockquote>I think Libra is the most powerful WordPress theme</blockquote>
+
+                                        <div class="testimonial-text">
+                                            <p>Quisque turpis purus, semper luctus molestie elementum, egestas et nibh. Nulla in sapien
+                                                elit, et eleifend risus. Quisque at elit id libero vulputate facilisis. Suspendisse
+                                                potenti. Vestibulum malesuada molestie rutrum. Aenean eget nulla lectus, quis varius
+                                                tellus. Donec interdum ullamcorper odiosemper.</p>
+                                        </div>
+                                        <div class="thumbnail">
+                                            <img width="87" height="85" src="images/pages/nando1-87x85.png" class="attachment-thumb-testimonial-quote wp-post-image" alt="nando"/>
+                                        </div>
+                                        <div class="testimonial-name ">
+                                            <a href="testimonial-detail.html" class="name">Nando Pappalardo</a>
+                                            <a class="website" href="http://www.netsons.com">www.netsons.com</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="span3">
+                                    <div class="testimonial-quote-style">
+                                        <blockquote>I really enjoyed this theme and the YIW customer support</blockquote>
+
+                                        <div class="testimonial-text">
+                                            <p>Quisque turpis purus, semper luctus molestie elementum, egestas et nibh. Nulla in sapien
+                                                elit, et eleifend risus. Quisque at elit id libero vulputate facilisis. Suspendisse
+                                                potenti. Vestibulum malesuada molestie rutrum. Aenean eget nulla lectus, quis varius
+                                                tellus. Donec interdum ullamcorper odiosemper.</p>
+                                        </div>
+                                        <div class="thumbnail">
+                                            <img width="87" height="85" src="images/pages/sara1-87x85.png" class="attachment-thumb-testimonial-quote wp-post-image" alt="sara"/>
+                                        </div>
+                                        <div class="testimonial-name ">
+                                            <a href="testimonial-detail.html" class="name">Sara Presenti</a>
+                                            <a class="website" href="http://www.netsons.com">www.netsons.com</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="span3">
+                                    <div class="testimonial-quote-style">
+                                        <blockquote>I would give the support 6 stars if I could</blockquote>
+
+                                        <div class="testimonial-text">
+                                            <p>Quisque turpis purus, semper luctus molestie elementum, egestas et nibh. Nulla in sapien
+                                                elit, et eleifend risus. Quisque at elit id libero vulputate facilisis. Suspendisse
+                                                potenti. Vestibulum malesuada molestie rutrum. Aenean eget nulla lectus, quis varius
+                                                tellus. Donec interdum ullamcorper odiosemper.</p>
+                                        </div>
+                                        <div class="thumbnail">
+                                            <img width="87" height="85" src="images/pages/nicola1-87x85.png" class="attachment-thumb-testimonial-quote wp-post-image" alt="nicola"/>
+                                        </div>
+                                        <div class="testimonial-name ">
+                                            <a href="testimonial-detail.html" class="name">Nicola Mustone</a>
+                                            <a class="website" href="http://www.netsons.com">www.netsons.com</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="span3">
+                                    <div class="testimonial-quote-style">
+                                        <blockquote>I am very impressed by your forum and support</blockquote>
+
+                                        <div class="testimonial-text">
+                                            <p>Quisque turpis purus, semper luctus molestie elementum, egestas et nibh. Nulla in sapien
+                                                elit, et eleifend risus. Quisque at elit id libero vulputate facilisis. Suspendisse
+                                                potenti. Vestibulum malesuada molestie rutrum. Aenean eget nulla lectus, quis varius
+                                                tellus. Donec interdum ullamcorper odiosemper.</p>
+                                        </div>
+                                        <div class="thumbnail">
+                                            <img width="87" height="85" src="images/pages/anto1-87x85.png" class="attachment-thumb-testimonial-quote wp-post-image" alt="anto"/>
+                                        </div>
+                                        <div class="testimonial-name ">
+                                            <a href="testimonial-detail.html" class="name">Antonino Scarfi</a>
+                                            <a class="website" href="http://www.netsons.com">www.netsons.com</a>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <h2>Square <span class="title-highlight">Style</span></h2>
+                            <!-- CELESTINO STYLE -->
+
+
+                            <div class="row">
+                                <div class="testimonial-square-style span6">
+                                    <div class="thumbnail">
+                                        <img width="116" height="116" src="images/pages/nando1-116x116.png" class="attachment-thumb-testimonial-square wp-post-image" alt="nando"/>
+                                    </div>
+                                    <div class="testimonial-text"><p>Quisque turpis purus, semper luctus molestie elementum, egestas et
+                                        nibh. Nulla in sapien elit, et eleifend risus. Quisque at elit id libero vulputate facilisis.
+                                        Suspendisse potenti. Vestibulum malesuada molestie rutrum. Aenean eget nulla lectus, quis varius
+                                        tellus. Donec interdum ullamcorper odiosemper.</p>
+                                    </div>
+                                    <div class="testimonial-name">
+                                        <a href="testimonial-detail.html" class="name">Nando Pappalardo</a>
+                                        <a class="website" href="http://www.netsons.com">www.netsons.com</a>
+                                    </div>
+                                </div>
+
+                                <div class="testimonial-square-style span6">
+                                    <div class="thumbnail">
+                                        <img width="116" height="116" src="images/pages/sara1-116x116.png" class="attachment-thumb-testimonial-square wp-post-image" alt="sara"/>
+                                    </div>
+                                    <div class="testimonial-text">
+                                        <p>Quisque turpis purus, semper luctus molestie elementum, egestas et nibh. Nulla in sapien
+                                            elit, et eleifend risus. Quisque at elit id libero vulputate facilisis. Suspendisse potenti.
+                                            Vestibulum malesuada molestie rutrum. Aenean eget nulla lectus, quis varius tellus. Donec
+                                            interdum ullamcorper odiosemper.</p>
+                                    </div>
+                                    <div class="testimonial-name">
+                                        <a href="testimonial-detail.html" class="name">Sara Presenti</a>
+                                        <a class="website" href="http://www.netsons.com">www.netsons.com</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="testimonial-square-style span6">
+                                    <div class="thumbnail">
+                                        <img width="116" height="116" src="images/pages/nicola1-116x116.png" class="attachment-thumb-testimonial-square wp-post-image" alt="nicola"/>
+                                    </div>
+                                    <div class="testimonial-text">
+                                        <p>Quisque turpis purus, semper luctus molestie elementum, egestas et nibh. Nulla in sapien
+                                            elit, et eleifend risus. Quisque at elit id libero vulputate facilisis. Suspendisse potenti.
+                                            Vestibulum malesuada molestie rutrum. Aenean eget nulla lectus, quis varius tellus. Donec
+                                            interdum ullamcorper odiosemper.</p>
+                                    </div>
+                                    <div class="testimonial-name">
+                                        <a href="testimonial-detail.html" class="name">Nicola Mustone</a>
+                                        <a class="website" href="http://www.netsons.com">www.netsons.com</a>
+                                    </div>
+                                </div>
+
+                                <div class="testimonial-square-style span6">
+                                    <div class="thumbnail">
+                                        <img width="116" height="116" src="images/pages/anto1-116x116.png" class="attachment-thumb-testimonial-square wp-post-image" alt="anto"/>
+                                    </div>
+                                    <div class="testimonial-text">
+                                        <p>Quisque turpis purus, semper luctus molestie elementum, egestas et nibh. Nulla in sapien
+                                            elit, et eleifend risus. Quisque at elit id libero vulputate facilisis. Suspendisse potenti.
+                                            Vestibulum malesuada molestie rutrum. Aenean eget nulla lectus, quis varius tellus. Donec
+                                            interdum ullamcorper odiosemper.</p>
+                                    </div>
+                                    <div class="testimonial-name">
+                                        <a href="testimonial-detail.html" class="name">Antonino Scarfi</a>
+                                        <a class="website" href="http://www.netsons.com">www.netsons.com</a>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <h2>
+                                U-square <span class="title-highlight">Style</span>
+                            </h2>
+
+                            <div id="1" class="slider slider-usquare usquare">
+                                
+                                <style type="text/css">
+                                    .usquare_module_wrapper {
+                                        width: 1170px;
+                                        height: 390px;
+                                    }
+    
+                                    .usquare_block {
+                                        width: 390px;
+                                        height: 195px;
+                                    }
+    
+                                    .usquare_block_extended {
+                                        width: 390px;
+                                        height: 195px;
+                                        margin-top: 195px;
+                                    }
+    
+                                    .usquare_block_extended .close {
+                                        left: 350px;
+                                    }
+    
+                                    .usquare_block_extended .usquare_about {
+                                        height: 120px;
+                                    }
+                                </style>
+
+                                <div class="usquare_module_wrapper usquare_items_3">
+                                    <div class="usquare_module_shade"></div>
+                                    <div class="usquare_block">
+                                        <img src="images/pages/nando.png" class="usquare_square" alt="" style="background-color: transparent; width: 195px; height: 195px;"/>
+
+                                        <div class="usquare_square" style="background-color: transparent; width: 195px; height: 195px;">
+                                            <div class="usquare_square_text_wrapper">
+                                                <img src="sliders/usquare/images/arrow-dark.png" class="usquare_arrow" alt="arrow">
+
+                                                <div class="clear"></div>
+                                                <h2>NANDO PAPPALARDO</h2> <span>www.netsons.com</span>
+
+                                                <div class="clear"></div>
+                                            </div>
+                                            <!-- usquare_square_wrapper -->
+                                        </div>
+                                        <!--div usquare_square -->
+                                        <div class="usquare_block_extended" style="background-color: #fff">
+                                            <a href="#" class="close">
+                                                <img src="sliders/usquare/images/close.png" alt="close"/>
+                                            </a>
+                                            <ul class="social_background">
+                                                
+                                            </ul>
+                                            <div class="clear"></div>
+                                            <!--span class="bold">info:</span-->
+                                            <div class="usquare_about">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec
+                                                magna lacus. Sed sed mi est. Nulla in tristique tortor. Curabitur ipsum orci, bibendum
+                                                in interdum et, congue viverra nisl. In sit amet dui mauris, vel hendrerit eros. Nunc
+                                                scelerisque pellentesque magna, et tempus massa sagittis at.
+                                            </div>
+                                        </div>
+                                        <!-- usquare_block_extended --> </div>
+                                    <div class="usquare_block">
+                                        <img src="images/pages/sara.png" class="usquare_square" alt="" style="background-color: transparent; width: 195px; height: 195px;"/>
+
+                                        <div class="usquare_square" style="background-color: transparent; width: 195px; height: 195px;">
+                                            <div class="usquare_square_text_wrapper">
+                                                <img src="sliders/usquare/images/arrow-dark.png" class="usquare_arrow" alt="arrow">
+
+                                                <div class="clear"></div>
+                                                <h2>SARA PRESENTI</h2>
+                                                <span>www.netsons.com</span>
+
+                                                <div class="clear"></div>
+                                            </div>
+                                            <!-- usquare_square_wrapper -->
+                                        </div>
+                                          <!--div usquare_square -->
+                                         <div class="usquare_block_extended" style="background-color: #fff">
+                                            <a href="#" class="close"><img src="sliders/usquare/images/close.png" alt="close"/></a>
+                                            <ul class="social_background"></ul>
+                                            <div class="clear"></div>
+                                            <!--span class="bold">info:</span-->
+                                            <div class="usquare_about">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec
+                                                magna lacus. Sed sed mi est. Nulla in tristique tortor. Curabitur ipsum orci, bibendum
+                                                in interdum et, congue viverra nisl. In sit amet dui mauris, vel hendrerit eros. Nunc
+                                                scelerisque pellentesque magna, et tempus massa sagittis at.
+                                            </div>
+                                        </div>
+                                        <!-- usquare_block_extended -->
+                                    </div>
+
+                                    <div class="usquare_block">
+                                        <img src="images/pages/nicola.png" class="usquare_square" alt="" style="background-color: transparent; width: 195px; height: 195px;"/>
+
+                                        <div class="usquare_square" style="background-color: transparent; width: 195px; height: 195px;">
+                                            <div class="usquare_square_text_wrapper">
+                                                <img src="sliders/usquare/images/arrow-dark.png" class="usquare_arrow" alt="arrow">
+
+                                                <div class="clear"></div>
+                                                <h2>NICOLA MUSTONE</h2>
+                                                <span>www.netsons.com</span>
+
+                                                <div class="clear"></div>
+                                            </div>
+                                            <!-- usquare_square_wrapper -->
+                                        </div>
+                                        <!--div usquare_square -->
+                                        <div class="usquare_block_extended" style="background-color: #fff">
+                                            <a href="#" class="close"><img src="sliders/usquare/images/close.png" alt="close"/></a>
+                                            <ul class="social_background"></ul>
+                                            <div class="clear"></div>
+                                            <!--span class="bold">info:</span-->
+                                            <div class="usquare_about">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec
+                                                magna lacus. Sed sed mi est. Nulla in tristique tortor. Curabitur ipsum orci, bibendum
+                                                in interdum et, congue viverra nisl. In sit amet dui mauris, vel hendrerit eros. Nunc
+                                                scelerisque pellentesque magna, et tempus massa sagittis at.
+                                            </div>
+                                        </div>
+                                        <!-- usquare_block_extended -->
+                                    </div>
+                                    <div class="usquare_block">
+                                        <div class="usquare_square" style="background-color: transparent; width: 195px; height: 195px;">
+                                            <div class="usquare_square_text_wrapper" style="right: 0; text-align: right;">
+                                                <img src="sliders/usquare/images/arrow_r-dark.png" class="usquare_arrow" alt="arrow" style="float: right; padding: 0 0 5px;">
+
+                                                <div class="clear"></div>
+                                                <h2>ANTONINO SCARFI</h2>
+                                                <span>www.netsons.com</span>
+
+                                                <div class="clear"></div>
+                                            </div>
+                                        <!-- usquare_square_wrapper -->
+                                        </div>
+                                        <!--div usquare_square --><img src="images/pages/anto.png" class="usquare_square" alt="" style="background-color: transparent; width: 195px; height: 195px;"/>
+
+                                        <div class="usquare_block_extended" style="background-color: #fff">
+                                            <a href="#" class="close"><img src="sliders/usquare/images/close.png" alt="close"/></a>
+                                            <ul class="social_background"></ul>
+                                            <div class="clear"></div>
+                                            <!--span class="bold">info:</span-->
+                                            <div class="usquare_about">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec
+                                                magna lacus. Sed sed mi est. Nulla in tristique tortor. Curabitur ipsum orci, bibendum
+                                                in interdum et, congue viverra nisl. In sit amet dui mauris, vel hendrerit eros. Nunc
+                                                scelerisque pellentesque magna, et tempus massa sagittis at.
+                                            </div>
+                                        </div>
+                                        <!-- usquare_block_extended -->
+                                    </div>
+                                    <div class="usquare_block">
+                                        <div class="usquare_square" style="background-color: transparent; width: 195px; height: 195px;">
+                                            <div class="usquare_square_text_wrapper" style="right: 0; text-align: right;">
+                                                <img src="sliders/usquare/images/arrow_r-dark.png" class="usquare_arrow" alt="arrow" style="float: right; padding: 0 0 5px;">
+
+                                                <div class="clear"></div>
+                                                <h2>SIMONE D'AMICO</h2> <span>www.netsons.com</span>
+
+                                                <div class="clear"></div>
+                                            </div>
+                                            <!-- usquare_square_wrapper -->
+                                        </div>
+                                        <!--div usquare_square --><img src="images/pages/simone.png" class="usquare_square" alt="" style="background-color: transparent; width: 195px; height: 195px;"/>
+
+                                        <div class="usquare_block_extended" style="background-color: #fff">
+                                            <a href="#" class="close"><img src="sliders/usquare/images/close.png" alt="close"/></a>
+                                            <ul class="social_background"></ul>
+                                            <div class="clear"></div>
+                                            <!--span class="bold">info:</span-->
+                                            <div class="usquare_about">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec
+                                                magna lacus. Sed sed mi est. Nulla in tristique tortor. Curabitur ipsum orci, bibendum
+                                                in interdum et, congue viverra nisl. In sit amet dui mauris, vel hendrerit eros. Nunc
+                                                scelerisque pellentesque magna, et tempus massa sagittis at.
+                                            </div>
+                                        </div>
+                                        <!-- usquare_block_extended -->
+                                    </div>
+                                    <div class="usquare_block">
+                                        <div class="usquare_square" style="background-color: transparent; width: 195px; height: 195px;">
+                                            <div class="usquare_square_text_wrapper" style="right: 0; text-align: right;">
+                                                <img src="sliders/usquare/images/arrow_r-dark.png" class="usquare_arrow" alt="arrow" style="float: right; padding: 0 0 5px;">
+
+                                                <div class="clear"></div>
+                                                <h2>PIERO VOCALE</h2> <span>www.netsons.com</span>
+
+                                                <div class="clear"></div>
+                                            </div>
+                                            <!-- usquare_square_wrapper -->
+                                        </div>
+                                        <!--div usquare_square --><img src="images/pages/piero.png" class="usquare_square" alt="" style="background-color: transparent; width: 195px; height: 195px;"/>
+
+                                        <div class="usquare_block_extended" style="background-color: #fff">
+                                            <a href="#" class="close"><img src="sliders/usquare/images/close.png" alt="close"/></a>
+                                            <ul class="social_background"></ul>
+                                            <div class="clear"></div>
+                                            <!--span class="bold">info:</span-->
+                                            <div class="usquare_about">Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec
+                                                magna lacus. Sed sed mi est. Nulla in tristique tortor. Curabitur ipsum orci, bibendum
+                                                in interdum et, congue viverra nisl. In sit amet dui mauris, vel hendrerit eros. Nunc
+                                                scelerisque pellentesque magna, et tempus massa sagittis at.
+                                            </div>
+                                        </div>
+                                        <!-- usquare_block_extended -->
+                                    </div>
+                                </div>
+
+                                <script>
+                                    (function ($) {
+                                    $(document).ready(function () {
+                                        $(".usquare_module_wrapper").uSquare({ opening_speed: 300, closing_speed: 500, easing: "swing" });
+                                    });
+                                })(jQuery);
+                                </script>
+
+                            </div>
+
+                            <h2>
+                                Testimonials <span class="title-highlight">Slider</span>
+                            </h2>
+
+                            <div class="testimonials-flexslider">
+                                <ul class="slides">
+
+
+                                    <li>
+                                        <blockquote>
+                                            <p>
+                                                <a href="">
+                                                    &rdquo;Quisque turpis purus, semper luctus molestie elementum, egestas et nibh.
+                                                    Nulla in sapien elit, et eleifend risus. Quisque at elit id libero vulputate
+                                                    facilisis. Suspendisse potenti. Vestibulum malesuada molestie rutrum. Aenean eget
+                                                    [...]&rdquo;
+                                                </a>
+                                            </p>
+                                        </blockquote>
+                                        <p class="meta">
+                                            <strong>
+                                                <a href="testimonial-detail.html" class="name">Nando Pappalardo</a>
+                                            </strong> -
+                                            <a href="http://www.netsons.com">www.netsons.com</a>
+                                        </p>
+                                    </li>
+
+
+                                    <li>
+                                        <blockquote>
+                                            <p>
+                                                <a href="">
+                                                    &rdquo;Quisque turpis purus, semper luctus molestie elementum, egestas et nibh.
+                                                    Nulla in sapien elit, et eleifend risus. Quisque at elit id libero vulputate
+                                                    facilisis. Suspendisse potenti. Vestibulum malesuada molestie rutrum. Aenean eget
+                                                    [...]&rdquo;
+                                                </a>
+                                            </p>
+                                        </blockquote>
+                                        <p class="meta">
+                                            <strong>
+                                                <a href="testimonial-detail.html" class="name">Sara Presenti</a>
+                                            </strong> -
+                                            <a href="http://www.netsons.com">www.netsons.com</a>
+                                        </p>
+                                    </li>
+
+
+                                    <li>
+                                        <blockquote>
+                                            <p>
+                                                <a href="">
+                                                    &rdquo;Quisque turpis purus, semper luctus molestie elementum, egestas et nibh.
+                                                    Nulla in sapien elit, et eleifend risus. Quisque at elit id libero vulputate
+                                                    facilisis. Suspendisse potenti. Vestibulum malesuada molestie rutrum. Aenean eget
+                                                    [...]&rdquo;
+                                                </a>
+                                            </p>
+                                        </blockquote>
+                                        <p class="meta">
+                                            <strong>
+                                                <a href="testimonial-detail.html" class="name">Nicola Mustone</a>
+                                            </strong> -
+                                            <a href="http://www.netsons.com">
+                                                www.netsons.com
+                                            </a>
+                                        </p>
+                                    </li>
+
+
+                                    <li>
+                                        <blockquote>
+                                            <p>
+                                                <a href="">
+                                                    &rdquo;Quisque turpis purus, semper luctus molestie elementum, egestas et nibh.
+                                                    Nulla in sapien elit, et eleifend risus. Quisque at elit id libero vulputate
+                                                    facilisis. Suspendisse potenti. Vestibulum malesuada molestie rutrum. Aenean eget
+                                                    [...]&rdquo;
+                                                </a>
+                                            </p>
+                                        </blockquote>
+                                        <p class="meta">
+                                            <strong>
+                                                <a href="testimonial-detail.html" class="name">Antonino Scarfi</a>
+                                            </strong> -
+                                            <a href="http://www.netsons.com">
+                                                www.netsons.com
+                                            </a>
+                                        </p>
+                                    </li>
+                                </ul>
+                                <div class="prev"></div>
+                                <div class="next"></div>
+                            </div>
+                            <script type="text/javascript">
+                                jQuery(function ($) {
+                                    var animation = $.browser.msie || $.browser.opera ? 'fade' : 'slide';
+                                    $('.testimonials-flexslider').flexslider({
+                                        animation: animation,
+                                        slideshowSpeed: 5000,
+                                        animationSpeed: 500,
+                                        touch: false,
+                                        controlNav: false,
+                                        directionNav: true
+                                    });
+                                });
+                            </script>
+
+
+                            </div>
+                    <!-- START COMMENTS -->
+                    <div id="comments"></div>
+                    <!-- END COMMENTS -->
+                    </div>
+                <!-- END CONTENT -->
+
+
+                <!-- START EXTRA CONTENT -->
+                <!-- END EXTRA CONTENT -->
+                </div>
+            </div>
+        </div>
+        <!-- END PRIMARY -->
+
+    <!-- START FOOTER -->
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="footer-widgets-area with-sidebar-right">
+                    <div class="widget-first widget span2 widget_text">
+                        <h3>
+                            <img src="images/ncip-logo.png" alt="NCIP Logo" class="ncip-logo">
+                            About NCIP <div class="underline2"><span></span></div>
+                        </h3>
+                        <div class="textwidget">
+                            The National Commission on Indigenous Peoples (NCIP) is dedicated to the recognition, protection, and promotion of the rights of Indigenous Cultural Communities / Indigenous Peoples (ICCs/IPs) in the Philippines. Learn more about our mission <a href="#">here</a>.
+                        </div>
+                    </div>
+    
+                    <div class="widget span2 widget_nav_menu">
+                        <h3>Quick Links <div class="underline"><span></span></div></h3>
+                        <div class="menu-widget-footer-container">
+                            <ul id="menu-widget-footer" class="menu">
+                                <li class="menu-item"><a href="program.html">Programs</a></li>
+                                <li class="menu-item"><a href="#">Services</a></li>
+                                <li class="menu-item"><a href="#">Legal Framework</a></li>
+                                <li class="menu-item"><a href="#">Reports</a></li>
+                                <li class="menu-item"><a href="contact.html">Contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+    
+                    <div class="widget-last widget span2 widget_nav_menu">
+                        <h3>Follow Us <div class="underline"><span></span></div></h3>
+                        <div class="menu-socialize-container">
+                            <ul id="menu-socialize" class="menu">
+                                <li class="menu-item"><a href="https://www.facebook.com/CebuPO" target="_blank">Facebook</a></li>
+                                <li class="menu-item"><a href="mailto:region67.cebupo@ncip.gov.ph" target="_blank">Gmail</a></li>
+                                <li class="menu-item"><a href="https://www.instagram.com/ncipcebupo/" target="_blank">Instagram</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="footer-widgets-sidebar with-sidebar-right">
+                    <div class="widget-first widget span6 yit_quick_contact">
+                        <h3>Contact NCIP <div class="underline"><span></span></div></h3>
+                        <form class="contact-form row" method="post" action="" enctype="multipart/form-data">
+                            <fieldset>
+                                <ul>
+                                    <li class="text-field with-icon span3">
+                                        <label><span class="mainlabel">Name</span></label>
+                                        <div class="input-prepend">
+                                            <span class="add-on"><img src="images/footer/author-footer.png" alt=""/></span>
+                                            <input type="text" name="yit_contact[name]" class="with-icon required" value=""/>
+                                        </div>
+                                    </li>
+    
+                                    <li class="text-field with-icon span3">
+                                        <label><span class="mainlabel">Email</span></label>
+                                        <div class="input-prepend">
+                                            <span class="add-on"><img src="images/footer/envelope-footer.png" alt=""/></span>
+                                            <input type="text" name="yit_contact[email]" class="with-icon required email-validate" value=""/>
+                                        </div>
+                                    </li>
+    
+                                    <li class="textarea-field with-icon span6">
+                                        <label><span class="mainlabel">Message</span></label>
+                                        <div class="input-prepend">
+                                            <span class="add-on"><img src="images/footer/pencil-footer.png" alt=""/></span>
+                                            <textarea name="yit_contact[message]" rows="8" cols="30" class="with-icon required"></textarea>
+                                        </div>
+                                    </li>
+    
+                                    <li class="submit-button span6">
+                                        <input type="submit" name="yit_sendemail" value="SEND" class="sendmail alignright"/>
+                                    </li>
+                                </ul>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="lowfooter">
+        <div class="container">
+            <div class="row">
+                <div class="center span12">
+                    <p>&copy; 2025 NCIP Cebu Connect. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>    
+    <!-- END FOOTER -->
+
+        <div class="wrapper-border"></div>
+
+        </div>
+    <!-- END WRAPPER -->
+
+    </div>
+    <!-- END BG SHADOW -->
+
+    <script type='text/javascript' src='js/comment-reply.min.js'></script>
+    <script type='text/javascript' src='js/underscore.min.js'></script>
+    <script type='text/javascript' src='js/jquery/jquery.masonry.min.js'></script>
+    <script type='text/javascript' src='js/jquery.easing.js'></script>
+    <script type='text/javascript' src='js/hoverIntent.min.js'></script>
+    <script type='text/javascript' src='js/media-upload.min.js'></script>
+    <script type='text/javascript' src='js/jquery.clickout.min.js'></script>
+    <script type='text/javascript' src='js/jquery.colorbox-min.js'></script>
+    <script type='text/javascript' src='js/jquery.flexslider-min.js'></script>
+    <script type='text/javascript' src='sliders/usquare/js/frontend/jquery.mCustomScrollbar.min.js'></script>
+    <script type='text/javascript' src='sliders/usquare/js/frontend/jquery.usquare.js'></script>
+    <script type='text/javascript' src='js/responsive.js'></script>
+    <script type='text/javascript' src='js/mobilemenu.js'></script>
+    <script type='text/javascript' src='js/jquery.superfish.js'></script>
+    <script type='text/javascript' src='js/jquery.placeholder.js'></script>
+    <script type='text/javascript' src='js/contact.js'></script>
+    <script type='text/javascript' src='js/jquery.tipsy.js'></script>
+    <script type='text/javascript' src='js/jquery.cycle.min.js'></script>
+    <script type='text/javascript' src='js/shortcodes.js'></script>
+    <script type='text/javascript' src='js/jquery.custom.js'></script>
+
+    </body>
+    <!-- END BODY -->
+    </html>

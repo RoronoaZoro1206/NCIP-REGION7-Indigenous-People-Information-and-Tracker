@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<!-- START HEAD -->
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.2, user-scalable=yes" />
+
+    <title>NCIP Cebu Connect</title>
+    <link rel="icon" href="images/ncip-logo.png" type="image/png">
+
+    <!-- RESET STYLESHEET -->
+    <link rel="stylesheet" type="text/css" media="all" href="css/reset.css" />
+    <!-- BOOTSTRAP STYLESHEET -->
+    <link rel="stylesheet" type="text/css" media="all" href="css/bootstrap.css" />
+    <!-- MAIN THEME STYLESHEET -->
+    <link rel="stylesheet" type="text/css" media="all" href="style.css" />
+    <!-- For iPad -->
+    <link rel="apple-touch-icon" sizes="180x180" href="images/ncip-logo.png">
+
+
+    <link rel='stylesheet' id='thickbox-css'  href='js/thickbox/thickbox.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='google-fonts-css'  href='http://fonts.googleapis.com/css?family=Playfair+Display%7COpen+Sans+Condensed%3A300%7COpen+Sans%7CShadows+Into+Light%7CMuli%7CDroid+Sans%7CArbutus+Slab%7CAbel&#038;ver=3.5.1' type='text/css' media='all' />
+    <link rel='stylesheet' id='responsive-css'  href='css/responsive.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='polaroid-slider-css'  href='sliders/polaroid/css/polaroid.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='ahortcodes-css'  href='css/shortcodes.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='contact-form-css'  href='css/contact_form.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='custom-css'  href='css/custom.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='polaroid-slider-css'  href='sliders/polaroid/css/polaroid.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='flexslider-elegant-css'  href='sliders/flexslider-elegant/css/flexslider.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='flexslider-css'  href='sliders/flexslider/css/slider.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='revolution-slider-caption-css'  href='sliders/revolution-slider/rs-plugin/css/captions.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='revolution-slider-settings-css'  href='sliders/revolution-slider/rs-plugin/css/settings.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='ahortcodes-css'  href='css/shortcodes.css' type='text/css' media='all' />
+
+    <style type="text/css">
+        body { background-color: #ffffff; background-image: url('images/bg-pattern.png'); background-repeat: repeat; background-position: top left; background-attachment: scroll; }
+    </style>
+
+    <script type='text/javascript' src='js/jquery/jquery.js'></script>
+
+
+</head>
+<!-- END HEAD -->
+<!-- START BODY -->
+<body class="home page no_js responsive stretched">
+
+<!-- START BG SHADOW -->
+<div class="bg-shadow">
+
+<!-- START WRAPPER -->
+    <div id="wrapper" class="container group">
+
+    <!-- START TOP BAR -->
+    <div id="topbar">
+        <div class="container">
+            <div class="row">
+                <div id="nav" class="span12 light">
+
+                    <!-- START MAIN NAVIGATION -->
+                    <ul id="menu-menu" class="level-1">
+                        <li>
+                            <a href="index.php" >HOME</a>
+                        </li>
+                        <li>
+                            <a href="about.php">ABOUT</a>
+                        </li>
+                        <li>
+                            <a href="program.php">PROGRAM</a>
+                        </li>
+                        <li>
+                            <a href="portfolio.php">PORTFOLIO</a>
+                        </li>
+                        <li>
+                            <a href="announcement.php">ANNOUNCEMENT</a>
+                        </li>
+                        <li>
+                            <a href="e-service.php">E-SERVICE</a>
+                        </li>
+                        <li>
+                            <a href="contact.php">CONTACT</a>
+                        </li>
+                    </ul>
+                    <!-- END MAIN NAVIGATION -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END TOP BAR -->
+
+    <!-- START HEADER -->
+    <div id="header" class="group margin-bottom">
+
+        <div class="group container">
+            <div class="row" id="logo-headersidebar-container">
+                <!-- START LOGO -->
+                <div id="logo" class="span6 group">
+                    <div id="logo-container">
+                        <a id="logo-img" href="index.php" title="NCIP">
+                            <img src="images/ncip-header-logo.png" title="NCIP" alt="NCIP Header Logo" />
+                        </a>
+                        <a id="second-logo-img" href="index.php" title="Bagong Pilipinas">
+                            <img src="images/bagong-pilipinas-header-logo.png" title="Bagong Pilipinas" alt="Bagong Pilipinas Header Logo" />
+                        </a>
+                    </div>
+                    <div id="textual">
+                        <p id='tagline'>
+                            REPUBLIC OF THE PHILIPPINES<br>
+                            OFFICE OF THE PRESIDENT<br>
+                            <strong>NATIONAL COMMISSION ON INDIGENOUS PEOPLES</strong>
+                        </p>
+                    </div>
+                </div>
+                <!-- END LOGO -->
+
+                <!-- START HEADER SIDEBAR -->
+                <div id="header-sidebar" class="span6 group">
+                    <div class="widget-first widget header-text-image">
+                        <div class="text-image" style="text-align:left">
+                            <img src="images/phone1.png" alt="CUSTOMER SUPPORT" />
+                        </div>
+
+                        <div class="text-content">
+                            <h3>CUSTOMER SUPPORT</h3>
+                            <p>+63 &nbsp;998 - 765 - 4321</p>
+                        </div>
+                    </div>
+
+                    <div class="widget-last widget widget_text">
+                        <div class="textwidget">
+                        <div class="socials-default-small facebook-small default">
+                                <a href="https://www.facebook.com/CebuPO" target="_blank" class="socials-default-small default facebook" >facebook</a>
+                            </div>
+
+                            <div class="socials-default-small instagram-small default">
+                                <a href="https://www.instagram.com/ncipcebupo/" target="_blank" class="socials-default-small default instagram" >instagram</a>
+                            </div>
+
+                            <div class="socials-default-small google-small default">
+                            <a href="mailto:region67.cebupo@ncip.gov.ph" target="_blank" class="socials-default-small default google">Gmail</a>
+                            </div>
+
+                            <div class="socials-default-small twitter-small default">
+                                <a href="#" class="socials-default-small default twitter" >twitter</a>
+                            </div>
+
+                            <div class="socials-default-small flickr-small default">
+                                <a href="#" class="socials-default-small default flickr" >flickr</a>
+                            </div>
+
+                            <div class="socials-default-small rss-small default">
+                                <a href="#" class="socials-default-small default rss" >rss</a>
+                            </div>
+
+                            <div class="socials-default-small pinterest-small default">
+                                <a href="#" class="socials-default-small default pinterest" >pinterest</a>
+
+                            </div>
+                         </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="top-border span12"></div>
+        <!-- START SLIDER -->
+        <div class="slider slider-revolution revolution-slider  fullwidth">
+            <div class="shadowWrapper">
+                        <!-- START REVOLUTION SLIDER  -->
+                        <link rel='stylesheet' id='rev-google-font' href='http://fonts.googleapis.com/css?family=Open+Sans:400,800' type='text/css' media='all' />
+                        <div  class="rev_slider_wrapper fullwidthbanner-container" style="margin:0px auto;background-color:#d4d4d4;padding:0px;margin-top:0px;margin-bottom:0px;max-height:400px;height:400;">
+                            <div id="rev_slider_1_1" class="rev_slider fullwidthabanner" style="display:none;max-height:400px;height:400;">
+                                <ul>
+                                    <li data-transition="3dcurtain-horizontal" data-slotamount="7" data-masterspeed="300" >
+                                        <img src="images/slider/1-bg.jpg" >
+
+                                        <div class="tp-caption randomrotate"
+                                             data-x="80"
+                                             data-y="34"
+                                             data-speed="300"
+                                             data-start="800"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/1-l1.png" alt="Image 1">
+                                        </div>
+
+                                        <div class="tp-caption randomrotate"
+                                             data-x="389"
+                                             data-y="58"
+                                             data-speed="300"
+                                             data-start="1100"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/1-l2.png" alt="Image 2">
+                                        </div>
+
+                                        <div class="tp-caption randomrotate"
+                                             data-x="0"
+                                             data-y="12"
+                                             data-speed="300"
+                                             data-start="1500"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/1-l3.png" alt="Image 3">
+                                        </div>
+
+                                        <div class="tp-caption randomrotate"
+                                             data-x="436"
+                                             data-y="14"
+                                             data-speed="300"
+                                             data-start="1800"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/1-l4.png" alt="Image 4">
+                                        </div>
+
+                                        <div class="tp-caption big_title_open_sans fade"
+                                             data-x="843"
+                                             data-y="147"
+                                             data-speed="300"
+                                             data-start="2500"
+                                             data-easing="easeOutExpo"  >
+                                            <b>Unlimited</b> features
+                                        </div>
+
+                                        <div class="tp-caption main_title_open_sans lfr"
+                                             data-x="845"
+                                             data-y="191"
+                                             data-speed="800"
+                                             data-start="3000"
+                                             data-easing="easeOutExpo"  >
+                                            <span style="letter-spacing:2px">to make your wordpress</span>
+                                        </div>
+
+                                        <div class="tp-caption biggreen_title_open_sans lfb"
+                                             data-x="844"
+                                             data-y="221"
+                                             data-speed="300"
+                                             data-start="3500"
+                                             data-easing="easeOutExpo"  >
+                                            <span style="letter-spacing:-1px;">the theme of your dreams.</span>
+                                        </div>
+
+                                        <div class="tp-caption lft"
+                                             data-x="850"
+                                             data-y="294"
+                                             data-speed="800"
+                                             data-start="4000"
+                                             data-easing="easeInOutBack"  >
+                                            <img src="images/slider/1-l6.png" alt="Image 8">
+                                        </div>
+
+                                        <div class="tp-caption lft"
+                                             data-x="935"
+                                             data-y="304"
+                                             data-speed="800"
+                                             data-start="4400"
+                                             data-easing="easeInOutBack"  >
+                                            <img src="images/slider/1-l5.png" alt="Image 9">
+                                        </div>
+
+                                        <div class="tp-caption lft"
+                                             data-x="1035"
+                                             data-y="314"
+                                             data-speed="800"
+                                             data-start="4800"
+                                             data-easing="easeInOutBack"  >
+                                            <img src="images/slider/1-l7.png" alt="Image 10">
+                                        </div>
+
+                                        <div class="tp-caption lft"
+                                             data-x="1096"
+                                             data-y="328"
+                                             data-speed="800"
+                                             data-start="5200"
+                                             data-easing="easeInOutBack"  >
+                                            <img src="images/slider/1-l8.png" alt="Image 11">
+                                        </div>
+                                    </li>
+                                    <li data-transition="flyin" data-slotamount="7" data-masterspeed="300" >
+                                        <img src="images/slider/2-bg.png" >
+
+                                        <div class="tp-caption lfb"
+                                             data-x="57"
+                                             data-y="41"
+                                             data-speed="800"
+                                             data-start="500"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/2-l1.png" alt="Image 1">
+                                        </div>
+
+                                        <div class="tp-caption lfb"
+                                             data-x="652"
+                                             data-y="114"
+                                             data-speed="800"
+                                             data-start="1300"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/2-l2.png" alt="Image 2">
+                                        </div>
+
+                                        <div class="tp-caption sfl"
+                                             data-x="63"
+                                             data-y="227"
+                                             data-speed="500"
+                                             data-start="1800"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/2-l3.png" alt="Image 3">
+                                        </div>
+
+                                        <div class="tp-caption sfl"
+                                             data-x="60"
+                                             data-y="163"
+                                             data-speed="500"
+                                             data-start="1900"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/2-l11.png" alt="Image 4">
+                                        </div>
+
+                                        <div class="tp-caption paragraph_right sfl"
+                                             data-x="14"
+                                             data-y="185"
+                                             data-speed="500"
+                                             data-start="1900"
+                                             data-easing="easeOutExpo"  >
+                                            a “pixel-perfect”<br />developer
+                                        </div>
+
+                                        <div class="tp-caption sfl"
+                                             data-x="252"
+                                             data-y="53"
+                                             data-speed="500"
+                                             data-start="2200"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/2-l4.png" alt="Image 6">
+                                        </div>
+
+                                        <div class="tp-caption sfl"
+                                             data-x="169"
+                                             data-y="59"
+                                             data-speed="500"
+                                             data-start="2300"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/2-l12.png" alt="Image 7">
+                                        </div>
+
+                                        <div class="tp-caption paragraph_right sfl"
+                                             data-x="110"
+                                             data-y="80"
+                                             data-speed="500"
+                                             data-start="2300"
+                                             data-easing="easeOutExpo"  >
+                                            a “strange” developer
+                                        </div>
+
+                                        <div class="tp-caption sfr"
+                                             data-x="408"
+                                             data-y="58"
+                                             data-speed="500"
+                                             data-start="2600"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/2-l5.png" alt="Image 9">
+                                        </div>
+
+                                        <div class="tp-caption sfr"
+                                             data-x="449"
+                                             data-y="56"
+                                             data-speed="500"
+                                             data-start="2700"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/2-l13.png" alt="Image 10">
+                                        </div>
+
+                                        <div class="tp-caption paragraph sfr"
+                                             data-x="445"
+                                             data-y="78"
+                                             data-speed="500"
+                                             data-start="2700"
+                                             data-easing="easeOutExpo"  >
+                                            the big boss. yeah.
+                                        </div>
+
+                                        <div class="tp-caption sfr"
+                                             data-x="475"
+                                             data-y="152"
+                                             data-speed="500"
+                                             data-start="3000"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/2-l6.png" alt="Image 12">
+                                        </div>
+
+                                        <div class="tp-caption sfr"
+                                             data-x="523"
+                                             data-y="148"
+                                             data-speed="500"
+                                             data-start="3100"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/2-l14.png" alt="Image 13">
+                                        </div>
+
+                                        <div class="tp-caption paragraph sfr"
+                                             data-x="519"
+                                             data-y="170"
+                                             data-speed="500"
+                                             data-start="3100"
+                                             data-easing="easeOutExpo"  >
+                                            a mummy designer.
+                                        </div>
+
+                                        <div class="tp-caption sfl"
+                                             data-x="608"
+                                             data-y="257"
+                                             data-speed="800"
+                                             data-start="3600"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/2-l7.png" alt="Image 15">
+                                        </div>
+
+                                        <div class="tp-caption sfl"
+                                             data-x="592"
+                                             data-y="297"
+                                             data-speed="800"
+                                             data-start="3700"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/2-l15.png" alt="Image 16">
+                                        </div>
+
+                                        <div class="tp-caption paragraph_right sfl"
+                                             data-x="544"
+                                             data-y="318"
+                                             data-speed="800"
+                                             data-start="3700"
+                                             data-easing="easeOutExpo"  >
+                                            the shortcodes<br />expert
+                                        </div>
+
+                                        <div class="tp-caption sfl"
+                                             data-x="719"
+                                             data-y="104"
+                                             data-speed="800"
+                                             data-start="4000"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/2-l8.png" alt="Image 18">
+                                        </div>
+
+                                        <div class="tp-caption sfl"
+                                             data-x="650"
+                                             data-y="105"
+                                             data-speed="800"
+                                             data-start="4100"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/2-l16.png" alt="Image 19">
+                                        </div>
+
+                                        <div class="tp-caption paragraph sfl"
+                                             data-x="645"
+                                             data-y="123"
+                                             data-speed="800"
+                                             data-start="4100"
+                                             data-easing="easeOutExpo"  >
+                                            the last developer
+                                        </div>
+
+                                        <div class="tp-caption sfr"
+                                             data-x="882"
+                                             data-y="106"
+                                             data-speed="800"
+                                             data-start="4400"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/2-l9.png" alt="Image 21">
+                                        </div>
+
+                                        <div class="tp-caption sfr"
+                                             data-x="930"
+                                             data-y="117"
+                                             data-speed="800"
+                                             data-start="4500"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/2-l17.png" alt="Image 22">
+                                        </div>
+
+                                        <div class="tp-caption paragraph sfr"
+                                             data-x="927"
+                                             data-y="138"
+                                             data-speed="800"
+                                             data-start="4500"
+                                             data-easing="easeOutExpo"  >
+                                            the smiling men
+                                        </div>
+
+                                        <div class="tp-caption sfr"
+                                             data-x="1002"
+                                             data-y="225"
+                                             data-speed="800"
+                                             data-start="4800"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/2-l10.png" alt="Image 24">
+                                        </div>
+
+                                        <div class="tp-caption sfr"
+                                             data-x="1015"
+                                             data-y="262"
+                                             data-speed="800"
+                                             data-start="4900"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/2-l18.png" alt="Image 25">
+                                        </div>
+
+                                        <div class="tp-caption paragraph sfr"
+                                             data-x="1011"
+                                             data-y="283"
+                                             data-speed="800"
+                                             data-start="4900"
+                                             data-easing="easeOutExpo"  >
+                                            another nice guy.
+                                        </div>
+
+                                        <div class="tp-caption biggreen_title_open_sans lfr"
+                                             data-x="643"
+                                             data-y="21"
+                                             data-speed="1500"
+                                             data-start="6000"
+                                             data-easing="easeOutExpo"  >
+                                            <span style="font-size:130%;">
+                                                OPS. WE MISSED...
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li data-transition="cubic" data-slotamount="7" data-masterspeed="300" >
+                                        <img src="images/slider/3-bg.jpg" >
+
+                                        <div class="tp-caption lfl"
+                                             data-x="0"
+                                             data-y="127"
+                                             data-speed="2000"
+                                             data-start="1000"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/3-l1.png" alt="Image 1">
+                                        </div>
+
+                                        <div class="tp-caption lfl"
+                                             data-x="112"
+                                             data-y="14"
+                                             data-speed="1500"
+                                             data-start="1600"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/3-l2.png" alt="Image 2">
+                                        </div>
+
+                                        <div class="tp-caption biggreen_title_open_sans fade"
+                                             data-x="691"
+                                             data-y="47"
+                                             data-speed="300"
+                                             data-start="2400"
+                                             data-easing="easeOutExpo"  >
+                                            <span style="font-size:120%">Libra</span>
+                                        </div>
+
+                                        <div class="tp-caption small_title_open_sans lfb"
+                                             data-x="691"
+                                             data-y="89"
+                                             data-speed="800"
+                                             data-start="2800"
+                                             data-easing="easeOutExpo"  >
+                                            A creative and clean corporate theme.
+                                        </div>
+
+                                        <div class="tp-caption sfl"
+                                             data-x="696"
+                                             data-y="150"
+                                             data-speed="300"
+                                             data-start="3700"
+                                             data-easing="easeInExpo"  >
+                                            <img src="images/slider/3-l3.png" alt="Image 5">
+                                        </div>
+
+                                        <div class="tp-caption small_title_open_sans lfr"
+                                             data-x="761"
+                                             data-y="165"
+                                             data-speed="300"
+                                             data-start="3700"
+                                             data-easing="easeInExpo"  >
+                                            Responsive Design
+                                        </div>
+
+                                        <div class="tp-caption sfl"
+                                             data-x="703"
+                                             data-y="213"
+                                             data-speed="300"
+                                             data-start="4000"
+                                             data-easing="easeInExpo"  >
+                                            <img src="images/slider/3-l4.png" alt="Image 7">
+                                        </div>
+
+                                        <div class="tp-caption small_title_open_sans lfr"
+                                             data-x="761"
+                                             data-y="221"
+                                             data-speed="300"
+                                             data-start="4000"
+                                             data-easing="easeInExpo"  >
+                                            Unlimited sliders + 2 premium sliders
+                                        </div>
+
+                                        <div class="tp-caption sfl"
+                                             data-x="708"
+                                             data-y="267"
+                                             data-speed="300"
+                                             data-start="4300"
+                                             data-easing="easeInExpo"  >
+                                            <img src="images/slider/3-l5.png" alt="Image 9">
+                                        </div>
+
+                                        <div class="tp-caption small_title_open_sans lfr"
+                                             data-x="760"
+                                             data-y="278"
+                                             data-speed="300"
+                                             data-start="4300"
+                                             data-easing="easeInExpo"  >
+                                            The best WordPress theme. Yeah.
+                                        </div>
+                                    </li>
+                                    <li data-transition="random" data-slotamount="7" data-masterspeed="300" >
+                                        <img src="images/slider/4-bg.png" >
+
+                                        <div class="tp-caption biggreen_title_open_sans sft"
+                                             data-x="549"
+                                             data-y="75"
+                                             data-speed="1000"
+                                             data-start="1400"
+                                             data-easing="easeOutExpo"  >
+                                            <b>ENJOY THE VIDEO SUPPORT</b>
+                                        </div>
+
+                                        <div class="tp-caption lfl"
+                                             data-x="-29"
+                                             data-y="25"
+                                             data-speed="1600"
+                                             data-start="200"
+                                             data-easing="easeOutExpo"  >
+                                            <img src="images/slider/4-l1.png" alt="Image 1">
+                                        </div>
+
+                                        <div class="tp-caption lfl"
+                                             data-x="3"
+                                             data-y="26"
+                                             data-speed="1600"
+                                             data-start="200"
+                                             data-easing="easeOutExpo"  >
+                                            <iframe src='http://player.vimeo.com/video/22679618?title=0&amp;byline=0&amp;portrait=0' width='486' height='331' style='width:486px;height:331px;'></iframe>
+                                        </div>
+
+                                        <div class="tp-caption biggreen_title_open_sans lfr"
+                                             data-x="550"
+                                             data-y="125"
+                                             data-speed="1000"
+                                             data-start="2000"
+                                             data-easing="easeOutExpo"  >
+                                            share your youtube or vimeo videos
+                                        </div>
+
+                                        <div class="tp-caption paragraph lfb"
+                                             data-x="552"
+                                             data-y="268"
+                                             data-speed="2000"
+                                             data-start="2800"
+                                             data-easing="easeOutExpo"  >
+                                            <a href="#"  class="btn btn-xlarge  btn-the-salmon-dance-3 ">
+                                                Purchase the theme
+                                            </a>
+                                        </div>
+
+                                        <div class="tp-caption paragraph fade"
+                                             data-x="551"
+                                             data-y="176"
+                                             data-speed="1500"
+                                             data-start="3000"
+                                             data-easing="easeOutExpo"  >
+                                            <span style="line-height:1.7em;">
+                                                Lid est laborum dolo rumes fugats untras. Et harums ser <br />
+                                                quidem rerum facilis dolores nemis omnis fugiats vitaes nemo <br />
+                                                minima rerums unsers sadips amets.
+                                            </span>
+                                        </div>
+                                    </li>
+                                    <li data-transition="random" data-slotamount="7" data-masterspeed="300" >
+                                        <img src="images/slider/4-bg1.png" >
+
+                                        <div class="tp-caption main_title_open_sans lfl"
+                                             data-x="408"
+                                             data-y="14"
+                                             data-speed="1500"
+                                             data-start="1000"
+                                             data-easing="easeOutExpo"  >
+                                            <b style="color:#898787;">
+                                                Another example of <span style="color:#91931a;">video</span>
+                                            </b>
+                                        </div>
+
+                                        <div class="tp-caption small_title_open_sans lfr"
+                                             data-x="453"
+                                             data-y="46"
+                                             data-speed="1500"
+                                             data-start="1400"
+                                             data-easing="easeOutExpo"  >
+                                            <span style="color:#898787;">
+                                                watch this nice youtube video
+                                            </span>
+                                        </div>
+
+                                        <div class="tp-caption video_container lfb"
+                                             data-x="2"
+                                             data-y="93"
+                                             data-speed="1500"
+                                             data-start="2200"
+                                             data-easing="easeOutExpo"  >
+                                            <iframe src='http://www.youtube.com/embed/zrz8NuALuj8?hd=1&amp;wmode=opaque&amp;controls=1&amp;showinfo=0;rel=0' width='1150' height='300' style='width:1150px;height:300px;'></iframe>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <script type="text/javascript">
+
+                            var tpj=jQuery;
+
+                            tpj.noConflict();
+
+                            var revapi1;
+
+                            tpj(document).ready(function() {
+
+                            if (tpj.fn.cssOriginal != undefined)
+                                tpj.fn.css = tpj.fn.cssOriginal;
+
+                            if(tpj('#rev_slider_1_1').revolution == undefined)
+                                revslider_showDoubleJqueryError('#rev_slider_1_1');
+                            else
+                               revapi1 = tpj('#rev_slider_1_1').show().revolution(
+                                {
+                                    delay:9000,
+                                    startwidth:1170,
+                                    startheight:400,
+                                    hideThumbs:200,
+
+                                    thumbWidth:100,
+                                    thumbHeight:50,
+                                    thumbAmount:5,
+
+                                    navigationType:"none",
+                                    navigationArrows:"nexttobullets",
+                                    navigationStyle:"round",
+
+                                    touchenabled:"on",
+                                    onHoverStop:"on",
+
+                                    navOffsetHorizontal:0,
+                                    navOffsetVertical:20,
+
+                                    shadow:0,
+                                    fullWidth:"on",
+
+                                    stopLoop:"off",
+                                    stopAfterLoops:-1,
+                                    stopAtSlide:-1,
+
+                                    shuffle:"off"
+                                });
+
+                            });	//ready
+
+                        </script>
+
+                       <!-- END REVOLUTION SLIDER -->
+                </div>
+                <div class="slider-shadow"></div>
+        </div>
+        <!-- END SLIDER -->
+    </div>
+    <!-- END HEADER -->
+        
+    <!-- START PAGE META -->
+    <div id="page-meta" class="group">
+        <div class="container">
+            <div class="row">
+                <div class="span12">
+                    <!-- TITLE -->
+                    <div class="title">
+                        <h1>Programs Module</h1>
+                    </div>
+                
+                    <!-- BREDCRUMB -->          
+                    <div class="breadcrumbs">
+                        <span class="before-text">You are here:</span>
+                        <p id="yit-breadcrumb" itemprop="breadcrumb">
+                        <a class="home" href="index.php">Home Page</a> | 
+                            <a class="no-link current" href="#">Programs Module</a>
+                        </p>        
+                    </div>  
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END PAGE META -->
+        
+    <!-- START PRIMARY -->
+    <div id="primary" class="sidebar-no">
+        <div class="container group">
+            <div class="row">
+                <!-- START CONTENT -->
+                <div id="content-page" class="span12 content group">
+                        <div class="page type-page status-publish group">
+                            <div class="section rounded ch-grid margin-top margin-bottom">
+                                <h3 class="title">
+                                    Our <span class="title-highlight">Services</span>
+                                </h3>
+                                <div class="services-row row group">
+                                    <div class="span3 service_first">
+                                        <div class="circle-services">
+                                            <div class="ch-item no-empty" style="background-image: url(images/03-175x175.jpg);">
+                                                <div class="ch-info">
+                                                    <a href="program-detail.php">
+                                                        <img src="images/project_empty.png" alt="" width="175" height="175" />
+                                                    </a>
+                                                     
+                                                    <p class="related_project">
+                                                        <a href="program-detail.php">
+                                                            <img src="images/icons/project.png" alt="project" />
+                                                        </a>
+                                                    </p>
+
+                                                    <p>
+                                                        <a href="services-detail.php">Marketing <span class="title-highlight">Solution</span>
+                                                        </a>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <h4>
+                                            <a href="services-detail.php">
+                                                Marketing <span class="title-highlight">Solution</span>
+                                            </a>
+                                        </h4>
+
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed accumsan [...]</p>
+                                    </div>
+
+                                    <div class="span3 ">
+                                        <div class="circle-services">
+                                            <div class="ch-item no-empty" style="background-image: url(images/02-175x175.jpg);">
+                                                <div class="ch-info">
+                                                    <a href="services-detail.php">
+                                                        <img src="images/project_empty.png" alt="" width="175" height="175" />
+                                                    </a>
+
+                                                    <p class="related_project">
+                                                        <a href="services-detail.php">
+                                                            <img src="images/icons/project.png" alt="project" />
+                                                        </a>
+                                                    </p>
+
+                                                    <p>
+                                                        <a href="services-detail.php">
+                                                            Social <span class="title-highlight">marketing</span>
+                                                        </a>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <h4>
+                                            <a href="services-detail.php">
+                                                Social <span class="title-highlight">marketing</span>
+                                            </a>
+                                        </h4>
+
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed accumsan [...]</p>
+                                    </div>
+
+                                    <div class="span3 ">
+                                        <div class="circle-services">
+                                            <div class="ch-item no-empty" style="background-image: url(images/04-175x175.jpg);">
+                                                <div class="ch-info">
+                                                    <a href="services-detail.php">
+                                                        <img src="images/project_empty.png" alt="" width="175" height="175" />
+                                                    </a>
+
+                                                    <p class="related_project">
+                                                        <a href="services-detail.php">
+                                                            <img src="images/icons/project.png" alt="project" />
+                                                        </a>
+                                                    </p>
+
+                                                    <p>
+                                                        <a href="services-detail.php">
+                                                            Business <span class="title-highlight">services</span>
+                                                        </a>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <h4>
+                                            <a href="services-detail.php">
+                                                Business <span class="title-highlight">services</span>
+                                            </a>
+                                        </h4>
+
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed accumsan [...]</p>
+                                    </div>
+
+                                    <div class="span3 ">
+                                        <div class="circle-services">
+                                            <div class="ch-item no-empty" style="background-image: url(images/01-175x175.jpg);">
+                                                <div class="ch-info">
+                                                    <a href="services-detail.php">
+                                                        <img src="images/project_empty.png" alt="" width="175" height="175" />
+                                                    </a>
+
+                                                    <p class="related_project">
+                                                        <a href="services-detail.php">
+                                                            <img src="images/icons/project.png" alt="project" />
+                                                        </a>
+                                                    </p>
+
+                                                    <p>
+                                                        <a href="services-detail.php">
+                                                            Meetings <span class="title-highlight">workshop</span>
+                                                        </a>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <h4>
+                                            <a href="services-detail.php">
+                                                Meetings <span class="title-highlight">workshop</span>
+                                            </a>
+                                        </h4>
+
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed accumsan [...]</p>
+                                    </div>
+                                </div>
+                            <!-- end row -->
+                            </div>
+        
+                        </div>
+                        <!-- START COMMENTS -->
+                        <div id="comments"></div>
+                        <!-- END COMMENTS -->
+                    </div>
+                    <!-- END CONTENT -->
+
+                    <!-- START EXTRA CONTENT -->
+                    <!-- END EXTRA CONTENT -->
+            </div>
+         </div>
+    </div>
+    <!-- END PRIMARY -->
+
+    <!-- START FOOTER -->
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="footer-widgets-area with-sidebar-right">
+                    <div class="widget-first widget span2 widget_text">
+                        <h3>
+                            <img src="images/ncip-logo.png" alt="NCIP Logo" class="ncip-logo">
+                            About NCIP <div class="underline2"><span></span></div>
+                        </h3>
+                        <div class="textwidget">
+                            The National Commission on Indigenous Peoples (NCIP) is dedicated to the recognition, protection, and promotion of the rights of Indigenous Cultural Communities / Indigenous Peoples (ICCs/IPs) in the Philippines. Learn more about our mission <a href="#">here</a>.
+                        </div>
+                    </div>
+    
+                    <div class="widget span2 widget_nav_menu">
+                        <h3>Quick Links <div class="underline"><span></span></div></h3>
+                        <div class="menu-widget-footer-container">
+                            <ul id="menu-widget-footer" class="menu">
+                                <li class="menu-item"><a href="program.php">Programs</a></li>
+                                <li class="menu-item"><a href="#">Services</a></li>
+                                <li class="menu-item"><a href="#">Legal Framework</a></li>
+                                <li class="menu-item"><a href="#">Reports</a></li>
+                                <li class="menu-item"><a href="contact.php">Contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+    
+                    <div class="widget-last widget span2 widget_nav_menu">
+                        <h3>Follow Us <div class="underline"><span></span></div></h3>
+                        <div class="menu-socialize-container">
+                            <ul id="menu-socialize" class="menu">
+                                <li class="menu-item"><a href="https://www.facebook.com/CebuPO" target="_blank">Facebook</a></li>
+                                <li class="menu-item"><a href="mailto:region67.cebupo@ncip.gov.ph" target="_blank">Gmail</a></li>
+                                <li class="menu-item"><a href="https://www.instagram.com/ncipcebupo/" target="_blank">Instagram</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="footer-widgets-sidebar with-sidebar-right">
+                    <div class="widget-first widget span6 yit_quick_contact">
+                        <h3>Contact NCIP <div class="underline"><span></span></div></h3>
+                        <form class="contact-form row" method="post" action="" enctype="multipart/form-data">
+                            <fieldset>
+                                <ul>
+                                    <li class="text-field with-icon span3">
+                                        <label><span class="mainlabel">Name</span></label>
+                                        <div class="input-prepend">
+                                            <span class="add-on"><img src="images/footer/author-footer.png" alt=""/></span>
+                                            <input type="text" name="yit_contact[name]" class="with-icon required" value=""/>
+                                        </div>
+                                    </li>
+    
+                                    <li class="text-field with-icon span3">
+                                        <label><span class="mainlabel">Email</span></label>
+                                        <div class="input-prepend">
+                                            <span class="add-on"><img src="images/footer/envelope-footer.png" alt=""/></span>
+                                            <input type="text" name="yit_contact[email]" class="with-icon required email-validate" value=""/>
+                                        </div>
+                                    </li>
+    
+                                    <li class="textarea-field with-icon span6">
+                                        <label><span class="mainlabel">Message</span></label>
+                                        <div class="input-prepend">
+                                            <span class="add-on"><img src="images/footer/pencil-footer.png" alt=""/></span>
+                                            <textarea name="yit_contact[message]" rows="8" cols="30" class="with-icon required"></textarea>
+                                        </div>
+                                    </li>
+    
+                                    <li class="submit-button span6">
+                                        <input type="submit" name="yit_sendemail" value="SEND" class="sendmail alignright"/>
+                                    </li>
+                                </ul>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="lowfooter">
+        <div class="container">
+            <div class="row">
+                <div class="center span12">
+                    <p>&copy; 2025 NCIP Cebu Connect. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>    
+    <!-- END FOOTER -->
+
+    <div class="wrapper-border"></div>
+
+    </div>
+<!-- END WRAPPER -->
+
+</div>
+<!-- END BG SHADOW -->
+
+<script type='text/javascript' src='js/comment-reply.min.js'></script>
+<script type='text/javascript' src='js/underscore.min.js'></script>
+<script type='text/javascript' src='js/jquery/jquery.masonry.min.js'></script>
+<script type='text/javascript' src='js/jquery.easing.js'></script>
+<script type='text/javascript' src='js/hoverIntent.min.js'></script>
+<script type='text/javascript' src='js/media-upload.min.js'></script>
+<script type='text/javascript' src='js/jquery.clickout.min.js'></script>
+<script type='text/javascript' src='js/responsive.js'></script>
+<script type='text/javascript' src='js/mobilemenu.js'></script>
+<script type='text/javascript' src='js/jquery.superfish.js'></script>
+<script type='text/javascript' src='js/jquery.placeholder.js'></script>
+<script type='text/javascript' src='js/contact.js'></script>
+<script type='text/javascript' src='js/jquery.tipsy.js'></script>
+<script type='text/javascript' src='js/jquery.cycle.min.js'></script>
+<script type='text/javascript' src='js/jquery.colorbox-min.js'></script>
+<script type='text/javascript' src='js/shortcodes.js'></script>
+<script type='text/javascript' src='js/jquery.custom.js'></script>
+<script type='text/javascript' src='sliders/revolution-slider/rs-plugin/js/jquery.themepunch.plugins.min.js'></script>
+<script type='text/javascript' src='sliders/revolution-slider/rs-plugin/js/jquery.themepunch.revolution.min.js'></script>
+<script type='text/javascript' src='sliders/polaroid/js/jquery.polaroid.js'></script>
+<script type='text/javascript' src='js/jquery.flexslider-min.js'></script>
+<script type='text/javascript' src='js/jquery.carouFredSel-6.1.0-packed.js'></script>
+<script type='text/javascript' src='js/jQuery.BlackAndWhite.js'></script>
+<script type='text/javascript' src='js/jquery.touchSwipe.min.js'></script>
+<script type='text/javascript' src='js/jquery.tweetable.js'></script>
+
+
+</body>
+<!-- END BODY -->
+</html>

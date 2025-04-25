@@ -206,36 +206,6 @@
     </div>
     <!-- END MAP -->
 
-    <!-- START PAGE META -->
-    <div id="page-meta" class="group">
-        <div class="container">
-            <div class="row">
-                <div class="span12">
-                    <!-- TITLE -->
-                    <div class="title">
-                        <div class="icontitle">
-                            <img src="images/icons/set_icons/map.png" alt="title"/>
-                        </div>
-                        <div class="title-with-icon">
-                            <h1>NCIP Offices</h1>
-                        </div>
-                    </div>
-
-                    <!-- BREDCRUMB -->
-                    <div class="breadcrumbs">
-                        <span class="before-text">You are here:</span>
-
-                        <p id="yit-breadcrumb" itemprop="breadcrumb">
-                            <a class="home" href="index.php">Home Page</a> |
-                            <a class="no-link current" href="https://www.facebook.com/CebuPO">NCIP Offices</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- END PAGE META -->
-
     <!-- START SLOGAN -->
     <div class="slogan" style="margin-top: -20px;">
         <div class="container">

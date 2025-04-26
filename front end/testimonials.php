@@ -34,7 +34,8 @@
 
 
 
-        <title>Libra | Just another Your Inspiration Themes site</title>
+        <title>NCIP Cebu Connect</title>
+        <link rel="icon" href="images/ncip-header-logo.png" type="image/png">
 
         <!-- RESET STYLESHEET -->
         <link rel="stylesheet" type="text/css" media="all" href="css/reset.css" />

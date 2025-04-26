@@ -1,3 +1,13 @@
+<?php
+require_once 'db.php';
+require_once 'google_auth.php';
+require_once 'comments.php';
+
+// Check if there's an auth error message to display
+$authError = $_GET['auth_error'] ?? null;
+$authSuccess = isset($_GET['auth_success']);
+?>
+
 <!DOCTYPE html>
 <html lang="en-US">
 <!-- START HEAD -->
@@ -27,6 +37,7 @@
     <link rel='stylesheet' id='tipsy-form-css'  href='css/tipsy.css.css' type='text/css' media='all' />
     <link rel='stylesheet' id='blog-libra-big-css'  href='blog/elegant/css/style.css' type='text/css' media='all' />
     <link rel='stylesheet' id='custom-css'  href='css/custom.css' type='text/css' media='all' />
+    <link rel="stylesheet" type="text/css" media="all" href="css/comment-styles.css" />
 
     <style type="text/css">
         body { background-color: #ffffff; background-image: url('images/bg-pattern.png'); background-repeat: repeat; background-position: top left; background-attachment: scroll; }
@@ -201,15 +212,17 @@
                                     </p>
                                 </div>
                                 
-                                <div>
-                                    <p class="comments">
-                                        <img src="images/icons/comments.png" alt="icon-comment"/>
-                                        <span>
-                                            <a href="#"> 
-                                                <span>Comments: </span>0
-                                            </a>
-                                        </span>
-                                    </p>
+                                <!-- Add comment section at the end of each post -->
+                                <div class="comments-section" id="announcement-1">
+                                    <h3>Comments</h3>
+                                    
+                                    <!-- Display comments for this specific announcement -->
+                                    <div id="comments-container-1" class="comments-container">
+                                        <?php echo renderComments(1); // Pass the announcement ID ?>
+                                    </div>
+                                    
+                                    <!-- Add comment form for this specific announcement -->
+                                    <?php echo renderCommentForm(1); // Pass the announcement ID ?>
                                 </div>
                                 
                                 <div>
@@ -276,15 +289,18 @@
                                     </p>
                                 </div>
                                 
-                                <div>
-                                    <p class="comments">
-                                        <img src="images/icons/comments.png" alt="icon-comment"/>
-                                        <span>
-                                            <a href="#"> 
-                                                <span>Comments: </span>0
-                                            </a>
-                                        </span>
-                                    </p>
+                                
+                                <!-- Add comment section at the end of each post -->
+                                <div class="comments-section" id="announcement-2">
+                                    <h3>Comments</h3>
+                                    
+                                    <!-- Display comments for this specific announcement -->
+                                    <div id="comments-container-1" class="comments-container">
+                                        <?php echo renderComments(2); ?>
+                                    </div>
+                                    
+                                    <!-- Add comment form for this specific announcement -->
+                                    <?php echo renderCommentForm(2); ?>
                                 </div>
                                 
                                 <div>
@@ -351,15 +367,17 @@
                                     </p>
                                 </div>
                                 
-                                <div>
-                                    <p class="comments">
-                                        <img src="images/icons/comments.png" alt="icon-comment"/>
-                                        <span>
-                                            <a href="#"> 
-                                                <span>Comments: </span>0
-                                            </a>
-                                        </span>
-                                    </p>
+                                <!-- Add comment section at the end of each post -->
+                                <div class="comments-section" id="announcement-3">
+                                    <h3>Comments</h3>
+                                    
+                                    <!-- Display comments for this specific announcement -->
+                                    <div id="comments-container-1" class="comments-container">
+                                        <?php echo renderComments(3); // Pass the announcement ID ?>
+                                    </div>
+                                    
+                                    <!-- Add comment form for this specific announcement -->
+                                    <?php echo renderCommentForm(3); // Pass the announcement ID ?>
                                 </div>
                                 
                                 <div>
@@ -460,53 +478,27 @@
                 </div>
 
                 <div class="widget recent-comments">
-                    <h3>Recent <span class="title-highlight">comments</span></h3>
-                    <div class="recent-comments group">
-                        <div class="the-post group">
-                
-                            <p class="comment">
-                                Great initiative in supporting indigenous communities!
-                            </p>
-                
-                            <div class="avatar">
-                                <img alt='' src='images/gavatar.png' class='avatar photo' height='33' width='33'/>
-                            </div>
-                
-                            <span class="author">
-                                <strong>
-                                    <a href="#">
-                                        MariaLuna
-                                    </a>
-                                </strong> in
-                            </span>
-                            <br />
-                
-                            <a href="#" class="title">NCIP launches cultural preservation drive</a>
-                        </div>
-                
-                        <div class="the-post group">
-                
-                            <p class="comment">
-                                I really appreciate the transparency in your latest program report.
-                            </p>
-                
-                            <div class="avatar">
-                                <img alt='' src='images/gavatar.png' class='avatar photo' height='33' width='33'/>
-                            </div>
-                
-                            <span class="author">
-                                <strong>
-                                    <a href="#">
-                                        JohnRay85
-                                    </a>
-                                </strong> in
-                            </span>
-                            <br />
-                
-                            <a href="#" class="title">IP rights &amp; community engagement</a>
-                        </div>
-                    </div>
-                </div>                
+    <h3>Recent <span class="title-highlight">comments</span></h3>
+    
+    <!-- Comments List -->
+    <div id="recent-comments-container" class="recent-comments group">
+        <?php echo renderRecentComments(5); ?>
+    </div>
+    
+    <?php if (isUserLoggedIn()): ?>
+    <div class="login-info">
+        <p>Signed in as <?php echo htmlspecialchars($_SESSION['google_user']['name']); ?></p>
+        <a href="?action=logout" class="logout-link">Logout</a>
+    </div>
+    <?php else: ?>
+    <div class="login-prompt">
+        <p>Sign in with Google to leave comments:</p>
+        <a href="<?php echo getGoogleLoginUrl(); ?>" class="google-signin-btn">
+            <img src="images/google-signin-button.svg" alt="Sign in with Google">
+        </a>
+    </div>
+    <?php endif; ?>
+</div>                  
 
                 <div class="widget-last widget widget_nav_menu">
                     <h3>Follow <span class="title-highlight">us</span></h3>
@@ -628,6 +620,120 @@
 
 </div>
 <!-- END BG SHADOW -->
+<script type="text/javascript">
+$(document).ready(function() {
+    console.log('Document ready - initializing comment system');
+    
+    // Handle comment submission
+    $('.comment-form').on('submit', function(e) {
+        e.preventDefault();
+        console.log('Comment form submitted');
+        
+        const form = $(this);
+        const formData = form.serialize();
+        const announcementId = form.data('announcement-id');
+        const commentsContainer = $(`#comments-container-${announcementId}`);
+        
+        console.log('Form data:', formData);
+        console.log('Announcement ID:', announcementId);
+        
+        $.ajax({
+            type: 'POST',
+            url: 'comments.php',
+            data: formData,
+            dataType: 'json',
+            success: function(response) {
+                console.log('Comment submission response:', response);
+                
+                if (response.success) {
+                    // Clear the form
+                    form.find('textarea').val('');
+                    form.find('.parent-id-input').val('');
+                    form.find('.reply-info').hide();
+                    
+                    // Reload the comments for this announcement
+                    $.ajax({
+                        type: 'GET',
+                        url: `get_comments.php?announcement_id=${announcementId}`,
+                        success: function(html) {
+                            commentsContainer.html(html);
+                            console.log('Comments reloaded');
+                            
+                            // Also reload recent comments in the sidebar
+                            $.ajax({
+                                type: 'GET',
+                                url: 'get_recent_comments.php',
+                                success: function(html) {
+                                    $('#recent-comments-container').html(html);
+                                    console.log('Recent comments reloaded');
+                                },
+                                error: function(xhr, status, error) {
+                                    console.error('Error reloading recent comments:', error);
+                                }
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error reloading comments:', error);
+                        }
+                    });
+                } else {
+                    alert(response.message || 'An error occurred while posting your comment.');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error submitting comment:', error);
+                alert('An error occurred while posting your comment. Please try again.');
+            }
+        });
+    });
+    
+    // Handle reply links with delegated events (for dynamically added content)
+    $(document).on('click', '.reply-link', function(e) {
+        e.preventDefault();
+        console.log('Reply link clicked');
+        
+        const commentId = $(this).data('comment-id');
+        const announcementId = $(this).data('announcement-id');
+        console.log('Comment ID:', commentId, 'Announcement ID:', announcementId);
+        
+        const form = $(`.comment-form[data-announcement-id="${announcementId}"]`);
+        
+        // Set the parent comment ID
+        form.find('.parent-id-input').val(commentId);
+        form.find('.reply-info').show();
+        
+        // Scroll to the comment form
+        $('html, body').animate({
+            scrollTop: form.offset().top - 100
+        }, 500);
+        
+        form.find('textarea').focus();
+    });
+    
+    // Cancel reply
+    $(document).on('click', '.cancel-reply', function(e) {
+        e.preventDefault();
+        console.log('Cancel reply clicked');
+        
+        const form = $(this).closest('form');
+        form.find('.parent-id-input').val('');
+        form.find('.reply-info').hide();
+    });
+    
+    // Add an error handler for images
+    $('img.avatar').on('error', function() {
+        $(this).attr('src', 'images/gavatar.png');
+    });
+    
+    <?php if ($authError): ?>
+    alert('Authentication error: <?php echo htmlspecialchars($authError); ?>');
+    <?php endif; ?>
+    
+    <?php if ($authSuccess): ?>
+    alert('Successfully signed in!');
+    <?php endif; ?>
+});
+</script>
 
 <script type='text/javascript' src='js/comment-reply.min.js'></script>
 <script type='text/javascript' src='js/underscore.min.js'></script>
@@ -648,6 +754,8 @@
 <script type='text/javascript' src='js/jquery.cycle.min.js'></script>
 <script type='text/javascript' src='js/shortcodes.js'></script>
 <script type='text/javascript' src='js/jquery.custom.js'></script>
+<script src="https://accounts.google.com/gsi/client"></script>
+
 
 </body>
 <!-- END BODY -->

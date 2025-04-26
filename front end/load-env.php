@@ -7,13 +7,13 @@ function loadEnv($path = '.env') {
         $line = trim($line);
 
         if ($line === '' || str_starts_with($line, '#') || str_starts_with($line, ';')) {
-            continue; // Skip comments and empty lines
+            continue; 
         }
 
         if (strpos($line, '=') !== false) {
             list($name, $value) = explode('=', $line, 2);
             $name = trim($name);
-            $value = trim($value, " \t\n\r\0\x0B\"'"); // Also strips quotes
+            $value = trim($value, " \t\n\r\0\x0B\"'"); 
             putenv("$name=$value");
         }
     }

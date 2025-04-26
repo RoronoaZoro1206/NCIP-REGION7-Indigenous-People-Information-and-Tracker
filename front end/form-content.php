@@ -94,6 +94,6 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 });
 </script>
-<script src="Authentication.js"></script>
+<script type='text/javascript' src='js/Authentication.js'></script>
 </body>
 </html>

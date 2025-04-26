@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.2, user-scalable=yes" />
 
     <title>NCIP Cebu Connect</title>
-    <link rel="icon" href="images/ncip-header-logo.png" type="image/png">
+    <link rel="icon" href="images/ncip-logo.png" type="image/png">
 
     <!-- RESET STYLESHEET -->
     <link rel="stylesheet" type="text/css" media="all" href="css/reset.css" />

@@ -1,0 +1,588 @@
+    <!DOCTYPE html>
+    <!--[if IE 6]>
+    <html id="ie6" class="ie"lang="en-US">
+    <![endif]-->
+    <!--[if IE 7]>
+    <html id="ie7"  class="ie"lang="en-US">
+    <![endif]-->
+    <!--[if IE 8]>
+    <html id="ie8"  class="ie"lang="en-US">
+    <![endif]-->
+    <!--[if IE 9]>
+    <html id="ie9"  class="ie"lang="en-US">
+    <![endif]-->
+    <!--[if gt IE 9]>
+    <html class="ie"lang="en-US">
+    <![endif]-->
+
+    <!-- This doesn't work but i prefer to leave it here... maybe in the future the MS will support it... i hope... -->
+    <!--[if IE 10]>
+    <html id="ie10"  class="ie"lang="en-US">
+    <![endif]-->
+
+
+    <!--[if !IE]>
+    <html lang="en-US">
+    <![endif]-->
+
+    <!-- START HEAD -->
+    <head>
+        <meta charset="UTF-8" />
+
+        <!-- this line will appear only if the website is visited with an iPad -->
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.2, user-scalable=yes" />
+
+        <title>NCIP Cebu Connect</title>
+        <link rel="icon" href="images/ncip-logo.png" type="image/png">
+
+        <!-- RESET STYLESHEET -->
+        <link rel="stylesheet" type="text/css" media="all" href="css/reset.css" />
+        <!-- BOOTSTRAP STYLESHEET -->
+        <link rel="stylesheet" type="text/css" media="all" href="css/bootstrap.css" />
+        <!-- MAIN THEME STYLESHEET -->
+        <link rel="stylesheet" type="text/css" media="all" href="style.css" />
+
+        <!-- [favicon] begin -->
+        <link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+        <link rel="icon" type="image/x-icon" href="favicon.ico" />
+        <!-- [favicon] end -->
+
+        <!-- Touch icons more info: http://mathiasbynens.be/notes/touch-icons -->
+        <!-- For iPad3 with retina display: -->
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="apple-touch-icon-144x.png" />
+        <!-- For first- and second-generation iPad: -->
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="apple-touch-icon-114x.png" />
+        <!-- For first- and second-generation iPad: -->
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="apple-touch-icon-72x.png">
+        <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+        <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-57x.png" />
+
+
+        <link rel='stylesheet' id='thickbox-css'  href='js/thickbox/thickbox.css' type='text/css' media='all' />
+        <link rel='stylesheet' id='google-fonts-css'  href='http://fonts.googleapis.com/css?family=Playfair+Display%7COpen+Sans+Condensed%3A300%7COpen+Sans%7CShadows+Into+Light%7CMuli%7CDroid+Sans%7CArbutus+Slab%7CAbel&#038;ver=3.5.1' type='text/css' media='all' />
+        <link rel='stylesheet' id='responsive-css'  href='css/responsive.css' type='text/css' media='all' />
+        <link rel='stylesheet' id='polaroid-slider-css'  href='sliders/polaroid/css/polaroid.css' type='text/css' media='all' />
+        <link rel='stylesheet' id='ahortcodes-css'  href='css/shortcodes.css' type='text/css' media='all' />
+        <link rel='stylesheet' id='contact-form-css'  href='css/contact_form.css' type='text/css' media='all' />
+        <link rel='stylesheet' id='font-awesome-css'  href='css/font-awesome.css' type='text/css' media='all' />
+        <link rel='stylesheet' id='custom-css'  href='css/custom.css' type='text/css' media='all' />
+
+        <style type="text/css">
+            body { background-color: #ffffff; background-image: url('images/bg-pattern.png'); background-repeat: repeat; background-position: top left; background-attachment: scroll; }
+        </style>
+
+        <script type='text/javascript' src='js/jquery/jquery.js'></script>
+
+
+    </head>
+    <!-- END HEAD -->
+    <!-- START BODY -->
+    <body class="home page no_js responsive stretched">
+
+    <!-- START BG SHADOW -->
+    <div class="bg-shadow">
+
+    <!-- START WRAPPER -->
+        <div id="wrapper" class="container group">
+
+            <!-- START TOP BAR -->
+            <div id="topbar">
+                <div class="container">
+                    <div class="row">
+                        <div id="nav" class="span12 light">
+
+                            <!-- START MAIN NAVIGATION -->
+
+                            <ul id="menu-menu" class="level-1">
+                                <li>
+                                    <a href="index.php">HOME</a>
+                                    <ul class="sub-menu">
+                                        <li><a href="home-ii.html">Home II</a></li>
+                                        <li><a href="home-iii.html">Home III</a></li>
+                                        <li><a href="home-iv.html">Home IV</a></li>
+                                        <li><a href="home-v.html">Home V</a></li>
+                                        <li><a href="home-vi.html">Home VI</a></li>
+                                        <li><a href="home-vii.html">Home VII</a></li>
+                                        <li><a href="home-viii.html">Home VIII</a></li>
+                                        <li><a href="home-ix.html">Home IX</a></li>
+                                        <li><a href="home-x.html">Home X</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">SLIDERS</a>
+                                    <ul class="sub-menu">
+                                        <li><a href="revolution-slider.html">Revolution Slider</a></li>
+                                        <li><a href="flexslider-classic.html">Flexslider Classic</a></li>
+                                        <li><a href="flexslider-elegant.html">Flexslider Elegant</a></li>
+                                        <li><a href="elastic.html">Elastic</a></li>
+                                        <li><a href="flash.html">Flash</a></li>
+                                        <li><a href="rotating.html">Rotating</a></li>
+                                        <li><a href="thumbnails.html">Thumbnails</a></li>
+                                        <li><a href="usquare.html">Usquare</a></li>
+                                        <li><a href="polaroid.html">Polaroid</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">FEATURES</a>
+                                    <ul class="sub-menu">
+                                        <li><a href="services-module.html">Services Module</a></li>
+                                        <li><a href="blog-modules.html">Blog modules</a></li>
+                                        <li><a href="portfolio-and-video-modules.html">Portfolio and video modules</a></li>
+                                        <li><a href="libra-features.html">Libra features</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">PORTFOLIO</a>
+                                    <ul class="sub-menu">
+                                        <li><a href="portfolio-libra.html">Libra</a></li>
+                                        <li><a href="portfolio-pinterest.html">Pinterest</a></li>
+                                        <li><a href="portfolio-slide-detail.html">Slide Detail</a></li>
+                                        <li><a href="portfolio-filterable.html">Filterable</a></li>
+                                        <li><a href="portfolio-2-columns.html">2 Columns</a></li>
+                                        <li><a href="portfolio-3-columns.html">3 Columns</a></li>
+                                        <li><a href="portfolio-4-columns.html">4 Columns</a></li>
+                                        <li><a href="portfolio-big-image.html">Big Image</a></li>
+                                        <li><a href="portfolio-slider.html">Slider</a></li>
+                                        <li><a href="portfolio-project-detail-1.html">Project Detail #1</a></li>
+                                        <li><a href="portfolio-project-detail-2.html">Project detail #2</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">PAGES</a>
+                                    <ul class="sub-menu">
+                                        <li>
+                                            <a href="testimonials.html">Testimonials</a></li>
+                                        <li>
+                                            <a href="#">Blog</a>
+                                            <ul class="sub-menu">
+                                                <li><a href="blog-libra-big.html">Libra Big</a></li>
+                                                <li><a href="blog-libra-small.html">Libra Small</a></li>
+                                                <li><a href="blog-elegant.html">Elegant</a></li>
+                                                <li><a href="blog-big-thumbnails.html">Big Thumbnails</a></li>
+                                                <li><a href="blog-small-thumbnails.html">Small Thumbnails</a></li>
+                                                <li><a href="blog-pinterest.html">Pinterest</a></li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="pages-faq.html">FAQ</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">About</a>
+                                            <ul class="sub-menu">
+                                                <li><a href="accordion-style.html">Accordion Style</a></li>
+                                                <li><a href="circle-style.html">Circle Style</a></li>
+                                                <li><a href="u-square-style.html">U-square style</a></li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a href="error-404.html">Error 404</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">SHORTCODES</a>
+                                    <ul class="sub-menu">
+                                        <li><a href="shortcodes-alert-box-buttons.html">Alert box &amp; Buttons</a></li>
+                                        <li><a href="shortcodes-charts.html">Charts</a></li>
+                                        <li><a href="shortcodes-icon-section.html">Icon section</a></li>
+                                        <li><a href="shortcodes-media-widgets.html">Media &amp; Widgets</a></li>
+                                        <li><a href="shortcodes-mix-various.html">Mix &amp; Various</a></li>
+                                        <li><a href="shortcodes-table-box-prices.html">Table &amp; Box prices</a></li>
+                                        <li><a href="shortcodes-typography.html">Typography</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">CONTACT</a>
+                                    <ul class="sub-menu">
+                                        <li><a href="get-in-touch.html">With MAP</a></li>
+                                        <li class="current_page_item"><a href="get-in-touch-2.html">Without MAP</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <!-- END MAIN NAVIGATION -->
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!-- END TOP BAR -->
+
+        <!-- START HEADER -->
+        <div id="header" class="group margin-bottom">
+
+            <div class="group container">
+                <div class="row" id="logo-headersidebar-container">
+                    <!-- START LOGO -->
+                    <div id="logo" class="span6 group">
+                        <a id="logo-img" href="index.html" title="Libra">
+                            <img src="images/libra-logo1.png" title="Libra" alt="Libra" />
+                        </a>
+                        <p id='tagline'>Just another Your Inspiration Themes site</p>
+                    </div>
+                    <!-- END LOGO -->
+
+                    <!-- START HEADER SIDEBAR -->
+                    <div id="header-sidebar" class="span6 group">
+                        <div class="widget-first widget header-text-image">
+                            <div class="text-image" style="text-align:left">
+                                <img src="images/phone1.png" alt="CUSTOMER SUPPORT" />
+                            </div>
+
+                            <div class="text-content">
+                                <h3>CUSTOMER SUPPORT</h3>
+                                <p>+39 - 0973 - 645724</p>
+                            </div>
+                        </div>
+
+                        <div class="widget-last widget widget_text">
+                            <div class="textwidget">
+                            <div class="socials-default-small facebook-small default">
+                                <a href="https://www.facebook.com/CebuPO" target="_blank" class="socials-default-small default facebook" >facebook</a>
+                            </div>
+
+                            <div class="socials-default-small instagram-small default">
+                                <a href="https://www.instagram.com/ncipcebupo/" target="_blank" class="socials-default-small default instagram" >instagram</a>
+                            </div>
+
+                            <div class="socials-default-small google-small default">
+                            <a href="mailto:region67.cebupo@ncip.gov.ph" target="_blank" class="socials-default-small default google">Gmail</a>
+                            </div>
+
+                                <div class="socials-default-small twitter-small default">
+                                    <a href="#" class="socials-default-small default twitter" >twitter</a>
+                                </div>
+
+                                <div class="socials-default-small flickr-small default">
+                                    <a href="#" class="socials-default-small default flickr" >flickr</a>
+                                </div>
+
+                                <div class="socials-default-small rss-small default">
+                                    <a href="#" class="socials-default-small default rss" >rss</a>
+                                </div>
+
+                                <div class="socials-default-small pinterest-small default">
+                                    <a href="#" class="socials-default-small default pinterest" >pinterest</a>
+
+                                </div>
+                             </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END HEADER -->
+
+        <!-- START PAGE META -->
+        <div id="page-meta" class="group">
+            <div class="container">
+                <div class="row">
+                    <div class="span12">
+                        <!-- TITLE -->
+                        <div class="title">
+                            <div class="icontitle">
+                                <img src="images/contact-form/contact_icon.png" alt="title"/>
+                            </div>
+                            <div class="title-with-icon">
+                                <h1>Get in touch</h1>
+                            </div>
+                        </div>
+
+                        <!-- BREDCRUMB -->
+                        <div class="breadcrumbs">
+                            <span class="before-text">You are here:</span>
+
+                            <p id="yit-breadcrumb" itemprop="breadcrumb">
+                                <a class="home" href="index.html">Home Page</a> |
+                                <a class="no-link current" href="#">Get in touch</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END PAGE META -->
+
+        <!-- START SLOGAN -->
+        <div class="slogan">
+            <h2>SAY HELLO. WE'D LOVE TO MEET YOU.</h2>
+
+            <h3>seriously.</h3>
+        </div>
+        <!-- END SLOGAN -->
+
+         <!-- START PRIMARY -->
+        <div id="primary" class="sidebar-left">
+            <div class="container group">
+                <div class="row">
+                    <!-- START CONTENT -->
+                    <div id="content-page" class="span9 content group">
+                            <div class="page type-page status-publish hentry group">
+                    <form class="contact-form row" method="post" action="sendmail.php" enctype="multipart/form-data">
+
+                        <div class="usermessagea"><p class="success">Email sent correctly!</p></div>
+                        <fieldset>
+
+                            <ul>
+
+                                <li class="text-field with-icon span3">
+
+                                    <label for="name-contact-form">
+                                        <span class="mainlabel">Name</span>
+                                    </label>
+
+                                    <div class="input-prepend"><span class="add-on">
+                                        <img src="images/contact-form/user.png" alt="" title="" /></span><input type="text" name="yit_contact[name]" id="name-contact-form" class="with-icon required" value="" />
+                                    </div>
+
+                                    <div class="msg-error"></div>
+
+                                    <div class="clear"></div>
+                                </li>
+
+                                <li class="text-field with-icon span3">
+
+                                    <label for="email-contact-form">
+                                        <span class="mainlabel">Email</span>
+                                    </label>
+
+                                    <div class="input-prepend">
+                                        <span class="add-on">
+                                            <img src="images/contact-form/envelope.png" alt="" title="" />
+                                        </span>
+                                        <input type="text" name="yit_contact[email]" id="email-contact-form" class="with-icon required email-validate" value="" />
+                                    </div>
+
+                                    <div class="msg-error"></div>
+
+                                    <div class="clear"></div>
+                                </li>
+
+                                <li class="text-field with-icon span3">
+
+                                    <label for="phone-contact-form">
+                                        <span class="mainlabel">Phone</span>
+                                    </label>
+
+                                    <div class="input-prepend">
+                                        <span class="add-on">
+                                            <img src="images/contact-form/phone.png" alt="" title="" />
+                                        </span>
+                                        <input type="text" name="yit_contact[phone]" id="phone-contact-form" class="with-icon" value="" />
+                                    </div>
+
+                                    <div class="msg-error"></div>
+
+                                    <div class="clear"></div>
+                                </li>
+
+                                <li class="textarea-field with-icon span9">
+
+                                    <label for="message-contact-form">
+                                        <span class="mainlabel">Message</span>
+                                    </label>
+
+                                    <div class="input-prepend">
+                                        <span class="add-on">
+                                            <img src="images/contact-form/pencil.png" alt="" title="" />
+                                        </span>
+                                        <textarea name="yit_contact[message]" id="message-contact-form" rows="8" cols="30" class="with-icon required"></textarea>
+                                    </div>
+
+                                    <div class="msg-error"></div>
+
+                                    <div class="clear"></div>
+                                </li>
+
+                                <li class="submit-button span9">
+                                    <input type="text" name="yit_bot" id="yit_bot" />
+                                    <input type="hidden" name="yit_action" value="sendemail"/>
+                                    <input type="hidden" name="yit_referer" value="get-in-touch.html" />
+                                    <input type="hidden" name="id_form" value="4" />
+                                    <input type="submit" name="yit_sendemail" value="Send Message" class="sendmail alignright" />
+                                    <div class="clear"></div>
+                                </li>
+                            </ul>
+                        </fieldset>
+                    </form>
+
+                    <script type="text/javascript">
+                        var messages_form_4 = {
+                            name: "Insert the name",
+                            email: "Insert a valid email",
+                            phone: "",
+                            message: "Insert a message"
+                        };
+                    </script>
+                </div>
+            </div>
+            <!-- END CONTENT -->
+
+            <!-- START SIDEBAR -->
+                    <div id="sidebar-contact" class="span3 sidebar group">
+                        <div class="widget-first widget contact-info"><h3>Contacts</h3>
+
+                            <div class="sidebar-nav">
+                                <ul>
+
+                                    <li>
+                                        <i class="icon-map-marker" style="color:#000;font-size:12px;width:12px;height:12px"></i>
+                                        <span>Address:</span> Celestino, 115 Avenue - Italy
+                                    </li>
+
+                                    <li>
+                                        <i class="icon-phone" style="color:#000;font-size:12px;width:12px;height:12px"></i>
+                                        <span>Mobile:</span> +39 3471717174
+                                    </li>
+
+                                    <li>
+                                        <i class="icon-print" style="color:#000;font-size:12px;width:12px;height:12px"></i>
+                                        <span>Fax:</span> +39 0035 356 765
+                                    </li>
+
+                                    <li>
+                                        <i class="icon-envelope" style="color:#000;font-size:12px;width:12px;height:12px"></i>
+                                        <span>Email:</span> celestino@yit.com
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="widget-last widget last-tweets">
+
+                            <div class="list-tweets-2"></div>
+                            <p id="follow-twitter">
+                                <a href="https://twitter.com/intent/user?screen_name=yit" target="_blank">
+                                    Follow us on Twitter &rarr;
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+                    <!-- END SIDEBAR -->
+                </div>
+            </div>
+        </div>
+        <!-- END PRIMARY -->
+
+
+    <!-- START FOOTER -->
+    <div id="footer">
+        <div class="container">
+            <div class="row">
+                <div class="footer-widgets-area with-sidebar-right">
+                    <div class="widget-first widget span2 widget_text">
+                        <h3>
+                            <img src="images/ncip-logo.png" alt="NCIP Logo" class="ncip-logo">
+                            About NCIP <div class="underline2"><span></span></div>
+                        </h3>
+                        <div class="textwidget">
+                            The National Commission on Indigenous Peoples (NCIP) is dedicated to the recognition, protection, and promotion of the rights of Indigenous Cultural Communities / Indigenous Peoples (ICCs/IPs) in the Philippines. Learn more about our mission <a href="#">here</a>.
+                        </div>
+                    </div>
+    
+                    <div class="widget span2 widget_nav_menu">
+                        <h3>Quick Links <div class="underline"><span></span></div></h3>
+                        <div class="menu-widget-footer-container">
+                            <ul id="menu-widget-footer" class="menu">
+                                <li class="menu-item"><a href="program.html">Programs</a></li>
+                                <li class="menu-item"><a href="#">Services</a></li>
+                                <li class="menu-item"><a href="#">Legal Framework</a></li>
+                                <li class="menu-item"><a href="#">Reports</a></li>
+                                <li class="menu-item"><a href="contact.html">Contact</a></li>
+                            </ul>
+                        </div>
+                    </div>
+    
+                    <div class="widget-last widget span2 widget_nav_menu">
+                        <h3>Follow Us <div class="underline"><span></span></div></h3>
+                        <div class="menu-socialize-container">
+                            <ul id="menu-socialize" class="menu">
+                                <li class="menu-item"><a href="https://www.facebook.com/CebuPO" target="_blank">Facebook</a></li>
+                                <li class="menu-item"><a href="mailto:region67.cebupo@ncip.gov.ph" target="_blank">Gmail</a></li>
+                                <li class="menu-item"><a href="https://www.instagram.com/ncipcebupo/" target="_blank">Instagram</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="footer-widgets-sidebar with-sidebar-right">
+                    <div class="widget-first widget span6 yit_quick_contact">
+                        <h3>Contact NCIP <div class="underline"><span></span></div></h3>
+                        <form class="contact-form row" method="post" action="" enctype="multipart/form-data">
+                            <fieldset>
+                                <ul>
+                                    <li class="text-field with-icon span3">
+                                        <label><span class="mainlabel">Name</span></label>
+                                        <div class="input-prepend">
+                                            <span class="add-on"><img src="images/footer/author-footer.png" alt=""/></span>
+                                            <input type="text" name="yit_contact[name]" class="with-icon required" value=""/>
+                                        </div>
+                                    </li>
+    
+                                    <li class="text-field with-icon span3">
+                                        <label><span class="mainlabel">Email</span></label>
+                                        <div class="input-prepend">
+                                            <span class="add-on"><img src="images/footer/envelope-footer.png" alt=""/></span>
+                                            <input type="text" name="yit_contact[email]" class="with-icon required email-validate" value=""/>
+                                        </div>
+                                    </li>
+    
+                                    <li class="textarea-field with-icon span6">
+                                        <label><span class="mainlabel">Message</span></label>
+                                        <div class="input-prepend">
+                                            <span class="add-on"><img src="images/footer/pencil-footer.png" alt=""/></span>
+                                            <textarea name="yit_contact[message]" rows="8" cols="30" class="with-icon required"></textarea>
+                                        </div>
+                                    </li>
+    
+                                    <li class="submit-button span6">
+                                        <input type="submit" name="yit_sendemail" value="SEND" class="sendmail alignright"/>
+                                    </li>
+                                </ul>
+                            </fieldset>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="lowfooter">
+        <div class="container">
+            <div class="row">
+                <div class="center span12">
+                    <p>&copy; 2025 NCIP Cebu Connect. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </div>    
+    <!-- END FOOTER -->
+
+        <div class="wrapper-border"></div>
+
+        </div>
+    <!-- END WRAPPER -->
+
+    </div>
+    <!-- END BG SHADOW -->
+
+    <script type='text/javascript' src='js/comment-reply.min.js'></script>
+    <script type='text/javascript' src='js/underscore.min.js'></script>
+    <script type='text/javascript' src='js/jquery/jquery.masonry.min.js'></script>
+    <script type='text/javascript' src='js/jquery.colorbox-min.js'></script>
+    <script type='text/javascript' src='js/jquery.easing.js'></script>
+    <script type='text/javascript' src='js/hoverIntent.min.js'></script>
+    <script type='text/javascript' src='js/media-upload.min.js'></script>
+    <script type='text/javascript' src='js/jquery.clickout.min.js'></script>
+    <script type='text/javascript' src='js/responsive.js'></script>
+    <script type='text/javascript' src='js/mobilemenu.js'></script>
+    <script type='text/javascript' src='js/jquery.superfish.js'></script>
+    <script type='text/javascript' src='js/jquery.placeholder.js'></script>
+    <script type='text/javascript' src='js/contact.js'></script>
+    <script type='text/javascript' src='js/jquery.tipsy.js'></script>
+    <script type='text/javascript' src='js/jquery.cycle.min.js'></script>
+    <script type='text/javascript' src='js/shortcodes.js'></script>
+    <script type='text/javascript' src='js/jquery.custom.js'></script>
+
+    </body>
+    <!-- END BODY -->
+</html>

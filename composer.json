@@ -1,0 +1,19 @@
+{
+    "name": "lawrenceramirez/informationmanagement",
+    "description": "Information Management Project",
+    "autoload": {
+        "psr-4": {
+            "Lawrenceramirez\\Informationmanagement\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Lawrence S. Ramirez",
+            "email": "lawrence.ramirez@ctu.edu.ph"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "phpmailer/phpmailer": "^6.10"
+    }
+}

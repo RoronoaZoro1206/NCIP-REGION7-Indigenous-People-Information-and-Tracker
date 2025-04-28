@@ -383,68 +383,6 @@ h1 span, h2 span, h3 span, h4 span, h5 span, h6 span { color: #919303; }
 body.no_js #nav ul li:hover > ul { display:block }
 body.no_js #nav ul li ul.submenu li:hover > ul, body.no_js #nav ul li ul.children li:hover > ul { display:block }  
 
-
-/* TOP BAR LOGIN */
-#topbar_login { float: right; position: relative }
-#topbar_login a.topbar_login {
-	margin-top: 4px;
-	font-size: 8px;
-	font-weight: 600;
-	display: block;
-	padding: 4px 11px 3px 30px;
-	color: #fff;
-	background: #102438 url('images/menu/topbar_login_user.png') no-repeat 12px 6px;
-	border: 1px solid #19344e;
-	
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	border-radius: 5px;
-}
-#topbar_login.not_logged_in a.topbar_login {
-	
-	padding: 4px 26px 3px 30px;
-	
-}
-#topbar_login a.topbar_login:hover { color: #E5F99A }
-#topbar_login a.topbar_login .sf-sub-indicator { top: 17px }
-#fast-login { 
-	position:absolute; 
-	right:1px; 
-	top:30px; 
-	display:none; 
-	z-index:100; 
-	background: rgb(16,36,56); background: rgba(16,36,56,.89); 
-	padding: 0 13px 10px;
-	color: #fff;
-	font-size: 11px;
-	
-	-moz-border-radius: 10px 0 10px 10px;
-	-webkit-border-radius: 10px 0 10px 10px;
-	border-radius: 10px 0 10px 10px;
-}
-#fast-login form { margin: 0 }
-#fast-login label, #fast-login input { font-size: 10px; color: #fff; }
-#fast-login input { background-color: #0d2033; border: 1px solid #1b3754; width: 139px; margin-bottom: 0 }
-#fast-login input:focus {
-	border-color: white !important;
-	border-color: rgba(255,255,255,.5) !important;
-	
-	-moz-box-shadow: 0 0 3px rgba(255, 255, 255, 0.2) !important;
-	-webkit-box-shadow: 0 0 3px rgba(255, 255, 255, 0.2) !important;
-	box-shadow: 0 0 3px rgba(255, 255, 255, 0.2) !important;
-}
-#fast-login input.input-submit { background-color: #29435e; border: 1px solid #17324e; width: 50px ; height: 22px; text-transform: uppercase; float: right; font-size: 10px; font-weight: bold; margin-top: 10px; }
-#fast-login a { font-size: 10px; color: #E5F99A }
-#fast-login a:hover { color: #304e6d }
-#fast-login p { margin-bottom: 0 }
-#fast-login a.lostpassword { margin-top: 10px; }
-
-#fast-login .align-left {float: left; margin: 0 }
-#fast-login .align-right { float: right; margin: 0 }
-
-#topbar_login a.topbar_login .sf-sub-indicator { display: none }
-#topbar_login.not_logged_in a.topbar_login .sf-sub-indicator { display: inline }
-
 /* === HEADER SIDEBAR */
 #header-sidebar { }
 #header-sidebar .widget { display: inline-block; margin-left: 40px }
@@ -1710,3 +1648,184 @@ ul.filters.faq li, ul.filters.faq li a { font-size: 15px }
     margin-top: 30px;
 }
 /* ============ END REVOLUTION SLIDER ==================*/
+
+/* Comment Form Styling */
+.comment-form-container {
+    margin-bottom: 20px;
+}
+
+.comments-section {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.recent-comment-item {
+    display: flex;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.user-info img {
+    margin-right: 10px;
+}
+
+.user-info .logout-link {
+    margin-left: 10px;
+    font-size: 12px;
+    color: #999;
+}
+
+#comment_content {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    resize: vertical;
+}
+
+.reply-info {
+    margin-bottom: 10px;
+    padding: 5px;
+    background-color: #f0f0f0;
+    border-radius: 3px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn {
+    padding: 8px 15px;
+    background-color: #4285f4;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #357ae8;
+}
+
+
+.comment-item {
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+.comment-item .avatar {
+    float: left;
+    margin-right: 10px;
+}
+
+.comment-item .comment {
+    margin-bottom: 5px;
+}
+
+.comment-item .comment-date {
+    font-size: 12px;
+    color: #999;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.reply-link {
+    font-size: 12px;
+    color: #4285f4;
+    text-decoration: none;
+}
+
+.reply-link:hover {
+    text-decoration: underline;
+}
+
+.comment-replies {
+    margin-left: 30px;
+    padding-left: 15px;
+    border-left: 2px solid #eee;
+}
+
+.comment-avatar {
+    margin-right: 10px;
+}
+
+.comment-details {
+    flex: 1;
+}
+
+.comment-reply {
+    margin-left: 30px;
+    border-left: 3px solid #ddd;
+    background-color: #f5f5f5;
+}
+
+/* Google Sign-In Button */
+.login-prompt {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.google-signin-btn {
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.google-signin-btn img {
+    height: 40px;
+}
+
+.comment-author {
+    display: block;
+    font-size: 14px;
+}
+
+.comment-on {
+    font-size: 12px;
+    color: #666;
+}
+
+.comment-excerpt {
+    margin: 5px 0;
+    font-size: 13px;
+}
+
+.comment-date {
+    font-size: 11px;
+    color: #888;
+}
+
+.reply-link {
+    font-size: 12px;
+    color: #337ab7;
+    margin-left: 10px;
+}
+
+.cancel-reply {
+    color: #d9534f;
+    font-size: 12px;
+}
+
+.login-prompt {
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.login-prompt-sidebar {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    text-align: center;
+}

@@ -82,52 +82,42 @@ $(document).ready(function(){
 
 // features tab plugin
 (function($) {
-    $.fn.yiw_features_tab = function( options ) {
+    $.fn.yiw_features_tab = function(options) {
         var config = {
-            'tabNav' : 'ul.features-tab-labels',
+            'tabNav': 'ul.features-tab-labels',
             'tabDivs': 'div.features-tab-wrapper'
         };
-        
-        if( options ) $.extend( config, options );
-        
-        this.each( function () {
-           var tabNav  = $( config.tabNav, this );
-           var tabDivs = $( config.tabDivs, this );
-           var labelNumber = tabNav.children( 'li' ).length;
-           
-           $(window).load(function(){
-               tabDivs.children( 'div' ).hide();
-               
-               var currentDiv = tabDivs.children( 'div' ).eq( tabNav.children( 'li.current-feature' ).index() );
-               currentDiv.show();
-           });
-           
-           $( 'li', tabNav ).hover( function() {
-               if( !$( this ).hasClass( 'current-feature' ) ) {
-                   var currentDiv = tabDivs.children( 'div' ).eq( $( this ).index() );
-                   tabNav.children( 'li' ).removeClass( 'current-feature' );
-                   
-                   $( this ).addClass( 'current-feature' );
 
-                   tabDivs.children( 'div' ).hide().removeClass( 'current-feature' );
-                   currentDiv.fadeIn( 'slow' );
-                   
-//                    if( tabNav.height() >= ( tabDivs.parent( 'div' ).height() - 1 ) && labelNumber == ( $( this ).index() + 1 ) ) {
-//                        $( this ).css({
-//                            'border-bottom'                     : 'none',
-//                            'border-bottom-left-radius'         : '5px',
-//                            '-webkit-border-bottom-left-radius' : '5px',
-//                            '-moz-border-radius-bottomleft'     : '5px'
-//                        });
-//                    }
-                   
-                   //alert( tabNav.height() + '-' + ( tabDivs.parent( 'div' ).height() - 1 ) );
-               }            
-           });       
-           
+        if (options) $.extend(config, options);
+
+        this.each(function() {
+            var tabNav = $(config.tabNav, this);
+            var tabDivs = $(config.tabDivs, this);
+            var labelNumber = tabNav.children('li').length;
+
+            $(window).on('load', function() {
+                tabDivs.children('div').hide();
+
+                var currentDiv = tabDivs.children('div').eq(tabNav.children('li.current-feature').index());
+                currentDiv.show();
+            });
+
+            $('li', tabNav).on('click', function() {
+                if (!$(this).hasClass('current-feature')) {
+                    var currentDiv = tabDivs.children('div').eq($(this).index());
+                    tabNav.children('li').removeClass('current-feature');
+
+                    $(this).addClass('current-feature');
+
+                    tabDivs.children('div').hide().removeClass('current-feature');
+                    currentDiv.fadeIn('slow');
+                }
+            });
+
         });
     }
 })(jQuery);
+
 
 // tabs plugin
 (function($) {

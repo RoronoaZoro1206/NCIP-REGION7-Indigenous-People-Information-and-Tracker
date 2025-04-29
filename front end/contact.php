@@ -433,7 +433,7 @@
                 <!-- START CONTENT -->
                 <div id="content-page" class="span9 content group">
                         <div class="page type-page status-publish hentry group">
-                <form class="contact-form row" method="post" enctype="multipart/form-data" action="sendmail.php">
+                <form class="contact-form row" method="post" enctype="multipart/form-data" action="process_contact.php" autocomplete="off">
     
                     <div class="usermessagea"></div>
                     <fieldset>

@@ -25,6 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $validate_user->validate_data();
 
         $_SESSION["user"] = $validate_user->get_user_data();
+        $_SESSION["user_role"] = $_SESSION["user"]["user_role"] ?? 'user';
 
         header("Location: e-service.php");
         die();

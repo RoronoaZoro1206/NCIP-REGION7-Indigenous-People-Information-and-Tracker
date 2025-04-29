@@ -1,5 +1,6 @@
 <?php
-require 'vendor/autoload.php';
+require(__DIR__ . '/../vendor/autoload.php');
+
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -59,7 +60,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $mail->addReplyTo('lawrenceramirez626@gmail.com', 'NCIP CEBU');
         $mail->addAddress($email, $user['user_username']);
 
-        $resetLink = "http://localhost/Php-Project/reset-password.php?token=" . $token;
+        $resetLink = "http://localhost/Information%20Management/IM---Copy/front%20end/reset-password.php?token=" . $token;
 
         $mail->isHTML(true);
         $mail->Subject = 'Password Reset Request';

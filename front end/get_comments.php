@@ -1,14 +1,24 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 require_once 'db.php';
 require_once 'google_auth.php';
 require_once 'comments.php';
 
-// Get the announcement ID from the URL
 $announcementId = isset($_GET['announcement_id']) ? (int)$_GET['announcement_id'] : null;
 
 if ($announcementId) {
-    // Output the rendered comments for this announcement
-    echo renderComments($announcementId);
+    $comments = renderComments($announcementId);
+
+    if ($comments) {
+        echo $comments;
+    } else {
+        echo '<p>No comments yet. Be the first to comment!</p>';
+    }
 } else {
-    echo "Announcement ID is required";
+
+    http_response_code(400);
+    echo '<p>Announcement ID is required</p>';
 }
+

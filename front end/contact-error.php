@@ -215,7 +215,7 @@
                     <!-- START LOGO -->
                     <div id="logo" class="span6 group">
                         <a id="logo-img" href="index.html" title="Libra">
-                            <img src="images/libra-logo1.png" title="Libra" alt="Libra" />
+                            <img src="images/ncip-logo.png" title="NCIP" alt="NCIP Header Logo" />
                         </a>
                         <p id='tagline'>Just another Your Inspiration Themes site</p>
                     </div>

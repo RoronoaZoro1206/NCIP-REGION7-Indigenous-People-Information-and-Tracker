@@ -1,3 +1,13 @@
+<?php
+require_once 'db.php';
+require_once 'google_auth.php';
+require_once 'comments.php';
+
+// Check if there's an auth error message to display
+$authError = $_GET['auth_error'] ?? null;
+$authSuccess = isset($_GET['auth_success']);
+?>
+
 <!DOCTYPE html>
 <html lang="en-US">
 <!-- START HEAD -->
@@ -20,14 +30,14 @@
 
     <link rel='stylesheet' id='thickbox-css'  href='js/thickbox/thickbox.css' type='text/css' media='all' />
     <link rel='stylesheet' id='google-fonts-css'  href='http://fonts.googleapis.com/css?family=Playfair+Display%7COpen+Sans+Condensed%3A300%7COpen+Sans%7CShadows+Into+Light%7CMuli%7CDroid+Sans%7CArbutus+Slab%7CAbel&#038;ver=3.5.1' type='text/css' media='all' />
-    <link rel='stylesheet' id='fontawesome-css'  href='css/font-awesome.css' type='text/css' media='all' />
     <link rel='stylesheet' id='responsive-css'  href='css/responsive.css' type='text/css' media='all' />
     <link rel='stylesheet' id='polaroid-slider-css'  href='sliders/polaroid/css/polaroid.css' type='text/css' media='all' />
     <link rel='stylesheet' id='ahortcodes-css'  href='css/shortcodes.css' type='text/css' media='all' />
     <link rel='stylesheet' id='contact-form-css'  href='css/contact_form.css' type='text/css' media='all' />
-    <link rel='stylesheet' id='blog-libra-big-css'  href='blog/libra-big/css/style.css' type='text/css' media='all' />
-    <link rel='stylesheet' id='comments-css'  href='css/comments.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='tipsy-form-css'  href='css/tipsy.css.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='blog-libra-big-css'  href='blog/elegant/css/style.css' type='text/css' media='all' />
     <link rel='stylesheet' id='custom-css'  href='css/custom.css' type='text/css' media='all' />
+    <link rel="stylesheet" type="text/css" media="all" href="css/comment-styles.css" />
 
     <style type="text/css">
         body { background-color: #ffffff; background-image: url('images/bg-pattern.png'); background-repeat: repeat; background-position: top left; background-attachment: scroll; }
@@ -78,7 +88,6 @@
                         </li>
                     </ul>
                     <!-- END MAIN NAVIGATION -->
-
                 </div>
             </div>
         </div>
@@ -94,7 +103,7 @@
                 <div id="logo" class="span6 group">
                     <div id="logo-container">
                         <a id="logo-img" href="index.php" title="NCIP">
-                            <img src="images/ncip-header-logo.png" title="NCIP" alt="NCIP Header Logo" />
+                            <img src="images/ncip-logo.png" title="NCIP" alt="NCIP Header Logo" />
                         </a>
                         <a id="second-logo-img" href="index.php" title="Bagong Pilipinas">
                             <img src="images/bagong-pilipinas-header-logo.png" title="Bagong Pilipinas" alt="Bagong Pilipinas Header Logo" />
@@ -167,341 +176,347 @@
         <h2>OUR ANNOUNCEMENT & NEWS</h2>
         <h3>are you curious, yeah?</h3>
     </div>
+    <!-- END SLOGAN  -->
+
     <!-- START PRIMARY -->
     <div id="primary" class="sidebar-right">
         <div class="container group">
             <div class="row">
-                <!-- START CONTENT -->
-                <div id="content-blog" class="span9 content group">
-                    <div class="post type-post status-publish format-standard hentry hentry-post group blog-libra-big row">
-                        <!-- post featured & title -->
+            <!-- START CONTENT -->
+            <div id="content-blog" class="span9 content group">
 
-                        <div class="date-comments span1">
-                            <p class="date"><span class="month">Nov</span><span class="day">20</span></p>
-
-                            <p class="comments">
-                                <i class="icon-comment"></i>
-                                <span>
-                                    <a href="blog-detail.php" title="Comment on Nice &amp; Clean. The best for your blog!">0</a>
-                                </span>
-                            </p>
-                        </div>
-
-                        <div class="thumbnail span8">
-                            <!-- post title -->
-
-                            <img width="760" height="290" src="images/blog/23-760x290.jpg" class="attachment-blog_libra_big wp-post-image" alt="23"/>
+                <div class="post type-post status-publish format-standard category-design category-themes tag-corporate tag-minimal group blog-elegant">
+                    <!-- post featured & title -->
+                    <div class="thumbnail">
+                        <div class="row">
                             <!-- post meta -->
-                            <h1 class="post-title">
-                                <a href="blog-detail.php">Nice
-                                    &amp; Clean. The best for your blog!</a>
-                            </h1>
-                        </div>
+                            <div class="meta group span3">
+                                <div>
+                                    <h2 class="post-title">
+                                        <a href="https://ncip.gov.ph/news/advisory/" target="_blank">
+                                            Advisory
+                                        </a>
+                                    </h2>
 
-                        <div class="clear"></div>
-                        <!-- post content -->
-                        <div class="the-content single span8 group">
-                            <p>
-                                Fusce nec accumsan eros. Aenean ac orci a
-                                magna vestibulum posuere quis nec nisi. Maecenas rutrum vehicula condimentum. Donec
-                                volutpat nisl ac mauris consectetur gravida.
-                            </p>
+                                    <p class="author">
+                                        <img src="images/icons/author.png" alt="icon-user"/><span>Author:</span>
+                                        <a href="https://ncip.gov.ph/news-category/ncip-news/" title="Posts by NCIP Central Office News" target="_blank" rel="author">
+                                            NCIP Central Office News
+                                        </a>
+                                    </p>
 
-                            <p>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vel vulputate nibh.
-                                Pellentesque habitant <strong>morbi tristique</strong> senectus et netus et
-                                malesuada fames ac turpis egestas.
-                            </p>
-
-                            <p>
-                                In facilisis ornare arcu, sodales facilisis neque blandit ac. Ut blandit ipsum quis
-                                arcu adipiscing <strong>sit amet semper</strong> sem feugiat. Nam sed dapibus arcu.
-                                Nullam eleifend molestie lectus. Nullam nec risus purus.
-                            </p>
-
-                            <p>
-                                Fusce rutrum lectus id nibh ullamcorper aliquet. Pellentesque pretium mauris et augue
-                                fringilla non bibendum turpis iaculis. Donec sit amet nunc lorem. Sed fringilla
-                                vehicula est at pellentesque. Aenean imperdiet elementum arcu id facilisis. Mauris
-                                sed leo eros.
-                            </p>
-
-                            <p>
-                                Duis nulla purus, malesuada in gravida sed, viverra at elit. Praesent nec purus sem,
-                                non imperdiet quam. Praesent tincidunt tortor eu libero scelerisque quis consequat
-                                justo elementum. Maecenas aliquet facilisis ipsum, commodo eleifend odio ultrices
-                                et. Maecenas arcu arcu, luctus a laoreet et, fermentum vel lectus. Cras consectetur
-                                ipsum venenatis ligula aliquam hendrerit. Suspendisse rhoncus hendrerit fermentum.
-                                Ut eget rhoncus purus.
-                            </p>
-
-                            <p>
-                                Cras a tellus eu justo lobortis tristique et nec mauris. Etiam tincidunt tellus ut
-                                odio elementum adipiscing. Maecenas cursus dolor sit amet leo elementum ut semper
-                                velit lobortis. Pellentesque posue
-                            </p>
-
-                            <p>
-                                <span class="author">Posted by <a href="#" title="Posts by Nicola Mustone" rel="author"> Nicola Mustone</a></span>
-                                <span class="categories"> in <a href="blog-detail.php" title="View all posts in Design" rel="category tag">Design</a>,
-                                    <a href="blog-detail.php" title="View all posts in Themes" rel="category tag">Themes</a>
-                            </p>
-
-                        </div>
-
-                        <div class="clear"></div>
-
-
-                    </div>
-                    <div class="row">
-                        <!-- START SECTION BLOG -->
-                        <div class="section blog span9">
-                            <h2 class="title">Related posts</h2>
-
-                            <div class="row">
-                                <div class="post type-post status-publish format-video hentry category-design hentry-post span3">
-                                    <div class="row">
-                                        <div class="date span1">
-                                            <p><span class="month">Oct</span><span class="day">17</span></p>
-                                        </div>
-
-                                        <div class="meta span2">
-                                            <h4>
-                                                <a href="#" title="Section shortcodes &amp; sticky posts!">
-                                                    Section shortcodes &amp; sticky posts!</a>
-                                            </h4>
-
-                                            <p class="author">by <strong>Nicola Mustone</strong></p>
-
-                                            <p class="comments">
-                                                <a href="blog-detail.php" title="Comment on Section shortcodes &amp; sticky posts!"><strong>Comments:</strong>5</a></p>
-                                        </div>
-                                    </div>
+                                    <p class="date">
+                                        <img src="images/icons/date.png" alt="icon-calendar"/>
+                                        <span>Date:</span>
+                                        April 15, 2025
+                                    </p>
                                 </div>
-
-                                <div class="post type-post status-publish format-gallery hentry tag-css tag-html tag-php hentry-post span3">
-                                    <div class="row">
-                                        <div class="date span1">
-                                            <p><span class="month">Apr</span><span class="day">09</span></p>
-                                        </div>
-
-                                        <div class="meta span2">
-                                            <h4>
-                                                <a href="blog-detail.php" title="This is the title of the first article. Enjoy it.">
-                                                    This is the title of the first article. Enjoy it.</a>
-                                            </h4>
-
-                                            <p class="author">by <strong>Nicola Mustone</strong></p>
-
-                                            <p class="comments">
-                                                <a href="#" title="Comment on This is the title of the first article. Enjoy it."><strong>Comments:</strong>1</a>
-                                            </p>
-                                        </div>
+                                
+                                <!-- Add comment section at the end of each post -->
+                                <div class="comments-section" id="announcement-1">
+                                    <h3>Comments</h3>
+                                    
+                                    <!-- Display comments for this specific announcement -->
+                                    <div id="comments-container-1" class="comments-container">
+                                        <?php echo renderComments(1); ?>
                                     </div>
+                                    
+                                    <!-- Add comment form for this specific announcement -->
+                                    <?php echo renderCommentForm(1); ?>
                                 </div>
+                                
+                                <div>
+                                    <div class="socials">
+                                        <h2>Share on</h2>
 
-                                <div class="post type-post status-publish format-audio hentry hentry-post span3">
-                                    <div class="row">
-                                        <div class="date span1">
-                                            <p><span class="month">Oct</span><span class="day">29</span></p>
+                                        <div class="socials-square-small facebook-small square">
+                                            <a href="https://www.facebook.com/CebuPO" class="socials-square-small facebook" original-title="Facebook" target="_blank">facebook</a>
                                         </div>
-
-                                        <div class="meta span2">
-                                            <h4>
-                                                <a href="blog-detail.php" title="Another theme by YIThemes!">
-                                                    Another theme by YIThemes!
-                                                </a>
-                                            </h4>
-
-                                            <p class="author">by <strong>Nicola Mustone</strong></p>
-
-                                            <p class="comments">
-                                                <a href="blog-detail.php" title="Comment on Another theme by YIThemes!">
-                                                    <strong>Comments:</strong>
-                                                0</a>
-                                            </p>
+                                        <div class="socials-square-small instagram-small square">
+                                            <a href="https://www.instagram.com/ncipcebupo/" class="socials-square-small instagram" original-title="Instagram" target="_blank">instagram</a>
+                                        </div>
+                                        <div class="socials-square-small google-small square">
+                                            <a href="https://ncip.gov.ph/" class="socials-square-small google" original-title="Google" target="_blank">google</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <!-- START COMMENTS -->
-                    <div id="comments">
-                        <div id="respond">
-                            <h3 id="reply-title">Leave a <span>Reply</span>
-                                <small>
-                                    <a rel="nofollow" id="cancel-comment-reply-link" href="/libra/2012/11/20/nice-clean-the-best-for-your-blog/#respond" style="display:none;">Cancel
-                                        reply</a></small>
-                            </h3>
-                            <form action="http://demo.yithemes.com/libra/wp-comments-post.php" method="post" id="commentform">
-                                <div class="row"><p class="comment-form-author span3">
-                                    <label class="hide-label" for="author">Name</label><i class="icon-user"></i><input id="author" name="author" type="text" value="" size="30" aria-required='true'/>
-                                </p>
 
-                                    <p class="comment-form-email  span3">
-                                        <label class="hide-label" for="email">Email</label><i class="icon-envelope"></i><input id="email" name="email" type="text" value="" size="30" aria-required='true'/>
-                                    </p>
+                            <!-- post title -->
+                            <div class="the-content span6">
+                                <div>
+                                    <img width="539" height="205" src="images/blog/advisory-539x205.jpg" class="thumbnail wp-post-image" alt="advisory"/>
+                                    <!-- post content -->
+                                    <div class="the-content">
+                                        <p>On April 16, 2025, the National Commission on Indigenous Peoples – Central Office and Regional Offices will implement a work-from-home...</p>
 
-                                    <p class="comment-form-url  span3">
-                                        <label class="hide-label" for="url">Website</label><i class="icon-globe"></i><input id="url" name="url" type="text" value="" size="30"/>
-                                    </p>
-
-                                    <p class="comment-form-comment span9"><label class="hide-label" for="comment">Your
-                                        comment</label><i class="icon-pencil"></i><textarea id="comment" name="comment" cols="45" rows="8"></textarea>
-                                    </p>
-
-                                    <div class="clear"></div>
-                                    <div class="span9">
-                                        <p class="form-submit">
-                                        <input name="submit" type="submit" id="commentsubmit" value="Post Comment"/>
-                                        <input type='hidden' name='comment_post_ID' value='147' id='comment_post_ID'/>
-                                        <input type='hidden' name='comment_parent' id='comment_parent' value='0'/>
+                                        <p>
+                                            <a href="https://ncip.gov.ph/news/advisory/" target="_blank" class="not-btn more-link">
+                                                Read more
+                                            </a>
                                         </p>
-
                                     </div>
                                 </div>
-                            </form>
+                            </div>
                         </div>
-                        <!-- #respond -->
                     </div>
-                    <!-- END COMMENTS -->
-
                 </div>
-                <!-- END CONTENT -->
+                
+                <div class="post type-post status-publish format-standard category-design category-themes tag-corporate tag-minimal group blog-elegant">
+                    <!-- post featured & title -->
+                    <div class="thumbnail">
+                        <div class="row">
+                            <!-- post meta -->
+                            <div class="meta group span3">
+                                <div>
+                                    <h2 class="post-title">
+                                        <a href="https://ncip.gov.ph/news/makasaysayang-araw-para-sa-mga-eskaya/" target="_blank">
+                                            Makasaysayang araw para sa mga Eskaya!
+                                        </a>
+                                    </h2>
 
-                <!-- START SIDEBAR -->
-                <div id="sidebar-blog-sidebar" class="span3 sidebar group">
-                    <div class="widget-first widget recent-posts">
-                        <h3>Popular <span class="title-highlight">readings</span></h3>
-                        <div class="recent-post group">
-                            <div class="hentry-post group">
-                                <div class="thumb-img">
-                                    <img width="75" height="75" src="images/23-75x75.jpg" class="attachment-blog_thumb wp-post-image" alt="23" />
+                                    <p class="author">
+                                        <img src="images/icons/author.png" alt="icon-user"/><span>Author:</span>
+                                        <a href="https://ncip.gov.ph/news-category/ncip-news/" title="Posts by NCIP Central Office News" target="_blank" rel="author">
+                                            NCIP Central Office News
+                                        </a>
+                                    </p>
+
+                                    <p class="date">
+                                        <img src="images/icons/date.png" alt="icon-calendar"/>
+                                        <span>Date:</span>
+                                        March 28, 2025
+                                    </p>
                                 </div>
-                                <div class="text">
-                                    <a href="blog-detail.php" title="Nice &amp; Clean. The best for your blog!" class="title">
-                                        Nice &amp; Clean. The best for your blog!
-                                    </a>
-                                    <p class="post-date">November 20, 2012</p>
+                                
+                                
+                                <!-- Add comment section at the end of each post -->
+                                <div class="comments-section" id="announcement-2">
+                                    <h3>Comments</h3>
+                                    
+                                    <!-- Display comments for this specific announcement -->
+                                    <div id="comments-container-2" class="comments-container">
+                                        <?php echo renderComments(2); ?>
+                                    </div>
+                                    
+                                    <!-- Add comment form for this specific announcement -->
+                                    <?php echo renderCommentForm(2); ?>
+                                </div>
+                                
+                                <div>
+                                    <div class="socials">
+                                        <h2>Share on</h2>
+
+                                        <div class="socials-square-small facebook-small square">
+                                            <a href="https://www.facebook.com/CebuPO" class="socials-square-small facebook" original-title="Facebook" target="_blank">facebook</a>
+                                        </div>
+                                        <div class="socials-square-small instagram-small square">
+                                            <a href="https://www.instagram.com/ncipcebupo/" class="socials-square-small instagram" original-title="Instagram" target="_blank">instagram</a>
+                                        </div>
+                                        <div class="socials-square-small google-small square">
+                                            <a href="https://ncip.gov.ph/" class="socials-square-small google" original-title="Google" target="_blank">google</a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="hentry-post group">
-                                <div class="thumb-img">
-                                    <img width="75" height="75" src="images/1-75x75.jpg" class="attachment-blog_thumb wp-post-image" alt="1" />
-                                </div>
-                                <div class="text">
-                                    <a href="blog-detail.php" title="Another theme by YIThemes!" class="title">
-                                        Another theme by YIThemes!
-                                    </a>
-                                    <p class="post-date">October 29, 2012</p>
+
+                            <!-- post title -->
+                            <div class="the-content span6">
+                                <div>
+                                    <img width="539" height="205" src="images/blog/Makasaysayang-509x205.jpg" class="thumbnail wp-post-image" alt="makasaysayang-araw-para-sa-mga-eskaya"/>
+                                    <!-- post content -->
+                                    <div class="the-content">
+                                        <p>Sinaksihan ni National Commission on Indigenous Peoples Chairperson Jennifer Pia Sibug-Las ang pormal na pagkakaloob ng Certificate of Recognition of...</p>
+
+                                        <p>
+                                            <a href="https://ncip.gov.ph/news/makasaysayang-araw-para-sa-mga-eskaya/" target="_blank" class="not-btn more-link">
+                                                Read more
+                                            </a>
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div id="last-tweets-3" class="widget-2 widget last-tweets">
-                        <h3></h3>
-                        <div class="list-tweets-3"></div>
-                        <p id="follow-twitter">
-                            <a href="https://twitter.com/intent/user?screen_name=YIW" target="_blank">
-                                Follow us on Twitter &rarr;
-                            </a>
+                <div class="post type-post status-publish format-standard category-design category-themes tag-corporate tag-minimal group blog-elegant">
+                    <!-- post featured & title -->
+                    <div class="thumbnail">
+                        <div class="row">
+                            <!-- post meta -->
+                            <div class="meta group span3">
+                                <div>
+                                    <h2 class="post-title">
+                                        <a href="https://ncip.gov.ph/news/ncip-nakiisa-sa-forum-para-sa-kababaihan-mula-sa-ibat-ibang-sektor/" target="_blank">
+                                            NCIP, nakiisa sa forum para sa kababaihan mula sa iba’t ibang sektor
+                                        </a>
+                                    </h2>
 
-                        <script type="text/javascript">
-                            jQuery(function($){
-                                $('#last-tweets-3 .list-tweets-3').tweetable({
-                                    listClass: 'tweets-widget-3',
-                                    username: 'YIW',
-                                    time: false,
-                                    limit: 1,
-                                    replies: true
-                                });
+                                    <p class="author">
+                                        <img src="images/icons/author.png" alt="icon-user"/><span>Author:</span>
+                                        <a href="https://ncip.gov.ph/news-category/ncip-news/" title="Posts by NCIP Central Office News" target="_blank" rel="author">
+                                            NCIP Central Office News
+                                        </a>
+                                    </p>
+
+                                    <p class="date">
+                                        <img src="images/icons/date.png" alt="icon-calendar"/>
+                                        <span>Date:</span>
+                                        March 27, 2025
+                                    </p>
+                                </div>
+                                
+                                <!-- Add comment section at the end of each post -->
+                                <div class="comments-section" id="announcement-3">
+                                    <h3>Comments</h3>
+                                    
+                                    <!-- Display comments for this specific announcement -->
+                                    <div id="comments-container-3" class="comments-container">
+                                        <?php echo renderComments(3); ?>
+                                    </div>
+                                    
+                                    <!-- Add comment form for this specific announcement -->
+                                    <?php echo renderCommentForm(3); ?>
+                                </div>
+                                
+                                <div>
+                                    <div class="socials">
+                                        <h2>Share on</h2>
+
+                                        <div class="socials-square-small facebook-small square">
+                                            <a href="https://www.facebook.com/CebuPO" class="socials-square-small facebook" original-title="Facebook" target="_blank">facebook</a>
+                                        </div>
+                                        <div class="socials-square-small instagram-small square">
+                                            <a href="https://www.instagram.com/ncipcebupo/" class="socials-square-small instagram" original-title="Instagram" target="_blank">instagram</a>
+                                        </div>
+                                        <div class="socials-square-small google-small square">
+                                            <a href="https://ncip.gov.ph/" class="socials-square-small google" original-title="Google" target="_blank">google</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- post title -->
+                            <div class="the-content span6">
+                                <div>
+                                    <img width="539" height="205" src="images/blog/kababaihan-509x205.jpg" class="thumbnail wp-post-image" alt="kababaihan-509x205"/>
+                                    <!-- post content -->
+                                    <div class="the-content">
+                                        <p>Nakiisa ang National Commission on Indigenous Peoples (NCIP) sa 2025 Philippine Open Government Partnership (PH-OGP) National Women’s Month Forum na...</p>
+
+                                        <p>
+                                            <a href="https://ncip.gov.ph/news/ncip-nakiisa-sa-forum-para-sa-kababaihan-mula-sa-ibat-ibang-sektor/" target="_blank" class="not-btn more-link">
+                                                Read more
+                                            </a>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='general-pagination group'>
+                    <a href='#' class='selected'>1</a>
+                    <a href='#'>2</a>
+                    <a href='#'>&rsaquo;</a>
+                </div>
+            </div>
+            <!-- END CONTENT -->
+
+
+            <!-- START SIDEBAR -->
+            <div id="sidebar-blog-sidebar" class="span3 sidebar group">
+                <div class="widget-first widget recent-posts">
+                    <h3>Popular <span class="title-highlight">readings</span></h3>
+                    <div class="recent-post group">
+                        <div class="hentry-post group">
+                            <div class="thumb-img">
+                                <img width="75" height="75" src="images/blog/advisory-75x75.jpg" class="attachment-blog_thumb wp-post-image" alt="23" />
+                            </div>
+                            <div class="text">
+                                <a href="https://ncip.gov.ph/news/advisory/" target="_blank" title="ADVISORY" class="title">
+                                    Advisory
+                                </a>
+                                <p class="post-date">November 15, 2025</p>
+                            </div>
+                        </div>
+                        <div class="hentry-post group">
+                            <div class="thumb-img">
+                                <img width="75" height="75" src="images/blog/Makasaysayang-75x75.jpg" class="attachment-blog_thumb wp-post-image" alt="makasaysayang-araw-para-sa-mga-eskaya" />
+                            </div>
+                            <div class="text">
+                                <a href="https://ncip.gov.ph/news/makasaysayang-araw-para-sa-mga-eskaya/" target="_blank" title="Makasaysayang araw para sa mga Eskaya!" class="title">
+                                    Makasaysayang araw para sa mga Eskaya!
+                                </a>
+                                <p class="post-date">March 28, 2025</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="last-tweets-3" class="widget-2 widget last-tweets">
+                    <h3></h3>
+                    <div class="list-tweets-3"></div>
+                    <p id="follow-twitter">
+                        <a href="https://twitter.com/intent/user?screen_name=YIW" target="_blank">
+                            Follow us on Twitter &rarr;
+                        </a>
+
+                    <script type="text/javascript">
+                        jQuery(function($){
+                            $('#last-tweets-3 .list-tweets-3').tweetable({
+                                listClass: 'tweets-widget-3',
+                                username: 'YIW',
+                                time: false,
+                                limit: 1,
+                                replies: true
                             });
-                        </script>
-                    </div>
+                        });
+                    </script>
+                </div>
 
-                    <div class="widget recent-comments">
-                        <h3>Recent <span class="title-highlight">comments</span></h3>
-                        <div class="recent-comments group">
-                            <div class="the-post group">
+                <div class="widget recent-comments">
+    <h3>Recent <span class="title-highlight">comments</span></h3>
+    
+    <!-- Comments List -->
+    <div id="recent-comments-container" class="recent-comments group">
+        <?php echo renderRecentComments(5); ?>
+    </div>
+    
+    <?php if (isUserLoggedIn()): ?>
+        <div class="login-info">
+            <img src="<?php echo htmlspecialchars($_SESSION['google_user']['picture'] ?? 'images/gavatar.png'); ?>" 
+            class="avatar photo" height="33" width="33" style="border-radius: 50%;">
+            <p>Signed in as <?php echo htmlspecialchars($_SESSION['google_user']['name']); ?></p>
+            <a href="?action=logout" class="logout-link">Logout</a>
+        </div>
+    <?php else: ?>
+        <div class="login-prompt">
+            <p>Sign in with Google to leave comments:</p>
+            <a href="<?php echo getGoogleLoginUrl(); ?>" class="google-signin-btn">
+                <img src="images/google-signin-button.svg" alt="Sign in with Google">
+            </a>
+        </div>
+    <?php endif; ?>
+</div>                  
 
-                                <p class="comment">
-                                    This is a nice theme!!!
-                                </p>
+                <div class="widget-last widget widget_nav_menu">
+                    <h3>Follow <span class="title-highlight">us</span></h3>
+                    <div class="menu-socialize-container">
+                        <ul class="menu">
 
-                                <div class="avatar">
-                                    <img alt='' src='images/gavatar.png' class='avatar photo' height='33' width='33'/>
-                                </div>
+                            <li class="menu-item menu-item-type-custom">
+                                <a href="https://www.facebook.com/CebuPO" target="_blank">Facebook</a>
+                            </li>
 
-                                <span class="author">
-                                    <strong>
-                                        <a href="#">
-                                        septBascara
-                                        </a>
-                                    </strong> in
-                                </span>
-                                <br />
-
-                                <a href="blog-detail.php" class="title">Nice &amp; Clean. The best for your blog!</a>
-                            </div>
-
-                            <div class="the-post group">
-
-                                <p class="comment">
-                                    I was looking fo a theme for a client and i found...
-                                </p>
-
-                                <div class="avatar">
-                                    <img alt='' src='images/gavatar.png' class='avatar photo' height='33' width='33'/>
-                                </div>
-
-
-                                <span class="author">
-                                    <strong>
-                                        <a href="#">
-                                            Web Tasarım
-                                        </a>
-                                    </strong> in
-                                </span>
-                                <br />
-
-                                <a href="blog-detail.php" class="title">Section shortcodes &amp; sticky posts!</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="widget-last widget widget_nav_menu">
-                        <h3>A menu widget</h3>
-                        <div class="menu-socialize-container">
-                            <ul class="menu">
-
-                                <li class="menu-item menu-item-type-custom">
-                                    <a href="#">Facebook</a>
-                                </li>
-
-                                <li class="menu-item menu-item-type-custom">
-                                    <a href="#">Twitter</a>
-                                </li>
-
-                                <li class="menu-item menu-item-type-custom">
-                                    <a href="#">LinkedIn</a>
-                                </li>
-
-                                <li class="menu-item menu-item-type-custom">
-                                    <a href="#">Google+</a>
-                                </li>
-
-                                <li class="menu-item menu-item-type-custom">
-                                    <a href="#">Pinterest</a>
-                                </li>
-
-                                <li class="menu-item menu-item-type-custom">
-                                    <a href="#">Flickr</a></li>
-                            </ul>
-                        </div>
+                            <li class="menu-item menu-item-type-custom">
+                                <a href="https://www.instagram.com/ncipcebupo/" target="_blank">Instragram</a>
+                        </ul>
                     </div>
                 </div>
+            </div>
                 <!-- END SIDEBAR -->
             </div>
         </div>
@@ -607,8 +622,233 @@
 
 </div>
 <!-- END BG SHADOW -->
+<script type="text/javascript">
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Document ready - initializing comment system');
+    
+    // Initial setup - hide extra comments
+    setupCommentVisibility();
 
-<script type='text/javascript' src='js/comment-reply.min.js'></script>
+// Handle comment submission
+document.querySelectorAll('.comment-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        console.log('Comment form submitted');
+        
+        const formData = new FormData(this);
+        const announcementId = this.dataset.announcementId;
+        const commentsContainer = document.querySelector(`#comments-container-${announcementId}`);
+        
+        fetch('comments.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(response => {
+            if (response.success) {
+                console.log('Comment posted successfully, updating comments...');
+                this.querySelector('textarea').value = '';
+                this.querySelector('.parent-id-input').value = '';
+                
+                // Reset form to comment mode if it was in reply mode
+                if (this.classList.contains('replying-mode')) {
+                    document.querySelectorAll('.comment-item').forEach(item => {
+                        item.classList.remove('being-replied-to');
+                    });
+                    this.querySelector('.reply-info').style.display = 'none';
+                    this.querySelector('textarea').placeholder = 'Write your comment here...';
+                    this.querySelector('button[type="submit"]').textContent = 'Post Comment';
+                    this.classList.remove('replying-mode');
+                }
+                
+                // Reload comments for this announcement
+                fetch(`get_comments.php?announcement_id=${announcementId}`)
+                    .then(res => res.text())
+                    .then(html => {
+                        commentsContainer.innerHTML = html;
+                        setupCommentVisibility();
+                    });
+                
+                // Also refresh the recent comments sidebar
+                autoRefreshRecentComments();
+                
+            } else {
+                alert(response.message || 'An error occurred while posting your comment.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+    });
+});
+    
+    // Handle reply link clicks
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('reply-link')) {
+            e.preventDefault();
+            const commentId = e.target.dataset.commentId;
+            const announcementId = e.target.dataset.announcementId;
+            const commentAuthor = e.target.closest('.comment-item').querySelector('.author strong').textContent;
+            
+            // Remove existing reply status
+            document.querySelectorAll('.comment-item').forEach(item => {
+                item.classList.remove('being-replied-to');
+            });
+            e.target.closest('.comment-item').classList.add('being-replied-to');
+
+            const form = document.querySelector(`.comment-form[data-announcement-id="${announcementId}"]`);
+            form.querySelector('.comment-mode-text').textContent = 'Replying';
+            form.querySelector('.parent-id-input').value = commentId;
+            form.querySelector('.reply-info span').textContent = `Replying to ${commentAuthor}`;
+            form.querySelector('.reply-info').style.display = 'block';
+            form.querySelector('textarea').placeholder = `Write your reply to ${commentAuthor} here...`;
+            form.querySelector('button[type="submit"]').textContent = 'Post Reply';
+            form.classList.add('replying-mode');
+
+            // Scroll to form
+            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            form.querySelector('textarea').focus();
+        }
+    });
+
+    // Handle cancel reply
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('cancel-reply')) {
+            e.preventDefault();
+            document.querySelectorAll('.comment-item').forEach(item => {
+                item.classList.remove('being-replied-to');
+            });
+            const form = e.target.closest('form');
+            form.querySelector('.comment-mode-text').textContent = 'Commenting';
+            form.querySelector('.parent-id-input').value = '';
+            form.querySelector('.reply-info').style.display = 'none';
+            form.querySelector('textarea').placeholder = 'Write your comment here...';
+            form.querySelector('button[type="submit"]').textContent = 'Post Comment';
+            form.classList.remove('replying-mode');
+        }
+    });
+    
+    // Add global click handler for show more/less buttons
+    document.addEventListener('click', function(e) {
+        // Handle "Show more" button clicks
+        if (e.target.classList.contains('show-more-comments')) {
+            console.log('Show more clicked');
+            const container = e.target.parentElement;
+            const isRecent = container.id === 'recent-comments-container';
+            const comments = container.querySelectorAll(isRecent ? '.recent-comment-item.hidden' : '.comment-item.hidden');
+            
+            // Show all hidden comments
+            comments.forEach(comment => {
+                comment.classList.remove('hidden');
+                comment.classList.add('visible');
+            });
+            
+            // Change button text and class
+            e.target.textContent = 'Show less';
+            e.target.classList.remove('show-more-comments');
+            e.target.classList.add('show-less-comments');
+        }
+        
+        // Handle "Show less" button clicks
+        else if (e.target.classList.contains('show-less-comments')) {
+            console.log('Show less clicked');
+            const container = e.target.parentElement;
+            const isRecent = container.id === 'recent-comments-container';
+            const comments = container.querySelectorAll(isRecent ? '.recent-comment-item' : '.comment-item');
+            const commentCount = comments.length;
+            
+            comments.forEach((comment, index) => {
+                if (index >= 2) {
+                    comment.classList.add('hidden');
+                    comment.classList.remove('visible');
+                }
+            });
+            
+            // Change button text and class
+            e.target.textContent = `Show more (${commentCount - 2} more)`;
+            e.target.classList.remove('show-less-comments');
+            e.target.classList.add('show-more-comments');
+        }
+    });
+});
+
+// Function to set up initial comment visibility
+function setupCommentVisibility(specificContainer = null) {
+    const containers = specificContainer ? 
+        [specificContainer] : 
+        document.querySelectorAll('.comments-container, #recent-comments-container');
+
+    containers.forEach(container => {
+        const isRecent = container.id === 'recent-comments-container';
+        const comments = container.querySelectorAll(isRecent ? '.recent-comment-item' : '.comment-item');
+        const commentCount = comments.length;
+
+        if (commentCount > 2) {
+            
+            comments.forEach((comment, index) => {
+                if (index >= 3) {
+                    comment.classList.add('hidden');
+                    comment.classList.remove('visible');
+                } else {
+                    comment.classList.remove('hidden');
+                    comment.classList.add('visible');
+                }
+            });
+
+            // Remove existing button if any
+            const existingButton = container.querySelector('.show-more-comments, .show-less-comments');
+            if (existingButton) {
+                existingButton.remove();
+            }
+            
+            // Add new "Show more" button
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'show-more-comments';
+            button.textContent = `Show more (${commentCount - 2} more)`;
+            container.appendChild(button);
+        } else {
+            // Remove any show more/less buttons if not needed
+            const buttons = container.querySelectorAll('.show-more-comments, .show-less-comments');
+            buttons.forEach(btn => btn.remove());
+        }
+    });
+}
+
+function autoRefreshRecentComments() {
+    console.log('Fetching recent comments...');
+    
+    fetch('get_recent_comments.php')
+        .then(response => response.text())
+        .then(html => {
+            const recentCommentsContainer = document.getElementById('recent-comments-container');
+            if (recentCommentsContainer) {
+                recentCommentsContainer.innerHTML = html;
+                setupCommentVisibility(recentCommentsContainer); 
+                console.log('Recent comments updated successfully');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching recent comments:', error);
+        });
+}
+
+// Initial load of recent comments
+document.addEventListener('DOMContentLoaded', function() {
+    // Set interval to refresh comments every 30 seconds
+    setInterval(autoRefreshRecentComments, 30000);
+    
+    // Also refresh when a new comment is posted
+    document.querySelectorAll('.comment-form').forEach(form => {
+        form.addEventListener('submit', function() {
+            // Wait a moment for the server to process the comment before refreshing
+            setTimeout(autoRefreshRecentComments, 1000);
+        });
+    });
+});
+</script>
+
 <script type='text/javascript' src='js/underscore.min.js'></script>
 <script type='text/javascript' src='js/jquery/jquery.masonry.min.js'></script>
 <script type='text/javascript' src='js/jquery.easing.js'></script>
@@ -620,12 +860,15 @@
 <script type='text/javascript' src='js/jquery.superfish.js'></script>
 <script type='text/javascript' src='js/jquery.colorbox-min.js'></script>
 <script type='text/javascript' src='js/jquery.placeholder.js'></script>
+<script type='text/javascript' src='js/jquery.tipsy.js'></script>
 <script type='text/javascript' src='js/contact.js'></script>
 <script type='text/javascript' src='js/jquery.tweetable.js'></script>
 <script type='text/javascript' src='js/jquery.tipsy.js'></script>
 <script type='text/javascript' src='js/jquery.cycle.min.js'></script>
 <script type='text/javascript' src='js/shortcodes.js'></script>
 <script type='text/javascript' src='js/jquery.custom.js'></script>
+<script src="https://accounts.google.com/gsi/client"></script>
+
 
 </body>
 <!-- END BODY -->

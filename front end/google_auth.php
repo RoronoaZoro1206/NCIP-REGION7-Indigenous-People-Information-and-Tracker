@@ -48,4 +48,3 @@ if (isset($_GET['action']) && $_GET['action'] === 'logout') {
     header('Location: ' . $_SERVER['HTTP_REFERER']);
     exit;
 }
-?>

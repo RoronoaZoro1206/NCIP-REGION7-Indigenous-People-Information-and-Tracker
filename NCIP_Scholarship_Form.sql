@@ -104,25 +104,26 @@ CREATE TABLE SCHOOL_PREFERENCE (
 );
 
 
-CREATE TABLE IF NOT EXISTS announcements (
-    announcement_id SERIAL PRIMARY KEY,
-    announcement_title VARCHAR(255) NOT NULL,
-    announcement_content TEXT,
-    announcement_date DATE
+CREATE TABLE ANNOUNCEMENTS (
+    ANNOUNCEMENT_ID SERIAL PRIMARY KEY,
+    ANNOUNCEMENT_TITLE VARCHAR(255) NOT NULL,
+    ANNOUNCEMENT_CONTENT TEXT,
+    ANNOUNCEMENT_DATE DATE
 );
 
-CREATE TABLE IF NOT EXISTS comments (
-    coms_id SERIAL PRIMARY KEY,
-    coms_announcement_id INTEGER NOT NULL,
-    coms_google_name VARCHAR(255) NOT NULL,
-    coms_google_email VARCHAR(255) NOT NULL,
-    coms_google_pic VARCHAR(255),
-    coms_content TEXT NOT NULL,
-    coms_parent_id INTEGER,
-    coms_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (coms_announcement_id) REFERENCES announcements(announcement_id),
-    FOREIGN KEY (coms_parent_id) REFERENCES comments(coms_id) ON DELETE CASCADE
+CREATE TABLE COMMENTS (
+    COMS_ID SERIAL PRIMARY KEY,
+    COMS_ANNOUNCEMENT_ID INTEGER NOT NULL,
+    COMS_GOOGLE_NAME VARCHAR(255) NOT NULL,
+    COMS_GOOGLE_EMAIL VARCHAR(255) NOT NULL,
+    COMS_GOOGLE_PIC VARCHAR(255),
+    COMS_CONTENT TEXT NOT NULL,
+    COMS_PARENT_ID INTEGER,
+    COMS_CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (COMS_ANNOUNCEMENT_ID) REFERENCES ANNOUNCEMENTS(ANNOUNCEMENT_ID),
+    FOREIGN KEY (COMS_PARENT_ID) REFERENCES COMMENTS(COMS_ID) ON DELETE CASCADE
 );
+
 
 INSERT INTO announcements (announcement_title, announcement_content, announcement_date) VALUES
 ('Advisory', 'On April 16, 2025, the National Commission on Indigenous Peoples – Central Office and Regional Offices will implement a work-from-home...', '2025-4-14'),
@@ -130,20 +131,45 @@ INSERT INTO announcements (announcement_title, announcement_content, announcemen
 ('NCIP, nakiisa sa forum para sa kababaihan mula sa ibat ibang sektor', 'Nakiisa ang National Commission on Indigenous Peoples (NCIP) sa 2025 Philippine Open Government Partnership (PH-OGP) National Women''s Month Forum na...', '2025-3-27');
 
 
-CREATE TABLE IF NOT EXISTS announcement_views (
-    view_id SERIAL PRIMARY KEY,
-    announcement_id INTEGER NOT NULL,
-    view_count INTEGER DEFAULT 1,
-    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (announcement_id) REFERENCES announcements(announcement_id)
+CREATE TABLE ANNOUNCEMENT_VIEWS (
+    VIEW_ID SERIAL PRIMARY KEY,
+    ANNOUNCEMENT_ID INTEGER NOT NULL,
+    VIEW_COUNT INTEGER DEFAULT 1,
+    LAST_UPDATED TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ANNOUNCEMENT_ID) REFERENCES ANNOUNCEMENTS(ANNOUNCEMENT_ID)
 );
 
-CREATE TABLE IF NOT EXISTS announcement_clicks (
-    id SERIAL PRIMARY KEY,
-    announcement_id INT NOT NULL,
-    click_count INT DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE ANNOUNCEMENT_CLICKS (
+    ID SERIAL PRIMARY KEY,
+    ANNOUNCEMENT_ID INT NOT NULL,
+    CLICK_COUNT INT DEFAULT 0,
+    CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UPDATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 CREATE INDEX idx_announcement_clicks_announcement_id ON announcement_clicks(announcement_id);
+
+CREATE TABLE CONTACT_MESSAGES (
+    CONTM_ID SERIAL PRIMARY KEY,
+    CONTM_NAME VARCHAR(100) NOT NULL,
+    CONTM_EMAIL VARCHAR(100) NOT NULL,
+    CONTM_PHONE VARCHAR(20),
+    CONTM_MESSAGE TEXT NOT NULL,
+    CONTM_SUBMISSION_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONTM_STATUS VARCHAR(20) DEFAULT 'UNREAD'
+);
+
+CREATE INDEX idx_contact_email ON contact_messages(email);
+CREATE INDEX idx_contact_status ON contact_messages(status);
+CREATE INDEX idx_contact_date ON contact_messages(submission_date);
+
+CREATE TABLE CONTACT_MESSAGES (
+    CONTM_ID SERIAL PRIMARY KEY,
+    CONTM_NAME VARCHAR(100) NOT NULL,
+    CONTM_EMAIL VARCHAR(100) NOT NULL,
+    CONTM_PHONE VARCHAR(20),
+    CONTM_MESSAGE TEXT NOT NULL,
+    CONTM_SUBMISSION_DATE TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONTM_STATUS VARCHAR(20) DEFAULT 'Unread',
+	CONTM_USER_ROLE VARCHAR(20) DEFAULT 'user'
+);

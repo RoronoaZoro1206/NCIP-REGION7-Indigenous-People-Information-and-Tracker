@@ -1,6 +1,7 @@
 <?php
-
+ob_start();
 require_once 'db.php';
+require_once 'google_auth.php';
 
 
 // Function to get comments for a specific announcement
@@ -55,6 +56,7 @@ function getRecentComments($limit = 5) {
     $query = "SELECT c.*, a.announcement_title 
               FROM comments c
               LEFT JOIN announcements a ON c.coms_announcement_id = a.announcement_id
+              WHERE c.coms_parent_id IS NULL  
               ORDER BY c.coms_created_at DESC
               LIMIT :limit";
     
@@ -69,32 +71,43 @@ function getRecentComments($limit = 5) {
 function renderComments($announcementId) {
     $comments = getComments($announcementId);
     $html = '';
+    $count = 0;
     
     foreach ($comments as $comment) {
-        $html .= renderSingleComment($comment, $announcementId);
+        // Add a class to track if it's one of the first 3 comments
+        $visibilityClass = $count < 2 ? '' : 'hidden';
+        $html .= renderSingleComment($comment, $announcementId, false, $visibilityClass);
         
         // Get and render replies if any exist
         if ($comment['reply_count'] > 0) {
             $replies = getComments($announcementId, $comment['coms_id']);
             $html .= '<div class="comment-replies">';
             foreach ($replies as $reply) {
-                $html .= renderSingleComment($reply, $announcementId, true);
+                // Replies inherit the visibility of their parent
+                $html .= renderSingleComment($reply, $announcementId, true, $visibilityClass);
             }
             $html .= '</div>';
         }
+        
+        $count++;
+    }
+    
+    // If there are more than 3 comments, add the show more button
+    if ($count > 2) {
+        $html .= '<button type="button" class="show-more-comments">Show more (' . ($count - 2) . ' more)</button>';
     }
     
     return $html;
 }
 
 // Function to render a single comment
-function renderSingleComment($comment, $announcementId, $isReply = false) {
+function renderSingleComment($comment, $announcementId, $isReply = false, $visibilityClass = '') {
     $profilePic = !empty($comment['coms_google_pic']) ? $comment['coms_google_pic'] : 'images/gavatar.png';
     $replyClass = $isReply ? 'comment-reply' : '';
     $dateFormatted = date('F j, Y \a\t g:i a', strtotime($comment['coms_created_at']));
     
     $html = '
-    <div class="the-post group comment-item ' . $replyClass . '" data-comment-id="' . $comment['coms_id'] . '">
+    <div class="the-post group comment-item ' . $replyClass . ' ' . $visibilityClass . '" data-comment-id="' . $comment['coms_id'] . '">
         <div class="avatar">
             <img alt="" src="' . $profilePic . '" class="avatar photo" height="33" width="33"/>
         </div>
@@ -126,14 +139,14 @@ function renderCommentForm($announcementId) {
                 <input type="hidden" name="announcement_id" value="' . $announcementId . '">
                 <input type="hidden" name="parent_id" class="parent-id-input" value="">
                 
-                <div class="user-info">
-                    <img src="' . htmlspecialchars($_SESSION['google_user']['picture'] ?? 'images/gavatar.png') . '" 
-                         class="avatar photo" height="33" width="33">
-                    <span>Commenting as <strong>' . htmlspecialchars($_SESSION['google_user']['name']) . '</strong></span>
-                    <a href="?action=logout" class="logout-link">(Logout)</a>
-                </div>
+            <div class="user-info">
+                <img src="' . htmlspecialchars($_SESSION['google_user']['picture'] ?? 'images/gavatar.png') . '" 
+                    class="avatar photo" height="33" width="33">
+                <span><span class="comment-mode-text">Commenting</span> as <strong>' . htmlspecialchars($_SESSION['google_user']['name']) . '</strong></span>
+                <a href="?action=logout" class="logout-link">(Logout)</a>
+            </div>
                 
-                <textarea name="comment_content" class="comment-content" rows="4" placeholder="Write your comment here..." required></textarea>
+                <textarea name="content" class="comment-content" rows="4" placeholder="Write your comment here..." required></textarea>
                 
                 <div class="reply-info" style="display: none;">
                     <span>Replying to comment</span>
@@ -157,9 +170,11 @@ function renderCommentForm($announcementId) {
 }
 
 // Function to render recent comments for the sidebar
+// Modified renderRecentComments function for sidebar
 function renderRecentComments($limit = 5) {
     $recentComments = getRecentComments($limit);
     $html = '';
+    $count = 0;
     
     foreach ($recentComments as $comment) {
         $profilePic = !empty($comment['coms_google_pic']) ? $comment['coms_google_pic'] : 'images/gavatar.png';
@@ -167,8 +182,11 @@ function renderRecentComments($limit = 5) {
         $dateFormatted = date('F j, Y \a\t g:i a', strtotime($comment['coms_created_at']));
         $shortContent = strlen($comment['coms_content']) > 50 ? substr($comment['coms_content'], 0, 50) . '...' : $comment['coms_content'];
         
+        // Add visibility class
+        $visibilityClass = $count < 2 ? '' : 'hidden';
+        
         $html .= '
-        <div class="recent-comment-item">
+        <div class="recent-comment-item ' . $visibilityClass . '">
             <div class="comment-avatar">
                 <img src="' . $profilePic . '" class="avatar photo" height="33" width="33"/>
             </div>
@@ -179,19 +197,39 @@ function renderRecentComments($limit = 5) {
                 <span class="comment-date">' . $dateFormatted . '</span>
             </div>
         </div>';
+        
+        $count++;
+    }
+    
+    // If there are more than 3 comments, add the show more button
+    if ($count > 2) {
+        $html .= '<button type="button" class="show-more-comments recent">Show more (' . ($count - 2) . ' more)</button>';
     }
     
     return $html;
 }
 
+
 // Handle comment submission via AJAX
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_comment') {
+
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
+    
+    // Set proper JSON header
     header('Content-Type: application/json');
     
-    // Validate user is logged in
-    if (!isset($_SESSION['google_user'])) {
-        echo json_encode(['success' => false, 'message' => 'You must be logged in to comment']);
-        exit;
+    // Start session if not already started
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    if ($_POST['action'] === 'add_comment') {
+        // Validate user is logged in
+        if (!isset($_SESSION['google_user'])) {
+            die(json_encode(['success' => false, 'message' => 'You must be logged in to comment']));
+        }
     }
 
     // Get user data from session
@@ -202,7 +240,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     
     // Get comment data
     $announcementId = isset($_POST['announcement_id']) ? (int)$_POST['announcement_id'] : null;
-    $content = $_POST['comment_content'] ?? '';
+    $content = $_POST['content'] ?? '';
     $parentId = !empty($_POST['parent_id']) ? (int)$_POST['parent_id'] : null;
     
     if (empty($content)) {
@@ -219,9 +257,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $result = addComment($announcementId, $googleName, $googleEmail, $googlePic, $content, $parentId);
     
     if ($result) {
-        header('Location: announcement.php?auth_success=1');
+        // Comment was added successfully
+        echo json_encode([
+            'success' => true,
+            'message' => 'Comment posted successfully'
+        ]);
     } else {
-        header('Location: announcement.php?auth_error=no_code');
+        echo json_encode(['success' => false, 'message' => 'Failed to post comment']);
     }
     exit;
 }

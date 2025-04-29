@@ -103,7 +103,7 @@ $authSuccess = isset($_GET['auth_success']);
                 <div id="logo" class="span6 group">
                     <div id="logo-container">
                         <a id="logo-img" href="index.php" title="NCIP">
-                            <img src="images/ncip-header-logo.png" title="NCIP" alt="NCIP Header Logo" />
+                            <img src="images/ncip-logo.png" title="NCIP" alt="NCIP Header Logo" />
                         </a>
                         <a id="second-logo-img" href="index.php" title="Bagong Pilipinas">
                             <img src="images/bagong-pilipinas-header-logo.png" title="Bagong Pilipinas" alt="Bagong Pilipinas Header Logo" />
@@ -218,11 +218,11 @@ $authSuccess = isset($_GET['auth_success']);
                                     
                                     <!-- Display comments for this specific announcement -->
                                     <div id="comments-container-1" class="comments-container">
-                                        <?php echo renderComments(1); // Pass the announcement ID ?>
+                                        <?php echo renderComments(1); ?>
                                     </div>
                                     
                                     <!-- Add comment form for this specific announcement -->
-                                    <?php echo renderCommentForm(1); // Pass the announcement ID ?>
+                                    <?php echo renderCommentForm(1); ?>
                                 </div>
                                 
                                 <div>
@@ -234,9 +234,6 @@ $authSuccess = isset($_GET['auth_success']);
                                         </div>
                                         <div class="socials-square-small instagram-small square">
                                             <a href="https://www.instagram.com/ncipcebupo/" class="socials-square-small instagram" original-title="Instagram" target="_blank">instagram</a>
-                                        </div>
-                                        <div class="socials-square-small google-small square">
-                                            <a href="https://ncip.gov.ph/" class="socials-square-small google" original-title="Google" target="_blank">google</a>
                                         </div>
                                     </div>
                                 </div>
@@ -295,7 +292,7 @@ $authSuccess = isset($_GET['auth_success']);
                                     <h3>Comments</h3>
                                     
                                     <!-- Display comments for this specific announcement -->
-                                    <div id="comments-container-1" class="comments-container">
+                                    <div id="comments-container-2" class="comments-container">
                                         <?php echo renderComments(2); ?>
                                     </div>
                                     
@@ -312,9 +309,6 @@ $authSuccess = isset($_GET['auth_success']);
                                         </div>
                                         <div class="socials-square-small instagram-small square">
                                             <a href="https://www.instagram.com/ncipcebupo/" class="socials-square-small instagram" original-title="Instagram" target="_blank">instagram</a>
-                                        </div>
-                                        <div class="socials-square-small google-small square">
-                                            <a href="https://ncip.gov.ph/" class="socials-square-small google" original-title="Google" target="_blank">google</a>
                                         </div>
                                     </div>
                                 </div>
@@ -372,12 +366,12 @@ $authSuccess = isset($_GET['auth_success']);
                                     <h3>Comments</h3>
                                     
                                     <!-- Display comments for this specific announcement -->
-                                    <div id="comments-container-1" class="comments-container">
-                                        <?php echo renderComments(3); // Pass the announcement ID ?>
+                                    <div id="comments-container-3" class="comments-container">
+                                        <?php echo renderComments(3); ?>
                                     </div>
                                     
                                     <!-- Add comment form for this specific announcement -->
-                                    <?php echo renderCommentForm(3); // Pass the announcement ID ?>
+                                    <?php echo renderCommentForm(3); ?>
                                 </div>
                                 
                                 <div>
@@ -389,9 +383,6 @@ $authSuccess = isset($_GET['auth_success']);
                                         </div>
                                         <div class="socials-square-small instagram-small square">
                                             <a href="https://www.instagram.com/ncipcebupo/" class="socials-square-small instagram" original-title="Instagram" target="_blank">instagram</a>
-                                        </div>
-                                        <div class="socials-square-small google-small square">
-                                            <a href="https://ncip.gov.ph/" class="socials-square-small google" original-title="Google" target="_blank">google</a>
                                         </div>
                                     </div>
                                 </div>
@@ -429,33 +420,14 @@ $authSuccess = isset($_GET['auth_success']);
             <!-- START SIDEBAR -->
             <div id="sidebar-blog-sidebar" class="span3 sidebar group">
                 <div class="widget-first widget recent-posts">
-                    <h3>Popular <span class="title-highlight">readings</span></h3>
-                    <div class="recent-post group">
-                        <div class="hentry-post group">
-                            <div class="thumb-img">
-                                <img width="75" height="75" src="images/blog/advisory-75x75.jpg" class="attachment-blog_thumb wp-post-image" alt="23" />
-                            </div>
-                            <div class="text">
-                                <a href="https://ncip.gov.ph/news/advisory/" target="_blank" title="ADVISORY" class="title">
-                                    Advisory
-                                </a>
-                                <p class="post-date">November 15, 2025</p>
-                            </div>
-                        </div>
-                        <div class="hentry-post group">
-                            <div class="thumb-img">
-                                <img width="75" height="75" src="images/blog/Makasaysayang-75x75.jpg" class="attachment-blog_thumb wp-post-image" alt="makasaysayang-araw-para-sa-mga-eskaya" />
-                            </div>
-                            <div class="text">
-                                <a href="https://ncip.gov.ph/news/makasaysayang-araw-para-sa-mga-eskaya/" target="_blank" title="Makasaysayang araw para sa mga Eskaya!" class="title">
-                                    Makasaysayang araw para sa mga Eskaya!
-                                </a>
-                                <p class="post-date">March 28, 2025</p>
-                            </div>
-                        </div>
-                    </div>
+                    <h3>Popular <span class="title-highlight">readings now</span></h3>
+                <div class="recent-post group">
+                    <?php 
+                        require_once 'popular_readings.php';
+                        echo renderPopularReadings(2); 
+                    ?>
                 </div>
-
+            </div>
                 <div id="last-tweets-3" class="widget-2 widget last-tweets">
                     <h3></h3>
                     <div class="list-tweets-3"></div>
@@ -486,17 +458,19 @@ $authSuccess = isset($_GET['auth_success']);
     </div>
     
     <?php if (isUserLoggedIn()): ?>
-    <div class="login-info">
-        <p>Signed in as <?php echo htmlspecialchars($_SESSION['google_user']['name']); ?></p>
-        <a href="?action=logout" class="logout-link">Logout</a>
-    </div>
+        <div class="login-info">
+            <img src="<?php echo htmlspecialchars($_SESSION['google_user']['picture'] ?? 'images/gavatar.png'); ?>" 
+            class="avatar photo" height="33" width="33" style="border-radius: 50%;">
+            <p>Signed in as <?php echo htmlspecialchars($_SESSION['google_user']['name']); ?></p>
+            <a href="?action=logout" class="logout-link">Logout</a>
+        </div>
     <?php else: ?>
-    <div class="login-prompt">
-        <p>Sign in with Google to leave comments:</p>
-        <a href="<?php echo getGoogleLoginUrl(); ?>" class="google-signin-btn">
-            <img src="images/google-signin-button.svg" alt="Sign in with Google">
-        </a>
-    </div>
+        <div class="login-prompt">
+            <p>Sign in with Google to leave comments:</p>
+            <a href="<?php echo getGoogleLoginUrl(); ?>" class="google-signin-btn">
+                <img src="images/google-signin-button.svg" alt="Sign in with Google">
+            </a>
+        </div>
     <?php endif; ?>
 </div>                  
 
@@ -621,121 +595,267 @@ $authSuccess = isset($_GET['auth_success']);
 </div>
 <!-- END BG SHADOW -->
 <script type="text/javascript">
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function() {
     console.log('Document ready - initializing comment system');
     
-    // Handle comment submission
-    $('.comment-form').on('submit', function(e) {
+    // Initial setup - hide extra comments
+    setupCommentVisibility();
+
+// Handle comment submission
+document.querySelectorAll('.comment-form').forEach(form => {
+    form.addEventListener('submit', function(e) {
         e.preventDefault();
         console.log('Comment form submitted');
         
-        const form = $(this);
-        const formData = form.serialize();
-        const announcementId = form.data('announcement-id');
-        const commentsContainer = $(`#comments-container-${announcementId}`);
+        const formData = new FormData(this);
+        const announcementId = this.dataset.announcementId;
+        const commentsContainer = document.querySelector(`#comments-container-${announcementId}`);
         
-        console.log('Form data:', formData);
-        console.log('Announcement ID:', announcementId);
-        
-        $.ajax({
-            type: 'POST',
-            url: 'comments.php',
-            data: formData,
-            dataType: 'json',
-            success: function(response) {
-                console.log('Comment submission response:', response);
+        fetch('comments.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(response => {
+            if (response.success) {
+                console.log('Comment posted successfully, updating comments...');
+                this.querySelector('textarea').value = '';
+                this.querySelector('.parent-id-input').value = '';
                 
-                if (response.success) {
-                    // Clear the form
-                    form.find('textarea').val('');
-                    form.find('.parent-id-input').val('');
-                    form.find('.reply-info').hide();
-                    
-                    // Reload the comments for this announcement
-                    $.ajax({
-                        type: 'GET',
-                        url: `get_comments.php?announcement_id=${announcementId}`,
-                        success: function(html) {
-                            commentsContainer.html(html);
-                            console.log('Comments reloaded');
-                            
-                            // Also reload recent comments in the sidebar
-                            $.ajax({
-                                type: 'GET',
-                                url: 'get_recent_comments.php',
-                                success: function(html) {
-                                    $('#recent-comments-container').html(html);
-                                    console.log('Recent comments reloaded');
-                                },
-                                error: function(xhr, status, error) {
-                                    console.error('Error reloading recent comments:', error);
-                                }
-                            });
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Error reloading comments:', error);
-                        }
+                // Reset form to comment mode if it was in reply mode
+                if (this.classList.contains('replying-mode')) {
+                    document.querySelectorAll('.comment-item').forEach(item => {
+                        item.classList.remove('being-replied-to');
                     });
-                } else {
-                    alert(response.message || 'An error occurred while posting your comment.');
+                    this.querySelector('.reply-info').style.display = 'none';
+                    this.querySelector('textarea').placeholder = 'Write your comment here...';
+                    this.querySelector('button[type="submit"]').textContent = 'Post Comment';
+                    this.classList.remove('replying-mode');
                 }
-            },
-            error: function(xhr, status, error) {
-                console.error('Error submitting comment:', error);
-                alert('An error occurred while posting your comment. Please try again.');
+                
+                // Reload comments for this announcement
+                fetch(`get_comments.php?announcement_id=${announcementId}`)
+                    .then(res => res.text())
+                    .then(html => {
+                        commentsContainer.innerHTML = html;
+                        setupCommentVisibility();
+                    });
+                
+                // Also refresh the recent comments sidebar
+                autoRefreshRecentComments();
+                
+            } else {
+                alert(response.message || 'An error occurred while posting your comment.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+    });
+});
+    
+    // Handle reply link clicks
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('reply-link')) {
+            e.preventDefault();
+            const commentId = e.target.dataset.commentId;
+            const announcementId = e.target.dataset.announcementId;
+            const commentAuthor = e.target.closest('.comment-item').querySelector('.author strong').textContent;
+            
+            // Remove existing reply status
+            document.querySelectorAll('.comment-item').forEach(item => {
+                item.classList.remove('being-replied-to');
+            });
+            e.target.closest('.comment-item').classList.add('being-replied-to');
+
+            const form = document.querySelector(`.comment-form[data-announcement-id="${announcementId}"]`);
+            form.querySelector('.comment-mode-text').textContent = 'Replying';
+            form.querySelector('.parent-id-input').value = commentId;
+            form.querySelector('.reply-info span').textContent = `Replying to ${commentAuthor}`;
+            form.querySelector('.reply-info').style.display = 'block';
+            form.querySelector('textarea').placeholder = `Write your reply to ${commentAuthor} here...`;
+            form.querySelector('button[type="submit"]').textContent = 'Post Reply';
+            form.classList.add('replying-mode');
+
+            // Scroll to form
+            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            form.querySelector('textarea').focus();
+        }
+    });
+
+    // Handle cancel reply
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('cancel-reply')) {
+            e.preventDefault();
+            document.querySelectorAll('.comment-item').forEach(item => {
+                item.classList.remove('being-replied-to');
+            });
+            const form = e.target.closest('form');
+            form.querySelector('.comment-mode-text').textContent = 'Commenting';
+            form.querySelector('.parent-id-input').value = '';
+            form.querySelector('.reply-info').style.display = 'none';
+            form.querySelector('textarea').placeholder = 'Write your comment here...';
+            form.querySelector('button[type="submit"]').textContent = 'Post Comment';
+            form.classList.remove('replying-mode');
+        }
+    });
+    
+    // Add global click handler for show more/less buttons
+    document.addEventListener('click', function(e) {
+        // Handle "Show more" button clicks
+        if (e.target.classList.contains('show-more-comments')) {
+            console.log('Show more clicked');
+            const container = e.target.parentElement;
+            const isRecent = container.id === 'recent-comments-container';
+            const comments = container.querySelectorAll(isRecent ? '.recent-comment-item.hidden' : '.comment-item.hidden');
+            
+            // Show all hidden comments
+            comments.forEach(comment => {
+                comment.classList.remove('hidden');
+                comment.classList.add('visible');
+            });
+            
+            // Change button text and class
+            e.target.textContent = 'Show less';
+            e.target.classList.remove('show-more-comments');
+            e.target.classList.add('show-less-comments');
+        }
+        
+        // Handle "Show less" button clicks
+        else if (e.target.classList.contains('show-less-comments')) {
+            console.log('Show less clicked');
+            const container = e.target.parentElement;
+            const isRecent = container.id === 'recent-comments-container';
+            const comments = container.querySelectorAll(isRecent ? '.recent-comment-item' : '.comment-item');
+            const commentCount = comments.length;
+            
+            comments.forEach((comment, index) => {
+                if (index >= 2) {
+                    comment.classList.add('hidden');
+                    comment.classList.remove('visible');
+                }
+            });
+            
+            // Change button text and class
+            e.target.textContent = `Show more (${commentCount - 2} more)`;
+            e.target.classList.remove('show-less-comments');
+            e.target.classList.add('show-more-comments');
+        }
+    });
+});
+
+// Function to set up initial comment visibility
+function setupCommentVisibility(specificContainer = null) {
+    const containers = specificContainer ? 
+        [specificContainer] : 
+        document.querySelectorAll('.comments-container, #recent-comments-container');
+
+    containers.forEach(container => {
+        const isRecent = container.id === 'recent-comments-container';
+        const comments = container.querySelectorAll(isRecent ? '.recent-comment-item' : '.comment-item');
+        const commentCount = comments.length;
+
+        if (commentCount > 2) {
+            
+            comments.forEach((comment, index) => {
+                if (index >= 2) {
+                    comment.classList.add('hidden');
+                    comment.classList.remove('visible');
+                } else {
+                    comment.classList.remove('hidden');
+                    comment.classList.add('visible');
+                }
+            });
+
+            // Remove existing button if any
+            const existingButton = container.querySelector('.show-more-comments, .show-less-comments');
+            if (existingButton) {
+                existingButton.remove();
+            }
+            
+            // Add new "Show more" button
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'show-more-comments';
+            button.textContent = `Show more (${commentCount - 2} more)`;
+            container.appendChild(button);
+        } else {
+            // Remove any show more/less buttons if not needed
+            const buttons = container.querySelectorAll('.show-more-comments, .show-less-comments');
+            buttons.forEach(btn => btn.remove());
+        }
+    });
+}
+
+function autoRefreshRecentComments() {
+    console.log('Fetching recent comments...');
+    
+    fetch('get_recent_comments.php')
+        .then(response => response.text())
+        .then(html => {
+            const recentCommentsContainer = document.getElementById('recent-comments-container');
+            if (recentCommentsContainer) {
+                recentCommentsContainer.innerHTML = html;
+                setupCommentVisibility(recentCommentsContainer); 
+                console.log('Recent comments updated successfully');
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching recent comments:', error);
+        });
+}
+
+// Initial load of recent comments
+document.addEventListener('DOMContentLoaded', function() {
+    // Set interval to refresh comments every 30 seconds
+    setInterval(autoRefreshRecentComments, 30000);
+    
+    // Also refresh when a new comment is posted
+    document.querySelectorAll('.comment-form').forEach(form => {
+        form.addEventListener('submit', function() {
+            // Wait a moment for the server to process the comment before refreshing
+            setTimeout(autoRefreshRecentComments, 1000);
+        });
+    });
+
+    document.querySelectorAll('.not-btn.more-link').forEach(link => {
+        link.addEventListener('click', function(e) {
+            // Get announcement ID from the URL path
+            let url = this.getAttribute('href');
+            let announcementId = 0;
+            
+            // Determine announcement ID based on URL
+            if (url.includes('advisory')) {
+                announcementId = 1;
+            } else if (url.includes('makasaysayang-araw-para-sa-mga-eskaya')) {
+                announcementId = 2;
+            } else if (url.includes('ncip-nakiisa-sa-forum-para-sa-kababaihan-mula-sa-ibat-ibang-sektor')) {
+                announcementId = 3;
+            }
+            
+            if (announcementId > 0) {
+                // Send tracking data
+                fetch('track_clicks.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'announcement_id=' + announcementId
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Click tracked:', data);
+                })
+                .catch(error => {
+                    console.error('Error tracking click:', error);
+                });
             }
         });
     });
-    
-    // Handle reply links with delegated events (for dynamically added content)
-    $(document).on('click', '.reply-link', function(e) {
-        e.preventDefault();
-        console.log('Reply link clicked');
-        
-        const commentId = $(this).data('comment-id');
-        const announcementId = $(this).data('announcement-id');
-        console.log('Comment ID:', commentId, 'Announcement ID:', announcementId);
-        
-        const form = $(`.comment-form[data-announcement-id="${announcementId}"]`);
-        
-        // Set the parent comment ID
-        form.find('.parent-id-input').val(commentId);
-        form.find('.reply-info').show();
-        
-        // Scroll to the comment form
-        $('html, body').animate({
-            scrollTop: form.offset().top - 100
-        }, 500);
-        
-        form.find('textarea').focus();
-    });
-    
-    // Cancel reply
-    $(document).on('click', '.cancel-reply', function(e) {
-        e.preventDefault();
-        console.log('Cancel reply clicked');
-        
-        const form = $(this).closest('form');
-        form.find('.parent-id-input').val('');
-        form.find('.reply-info').hide();
-    });
-    
-    // Add an error handler for images
-    $('img.avatar').on('error', function() {
-        $(this).attr('src', 'images/gavatar.png');
-    });
-    
-    <?php if ($authError): ?>
-    alert('Authentication error: <?php echo htmlspecialchars($authError); ?>');
-    <?php endif; ?>
-    
-    <?php if ($authSuccess): ?>
-    alert('Successfully signed in!');
-    <?php endif; ?>
 });
 </script>
 
-<script type='text/javascript' src='js/comment-reply.min.js'></script>
 <script type='text/javascript' src='js/underscore.min.js'></script>
 <script type='text/javascript' src='js/jquery/jquery.masonry.min.js'></script>
 <script type='text/javascript' src='js/jquery.easing.js'></script>

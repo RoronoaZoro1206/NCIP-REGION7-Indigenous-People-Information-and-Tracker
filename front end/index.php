@@ -454,79 +454,79 @@
                                     <ul class="logos-slides">
 
                                         <li style="height: 70px ;">
-                                            <a href="#" class="bwWrapper" >
+                                            <a href="https://www.dilg.gov.ph/" target="_blank" class="bwWrapper" >
                                                 <img src="images/slider/dilg.png" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
 
                                         <li style="height: 70px;">
-                                            <a href="#" class="bwWrapper" >
+                                            <a href="https://beta.tourism.gov.ph/" target="_blank" class="bwWrapper" >
                                                 <img src="images/slider/dot.png" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
 
                                         <li style="height: 70px;">
-                                            <a href="#" class="bwWrapper" >
+                                            <a href="https://chr.gov.ph/" target="_blank" class="bwWrapper" >
                                                 <img src="images/slider/chr.png" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
 
                                         <li style="height: 70px;">
-                                            <a href="#" class="bwWrapper" >
+                                            <a href="https://www.osg.gov.ph/" target="_blank" class="bwWrapper" >
                                                 <img src="images/slider/osg.png" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
 
                                         <li style="height: 70px;">
-                                            <a href="#" class="bwWrapper" >
+                                            <a href="http://unifil.unmissions.org/" target="_blank" class="bwWrapper" >
                                                 <img src="images/slider/uniphil.png" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
 
                                         <li style="height: 70px;">
-                                            <a href="#" class="bwWrapper" >
+                                            <a href="https://ibp.ph/" target="_blank" class="bwWrapper" >
                                                 <img src="images/slider/ibp.png" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
 
                                         <li style="height: 70px;">
-                                            <a href="#" class="bwWrapper" >
+                                            <a href="https://nda.da.gov.ph/da-nda-celebrates-28-years-of-significant-strides-in-ph-dairy-industry/" target="_blank" class="bwWrapper" >
                                                 <img src="images/slider/nda.png" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
 
                                         <li style="height: 70px;">
-                                            <a href="#" class="bwWrapper" >
+                                            <a href="https://www.undp.org/philippines" target="_blank" class="bwWrapper" >
                                                 <img src="images/slider/undp.png" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
 
                                         <li style="height: 70px;">
-                                            <a href="#" class="bwWrapper" >
+                                            <a href="https://www.peaceinsight.org/en/organisations/tuklas-katutubo-national-organisation-of-indigenous-peoples-in-the-philippines/" target="_blank" class="bwWrapper" >
                                                 <img src="images/slider/tuklas-katutubo.png" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
 
                                         <li style="height: 70px;">
-                                            <a href="#" class="bwWrapper" >
+                                            <a href="https://www.dswd.gov.ph/" target="_blank" class="bwWrapper" >
                                                <img src="images/slider/dswd.png" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
 
                                         <li style="height: 70px;">
-                                            <a href="#" class="bwWrapper" >
+                                            <a href="https://www.familysearch.org/en/philippines/" target="_blank" class="bwWrapper" >
                                                 <img src="images/slider/familysearch.png" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
 
                                         <li style="height: 70px;">
-                                            <a href="#" class="bwWrapper" >
+                                            <a href="https://www.pids.gov.ph/" target="_blank" class="bwWrapper" >
                                                 <img src="images/slider/pids.png" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
 
                                         <li style="height: 70px;">
-                                            <a href="#" class="bwWrapper" >
+                                            <a href="https://www.ayalamuseum.org/" target="_blank" class="bwWrapper" >
                                                 <img src="images/slider/ayala-museum.png" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
@@ -557,27 +557,28 @@
                                         },
                                         scroll : {
                                             items     : 1,
-                                            duration  :	500				}
+                                            duration  : 500
+                                        }
                                     });
                                 });
 
                                 $('.bwWrapper').BlackAndWhite({
-                                    hoverEffect : true, // default true
-                                    // set the path to BnWWorker.js for a superfast implementation
+                                    hoverEffect : true,
                                     webworkerPath : false,
-                                    // for the images with a fluid width and height
-                                    responsive:true,
-                                    speed: { //this property could also be just speed: value for both fadeIn and fadeOut
-                                        fadeIn: 200, // 200ms for fadeIn animations
-                                        fadeOut: 300 // 800ms for fadeOut animations
+                                    responsive: true,
+                                    speed: {
+                                        fadeIn: 200,
+                                        fadeOut: 300
                                     }
                                 });
 
-                                $("a.bwWrapper[href='#']").click(function(){ return false })
+                                // Prevent default click on placeholder links
+                                $("a.bwWrapper[href='#']").click(function(){ return false });
 
+                                // Add cursor pointer on hover
+                                $('.bwWrapper').css('cursor', 'pointer');
                             });
                         </script>
-
 
                     </div>
                     <!-- START COMMENTS -->

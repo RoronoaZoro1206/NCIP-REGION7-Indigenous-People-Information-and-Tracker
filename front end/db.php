@@ -7,7 +7,7 @@ if (session_status() === PHP_SESSION_NONE) {
 $host = "localhost";     
 $dbname = "Ncip_Project"; 
 $dbusername = "postgres"; 
-$dbpassword = "!*Lawrence1206"; 
+$dbpassword = "RaffyD964"; 
 
 try {
     $pdo = new PDO ("pgsql:host=$host;dbname=$dbname", $dbusername, $dbpassword );

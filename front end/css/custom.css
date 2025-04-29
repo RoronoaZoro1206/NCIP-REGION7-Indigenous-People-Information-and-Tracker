@@ -60,7 +60,7 @@ ul.short li { font-size: 12px; font-family: 'Open Sans', sans-serif; color: #676
 .call-to-action .incipit p { font-size: 14px; font-family: 'Open Sans', sans-serif; color: #464444; font-style: normal; font-weight: 400; }
 .call-to-action .number-phone, .call-to-action .number-phone a { font-size: 42px; font-family: 'Droid Sans', sans-serif; color: #838383; font-style: normal; font-weight: 700; }
 .call-to-action-two .incipit { font-size: 14px; font-family: 'Open Sans', sans-serif; color: #666767; font-style: normal; font-weight: 400; }
-.toggle h4.tab-index a, .toggle h4.tab-index a:hover { font-size: 16px; font-family: 'Open Sans', sans-serif; color: #3E3E3E; font-style: normal; font-weight: 400; }
+.toggle h4.tab-index a, .toggle h4.tab-index a:hover { font-size:12px; font-family: 'Open Sans', sans-serif; color: #3E3E3E; font-style: normal; font-weight: 400; }
 .toggle .content-tab, .toggle .content-tab p { font-size: 12px; font-family: 'Open Sans', sans-serif; color: #676768; font-style: normal; font-weight: 400; }
 .tabs-container ul.tabs li h4 a { font-size: 16px; font-family: 'Open Sans', sans-serif; color: #0C243D; font-style: normal; font-weight: 400; }
 .tabs-container ul.tabs li h4 a:hover { color: #000000; }

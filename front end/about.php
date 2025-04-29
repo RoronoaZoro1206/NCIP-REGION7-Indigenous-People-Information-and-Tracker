@@ -306,26 +306,23 @@
                                             </p>
                                         </div>
                                         <div class="features-tab-content features-tab-5 ">
-                                            <p>
-                                                <img src="images/NCIP-Org-Structure.png" alt="NCIP-Org-Structure" width="568" height="385" style="display:block;margin:auto;cursor:pointer;" onclick="document.getElementById('imgOrgModal').style.display='flex';" />
-
-                                                <div id="imgOrgModal" style="display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.8);justify-content:center;align-items:center;flex-direction:column;">
-                                                    <span onclick="document.getElementById('imgOrgModal').style.display='none';" style="position:absolute;top:20px;right:30px;font-size:40px;font-weight:bold;color:white;cursor:pointer;">&times;</span>
-                                                    <img src="images/NCIP-Org-Structure.png" alt="NCIP-Org-Structure" style="max-width:90%;max-height:80%;" />
-                                                </div>
-
-                                                <p style="text-align: justify; text-indent: 1rem;">
-                                                    The organizational structure of the National Commission on Indigenous Peoples (NCIP) is designed to effectively uphold and protect the rights of Indigenous Cultural Communities/Indigenous Peoples (ICCs/IPs) in the Philippines. It follows a centralized yet regionally represented system, headed by a Chairperson and supported by six Commissioners representing different ethnolinguistic regions. The NCIP operates through its central office, regional offices, provincial offices, and service centers, ensuring grassroots-level accessibility and implementation of programs. This structure enables the agency to efficiently carry out its mandate under the Indigenous Peoples' Rights Act (IPRA), focusing on ancestral domain recognition, cultural preservation, and the promotion of IP welfare.
-                                                </p>
-                                            </p>
+                                            <h4>Full Customizable Theme</h4>
+                                            <p><strong>Unlimited colors options</strong></p>
+                                            <p><strong></strong>In the theme panel you can set a custom color for each element of the site: text, slogans, titles, links, header background, footer background and so on.</p>
+                                            <p><strong></strong> <strong>Background uploader</strong></p>
+                                            <p><strong></strong>You can upload a different background image for each page and post of your site. Chose from 50+ backgrounds and patterns to customize the theme or upload your custom background.</p>
+                                            <p><strong>Header and Footer background</strong></p>
+                                            <p><strong></strong>Upload a background image or set a different background color for your header and footer.</p>
+                                            <p><strong>Typography</strong></p>
+                                            <p><strong></strong>Chose from 300+ google fonts to customize the typography of each area of the site like navigation menu, paragraphs, titles, slogan and so on. You can also use the web-safe fonts, like Georgia, Times new roman and so on if you don't like to use the Google fonts.</p>
                                         </div>
                                         <div class="features-tab-content features-tab-6 ">
-                                            <!-- <h4>ON NCIP YOU CAN ALSO FIND:</h4>
+                                            <h4>ON NCIP YOU CAN ALSO FIND:</h4>
                                             <p><strong>Animated Banners:</strong> Create unlimited animated banners and customize each banner with different colors, text, icons and so on.</p>
                                             <p><strong>Unlimited features tab:</strong> This is a features tab. And you can create unlimited tabs with custom icons and content. You can also put shortcodes inside this tab!</p>
                                             <p><strong>Popup window:</strong> To show your offers or your news, to show a newsletter form and so on. You can turn on/off the lightbox and customize the popup content.</p>
                                             <p><strong>Filterable FAQS </strong> <strong></strong> Create a nice FAQ page with unlimited FAQ categories and chose if display different categories in different pages or if use the javascript filters.</p>
-                                            <p><strong></strong> <strong>Customizable 404 error page </strong> Customize your 404 error page uploading a nice error image, editing the text and so on. You can also set a sidebar for this page or turn on/off the search form. <a href="images/discovery.png"><img class="aligncenter size-full wp-image-1023" title="discovery" src="images/discovery.png" alt="" width="291" height="90" /></a></p> -->
+                                            <p><strong></strong> <strong>Customizable 404 error page </strong> Customize your 404 error page uploading a nice error image, editing the text and so on. You can also set a sidebar for this page or turn on/off the search form. <a href="images/discovery.png"><img class="aligncenter size-full wp-image-1023" title="discovery" src="images/discovery.png" alt="" width="291" height="90" /></a></p>
                                         </div>
                                         <div class="features-tab-content features-tab-7 ">
                                             <!-- <h4>MAKE YOUR SITE LIKE THE LIVE PREVIEW IN JUST 5 MINUTES.</h4>

@@ -741,6 +741,7 @@
 </div>
 <!-- END BG SHADOW -->
 
+
 <script type='text/javascript' src='js/comment-reply.min.js'></script>
 <script type='text/javascript' src='js/underscore.min.js'></script>
 <script type='text/javascript' src='js/jquery/jquery.masonry.min.js'></script>

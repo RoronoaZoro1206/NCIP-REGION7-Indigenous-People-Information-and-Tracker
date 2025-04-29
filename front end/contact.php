@@ -45,6 +45,10 @@
 <!-- START WRAPPER -->
     <div id="wrapper" class="container group">
 
+    <!-- START SCROLL TO TOP BUTTON -->
+    <?php include 'components/scroll-to-top.php'; ?>
+    <!-- END SCROLL TO TOP BUTTON -->
+
     <!-- START TOP BAR -->
     <div id="topbar">
         <div class="container">
@@ -92,7 +96,7 @@
                 <div id="logo" class="span6 group">
                     <div id="logo-container">
                         <a id="logo-img" href="index.php" title="NCIP">
-                            <img src="images/ncip-logo.png" title="NCIP" alt="NCIP Header Logo" />
+                            <img src="images/ncip-header-logo.png" title="NCIP" alt="NCIP Header Logo" />
                         </a>
                         <a id="second-logo-img" href="index.php" title="Bagong Pilipinas">
                             <img src="images/bagong-pilipinas-header-logo.png" title="Bagong Pilipinas" alt="Bagong Pilipinas Header Logo" />

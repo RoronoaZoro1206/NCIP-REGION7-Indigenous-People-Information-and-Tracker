@@ -50,6 +50,10 @@
 <!-- START WRAPPER -->
     <div id="wrapper" class="container group">
 
+    <!-- START SCROLL TO TOP BUTTON -->
+    <?php include 'components/scroll-to-top.php'; ?>
+    <!-- END SCROLL TO TOP BUTTON -->
+
     <!-- START TOP BAR -->
     <div id="topbar">
         <div class="container">

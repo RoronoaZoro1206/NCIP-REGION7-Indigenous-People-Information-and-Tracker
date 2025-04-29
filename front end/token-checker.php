@@ -8,7 +8,7 @@ try {
 
     if ($stmt->fetch()) {
         
-        shell_exec('php "C:\xampp\htdocs\Php-Project\cleanup-expired-tokens.php"');
+        shell_exec('php "C:\xampp\htdocs\Information Management\IM---Copy\front end\cleanup-expired-tokens.php"');
     }
 } catch (PDOException $e) {
     error_log("Error in token-checker: " . $e->getMessage());

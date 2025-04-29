@@ -319,13 +319,49 @@
                                                 </p>
                                             </p>
                                         </div>
-                                        <div class="features-tab-content features-tab-6 ">
-                                            <!-- <h4>ON NCIP YOU CAN ALSO FIND:</h4>
-                                            <p><strong>Animated Banners:</strong> Create unlimited animated banners and customize each banner with different colors, text, icons and so on.</p>
-                                            <p><strong>Unlimited features tab:</strong> This is a features tab. And you can create unlimited tabs with custom icons and content. You can also put shortcodes inside this tab!</p>
-                                            <p><strong>Popup window:</strong> To show your offers or your news, to show a newsletter form and so on. You can turn on/off the lightbox and customize the popup content.</p>
-                                            <p><strong>Filterable FAQS </strong> <strong></strong> Create a nice FAQ page with unlimited FAQ categories and chose if display different categories in different pages or if use the javascript filters.</p>
-                                            <p><strong></strong> <strong>Customizable 404 error page </strong> Customize your 404 error page uploading a nice error image, editing the text and so on. You can also set a sidebar for this page or turn on/off the search form. <a href="images/discovery.png"><img class="aligncenter size-full wp-image-1023" title="discovery" src="images/discovery.png" alt="" width="291" height="90" /></a></p> -->
+                                        <div class="features-tab-content features-tab-6 " style="text-align: justify;">
+                                            <h4>NATIONAL BUDGET CIRCULAR 542</h4>
+                                            <p>National Budget Circular 542, issued by the Department of Budget and Management on August 29, 2012, reiterates compliance with Section 93 of the General Appropriations Act of FY 2012. Section 93 is the Transparency Seal provision, to wit:<br><br>Sec. 93. Transparency Seal. To enhance transparency and enforce accountability, all national government agencies shall maintain a transparency seal on their official websites. The transparency seal shall contain the following information: (i) the agency’s mandates and functions, names of its officials with their position and designation, and contact information; (ii) annual reports, as required under National Budget Circular Nos. 507 and 507-A dated January 31, 2007 and June 12, 2007, respectively, for the last three (3) years; (iii) their respective approved budgets and corresponding targets immediately upon approval of this Act; (iv) major programs and projects categorized in accordance with the five key results areas under E.O. No. 43, s. 2011; (v) the program/projects beneficiaries as identified in the applicable special provisions; (vi) status of implementation and program/project evaluation and/or assessment reports; and (vii) annual procurement plan, contracts awarded and the name of contractors/suppliers/consultants. The respective heads of the agencies shall be responsible for ensuring compliance with this section.<br><br>A Transparency Seal, prominently displayed on the main page of the website of a particular government agency, is a certificate that it has complied with the requirements of Section 93. This Seal links to a page within the agency’s website which contains an index of downloadable items of each of the above-mentioned documents.</p>
+                                            <h4>Symbolism</h4>
+                                            <p>A pearl buried inside a tightly-shut shell is practically worthless. Government information is a pearl, meant to be shared with the public in order to maximize its inherent value.<br><br>The Transparency Seal, depicted by a pearl shining out of an open shell, is a symbol of a policy shift towards openness in access to government information. On the one hand, it hopes to inspire Filipinos in the civil service to be more open to citizen engagement; on the other, to invite the Filipino citizenry to exercise their right to participate in governance.<br><br>This initiative is envisioned as a step in the right direction towards solidifying the position of the Philippines as the Pearl of the Orient – a shining example for democratic virtue in the region.</p>
+                                            <h4>National Commission on Indigenous Cultural Communities/lndigenous Peoples (NCIP) Compliance with Section 93 (Transparency Seal)</h4>
+                                            <ol type="I">
+                                                <li style="color: #0c243d;"><b>Agency’s Mandate, Vision, Mission and List of Officials</b></li>
+                                                <ul>
+                                                    <li>NCIP’s Mandate, Vision & Mission and Functions</li>
+                                                    <li>NCIP Officials</li>
+                                                </ul>
+                                                <li style="color: #0c243d;"><b>Annual Financial Reports</b></li>
+                                                <ul>
+                                                    <li>Annual Physical Report of Operations/Physical Plan</li>
+                                                    <ul>
+                                                        <li>2023 BAR I</li>
+                                                        <li>2022 BAR I</li>
+                                                        <li>2021 BAR I</li>
+                                                        <li>2020 BAR I</li>
+                                                        <li>2019 BAR I</li>
+                                                        <li>2018 BAR I</li>
+                                                        <li>2017 BAR I</li>
+                                                        <li>2016 BAR I</li>
+                                                        <li>2015 BAR I</li>
+                                                    </ul>
+                                                </ul>
+                                                <ul>
+                                                    <li>Statement of Appropriations, Allotments, Obligations, Disbursements and Balances (SAAOBDB)</li>
+                                                    <ul>
+                                                        <li>2023 FAR No. 1 | Continuing as of December 2023 | Current as of December 2023</li>
+                                                        <li>2022 FAR No. 1 | 1st Quarter | 2nd Quarter | 4th Quarter</li>
+                                                        <li>2021 FAR No. 1 | 1st Quarter | 2nd Quarter</li>
+                                                        <li>2020 BAR I</li>
+                                                        <li>2019 BAR I</li>
+                                                        <li>2018 BAR I</li>
+                                                        <li>2017 BAR I</li>
+                                                        <li>2016 BAR I</li>
+                                                        <li>2015 BAR I</li>
+                                                    </ul>
+                                                </ul>
+                                                
+                                            </ol>
                                         </div>
                                         <div class="features-tab-content features-tab-7 ">
                                             <!-- <h4>MAKE YOUR SITE LIKE THE LIVE PREVIEW IN JUST 5 MINUTES.</h4>

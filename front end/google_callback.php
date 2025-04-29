@@ -79,7 +79,7 @@ if (isset($_GET['code'])) {
         'id' => $user_info['id'],
         'email' => $user_info['email'],
         'name' => $user_info['name'],
-        'picture' => isset($user_info['picture']) ? $user_info['picture'] : null
+        'picture' => isset($user_info['picture']) ? $user_info['picture'] : 'images/gavatar.png'
     ];
     
     // Redirect back to the announcement page

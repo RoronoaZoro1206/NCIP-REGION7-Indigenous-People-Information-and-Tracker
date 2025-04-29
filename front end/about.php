@@ -31,6 +31,7 @@
     <link rel='stylesheet' id='contact-form-css'  href='css/contact_form.css' type='text/css' media='all' />
     <link rel='stylesheet' id='custom-css'  href='css/custom.css' type='text/css' media='all' />
     <link rel='stylesheet' id='featurestab-css'  href='css/featurestab.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='fontawesome-css'  href='css/font-awesome.css' type='text/css' media='all' />
 
     <style type="text/css">
         body { background-color: #ffffff; background-image: url('images/bg-pattern.png'); background-repeat: repeat; background-position: top left; background-attachment: scroll; }
@@ -306,23 +307,228 @@
                                             </p>
                                         </div>
                                         <div class="features-tab-content features-tab-5 ">
-                                            <h4>Full Customizable Theme</h4>
-                                            <p><strong>Unlimited colors options</strong></p>
-                                            <p><strong></strong>In the theme panel you can set a custom color for each element of the site: text, slogans, titles, links, header background, footer background and so on.</p>
-                                            <p><strong></strong> <strong>Background uploader</strong></p>
-                                            <p><strong></strong>You can upload a different background image for each page and post of your site. Chose from 50+ backgrounds and patterns to customize the theme or upload your custom background.</p>
-                                            <p><strong>Header and Footer background</strong></p>
-                                            <p><strong></strong>Upload a background image or set a different background color for your header and footer.</p>
-                                            <p><strong>Typography</strong></p>
-                                            <p><strong></strong>Chose from 300+ google fonts to customize the typography of each area of the site like navigation menu, paragraphs, titles, slogan and so on. You can also use the web-safe fonts, like Georgia, Times new roman and so on if you don't like to use the Google fonts.</p>
+                                            <p>
+                                                <img src="images/NCIP-Org-Structure.png" alt="NCIP-Org-Structure" width="568" height="385" style="display:block;margin:auto;cursor:pointer;" onclick="document.getElementById('imgOrgModal').style.display='flex';" />
+
+                                                <div id="imgOrgModal" style="display:none;position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.8);justify-content:center;align-items:center;flex-direction:column;">
+                                                    <span onclick="document.getElementById('imgOrgModal').style.display='none';" style="position:absolute;top:20px;right:30px;font-size:40px;font-weight:bold;color:white;cursor:pointer;">&times;</span>
+                                                    <img src="images/NCIP-Org-Structure.png" alt="NCIP-Org-Structure" style="max-width:90%;max-height:80%;" />
+                                                </div>
+
+                                                <p style="text-align: justify; text-indent: 1rem;">
+                                                    The organizational structure of the National Commission on Indigenous Peoples (NCIP) is designed to effectively uphold and protect the rights of Indigenous Cultural Communities/Indigenous Peoples (ICCs/IPs) in the Philippines. It follows a centralized yet regionally represented system, headed by a Chairperson and supported by six Commissioners representing different ethnolinguistic regions. The NCIP operates through its central office, regional offices, provincial offices, and service centers, ensuring grassroots-level accessibility and implementation of programs. This structure enables the agency to efficiently carry out its mandate under the Indigenous Peoples' Rights Act (IPRA), focusing on ancestral domain recognition, cultural preservation, and the promotion of IP welfare.
+                                                </p>
+                                            </p>
                                         </div>
-                                        <div class="features-tab-content features-tab-6 ">
-                                            <h4>ON NCIP YOU CAN ALSO FIND:</h4>
-                                            <p><strong>Animated Banners:</strong> Create unlimited animated banners and customize each banner with different colors, text, icons and so on.</p>
-                                            <p><strong>Unlimited features tab:</strong> This is a features tab. And you can create unlimited tabs with custom icons and content. You can also put shortcodes inside this tab!</p>
-                                            <p><strong>Popup window:</strong> To show your offers or your news, to show a newsletter form and so on. You can turn on/off the lightbox and customize the popup content.</p>
-                                            <p><strong>Filterable FAQS </strong> <strong></strong> Create a nice FAQ page with unlimited FAQ categories and chose if display different categories in different pages or if use the javascript filters.</p>
-                                            <p><strong></strong> <strong>Customizable 404 error page </strong> Customize your 404 error page uploading a nice error image, editing the text and so on. You can also set a sidebar for this page or turn on/off the search form. <a href="images/discovery.png"><img class="aligncenter size-full wp-image-1023" title="discovery" src="images/discovery.png" alt="" width="291" height="90" /></a></p>
+                                        <div class="features-tab-content features-tab-6 " style="text-align: justify;">
+                                            <div class="toggle">
+                                                <h4 class="tab-index tab-opened"><a href="#" title="Close" style="font-size: 12px;"><span class="icon-minus-sign"></span><b> NATIONAL BUDGET CIRCULAR 542</b></a></h4>
+
+                                                <div class="content-tab opened">
+                                                    <p>National Budget Circular 542, issued by the Department of Budget and Management on August 29, 2012, reiterates compliance with Section 93 of the General Appropriations Act of FY 2012. Section 93 is the Transparency Seal provision, to wit:<br><br>Sec. 93. Transparency Seal. To enhance transparency and enforce accountability, all national government agencies shall maintain a transparency seal on their official websites. The transparency seal shall contain the following information: (i) the agency’s mandates and functions, names of its officials with their position and designation, and contact information; (ii) annual reports, as required under National Budget Circular Nos. 507 and 507-A dated January 31, 2007 and June 12, 2007, respectively, for the last three (3) years; (iii) their respective approved budgets and corresponding targets immediately upon approval of this Act; (iv) major programs and projects categorized in accordance with the five key results areas under E.O. No. 43, s. 2011; (v) the program/projects beneficiaries as identified in the applicable special provisions; (vi) status of implementation and program/project evaluation and/or assessment reports; and (vii) annual procurement plan, contracts awarded and the name of contractors/suppliers/consultants. The respective heads of the agencies shall be responsible for ensuring compliance with this section.<br><br>A Transparency Seal, prominently displayed on the main page of the website of a particular government agency, is a certificate that it has complied with the requirements of Section 93. This Seal links to a page within the agency’s website which contains an index of downloadable items of each of the above-mentioned documents.</p>
+                                                </div>
+                                            </div>
+                                            <div class="toggle">
+                                                <h4 class="tab-index tab-closed"><a href="#" title="Close" style="font-size: 12px;"><span class="icon-plus-sign"></span><b> Symbolism</b></a></h4>
+
+                                                <div class="content-tab closed">
+                                                    <p>A pearl buried inside a tightly-shut shell is practically worthless. Government information is a pearl, meant to be shared with the public in order to maximize its inherent value.<br><br>The Transparency Seal, depicted by a pearl shining out of an open shell, is a symbol of a policy shift towards openness in access to government information. On the one hand, it hopes to inspire Filipinos in the civil service to be more open to citizen engagement; on the other, to invite the Filipino citizenry to exercise their right to participate in governance.<br><br>This initiative is envisioned as a step in the right direction towards solidifying the position of the Philippines as the Pearl of the Orient – a shining example for democratic virtue in the region.</p>
+                                                </div>
+                                            </div>
+                                            <div class="toggle">
+                                                <h4 class="tab-index tab-closed"><a href="#" title="Close" style="font-size: 12px;"><span class="icon-plus-sign"></span><b> National Commission on Indigenous Cultural Communities/lndigenous Peoples (NCIP) Compliance with Section 93 (Transparency Seal)</b></a></h4>
+
+                                                <div class="content-tab closed">
+                                                <ol type="I" style="margin-left: 30px; padding-left: 0; list-style-position: inside;">
+                                                <li style="color: #0c243d;"><b>Agency’s Mandate, Vision, Mission and List of Officials</b></li>
+                                                <ul>
+                                                    <li>NCIP’s Mandate, Vision & Mission and Functions</li>
+                                                    <li>NCIP Officials</li>
+                                                </ul>
+                                                <li style="color: #0c243d;"><b>Annual Financial Reports</b></li>
+                                                <ul>
+                                                    <li>Annual Physical Report of Operations/Physical Plan</li>
+                                                    <ul>
+                                                        <li>2023 BAR I</li>
+                                                        <li>2022 BAR I</li>
+                                                        <li>2021 BAR I</li>
+                                                        <li>2020 BAR I</li>
+                                                        <li>2019 BAR I</li>
+                                                        <li>2018 BAR I</li>
+                                                        <li>2017 BAR I</li>
+                                                        <li>2016 BAR I</li>
+                                                        <li>2015 BAR I</li>
+                                                    </ul>
+                                                </ul>
+                                                <ul>
+                                                    <li>Statement of Appropriations, Allotments, Obligations, Disbursements and Balances (SAAOBDB)</li>
+                                                    <ul>
+                                                        <li>2023 FAR No. 1 | Continuing as of December 2023 | Current as of December 2023</li>
+                                                        <li>2022 FAR No. 1 | 1st Quarter | 2nd Quarter | 4th Quarter</li>
+                                                        <li>2021 FAR No. 1 | 1st Quarter | 2nd Quarter</li>
+                                                        <li>2020 FAR No. 1</li>
+                                                        <li>2019 FAR No. 1</li>
+                                                        <li>2018 FAR No. 1</li>
+                                                        <li>2017 FAR No. 1</li>
+                                                        <li>2016 FAR No. 1</li>
+                                                    </ul>
+                                                </ul>
+                                                <ul>
+                                                    <li>Aging of Unpaid Obligations</li>
+                                                    <ul>
+                                                        <li>2023 FAR No. 3 | 4th Quarter</li>
+                                                        <li>2022 FAR No. 3 | 4th Quarter</li>
+                                                    </ul>
+                                                </ul>
+                                                <ul>
+                                                    <li>Monthly Report of Disbursements</li>
+                                                    <ul>
+                                                        <li>2023 FAR No. 4 | (Regular, Trust Fund as of October 2023) | (Regular, Trust Fund as of November 2023) | (Regular, Trust Fund as of December 2023)</li>
+                                                        <li>2022 FAR No. 4 | 1st Quarter | 2nd Quarter | 4th Quarter</li>
+                                                        <li>2021 FAR No. 4 | January | February | March | April | May | June</li>
+                                                        <li>2020 FAR No. 4</li>
+                                                        <li>2019 FAR No. 4</li>
+                                                        <li>2018 FAR No. 4</li>
+                                                        <li>2017 FAR No. 4</li>
+                                                        <li>2016 FAR No. 4</li>
+                                                    </ul>
+                                                </ul>
+                                                <ul>
+                                                    <li>Quarterly Report on Revenue and Other Receipts</li>
+                                                    <ul>
+                                                        <li>2023 FAR No. 5 | (Regular, Trust Fund as of December 2023)</li>
+                                                        <li>2022 FAR No. 5 | 1st Quarter | 2nd Quarter | 4th Quarter</li>
+                                                        <li>2021 FAR No. 5 | 1st Quarter | 2nd Quarter</li>
+                                                        <li>2020 FAR No. 5 | 1st Quarter | 2nd Quarter | 3rd Quarter</li>
+                                                        <li>2019 FAR No. 5</li>
+                                                        <li>2018 FAR No. 5</li>
+                                                        <li>2017 FAR No. 5</li>
+                                                        <li>2016 FAR No. 5</li>
+                                                    </ul>
+                                                </ul>
+                                                <ul>
+                                                    <li>Financial Plan (Detailed Statement of Current Year’s Obligations, Disbursements and Unpaid Obligations)</li>
+                                                    <ul>
+                                                        <li>2023 FAR No. 1-A | Continuing as of December 2023 | Current as of December 2023</li>
+                                                        <li>2022 FAR No. 1-A | 1st Quarter | 2nd Quarter | 4th Quarter</li>
+                                                        <li>2021 FAR No. 1-A | 1ST Quarter | 2nd Quarter</li>
+                                                        <li>2019 FAR No. 1-A</li>
+                                                        <li>2018 FAR No. 1-A</li>
+                                                        <li>2017 FAR No. 1-A</li>
+                                                        <li>2016 FAR No. 1-A</li>
+                                                    </ul>
+                                                </ul>
+                                                <ul>
+                                                    <li>List of Allotments and Sub-allotments</li>
+                                                    <ul>
+                                                        <li>2022 FAR No. 1B | 4th Quarter</li>
+                                                    </ul>
+                                                </ul>
+                                                <li style="color: #0c243d;"><b>DBM Approved Budget and Corresponding Targets</b></li>
+                                                <ul>
+                                                    <li>2023</li>
+                                                    <li>2022</li>
+                                                    <li>2021</li>
+                                                    <li>2020</li>
+                                                    <li>2019</li>
+                                                    <li>2018</li>
+                                                    <li>2017</li>
+                                                    <li>2016</li>
+                                                </ul>
+                                                <li style="color: #0c243d;"><b>Projects, Programs and Activities, Beneficiaries, and Status of
+                                                Implementation</b></li>
+                                                <ul>
+                                                    <li>2024</li>
+                                                    <li>2023</li>
+                                                    <li>2022</li>
+                                                    <li>2021</li>
+                                                    <li>2020</li>
+                                                    <li>2019</li>
+                                                    <li>2018</li>
+                                                    <li>2017</li>
+                                                    <li>2016</li>
+                                                </ul>
+                                                <li style="color: #0c243d;"><b>Agency Procurement Plan</b></li>
+                                                <ul>
+                                                    <li>Annual Procurement Plan</li>
+                                                    <ul>
+                                                        <li>2025 Indicative APP Non-CSE | APP 2025  | SAPP no 1</li>
+                                                        <li>2024 Indicated APP NON-CSE | APP 2024 | SAPP no. 1-12  | SAPP no. 12-26</li>
+                                                        <li>2023 Indicative APP | Supplemental Indicative APP no.1 | APP 2023 | SAPP no. 1-16 | SAPP No. 17-26</li>
+                                                        <li>2022 Indicative APP non-CSE | APP 2022 | SAPP 1-11 | SAPP 12-28</li>
+                                                        <li>2021 APP CSE | APP non-CSE | APP non-CSE (Indicative) |SAPP 1-10 | SAPP 10-22</li>
+                                                        <li>2020 APP CSE | APP non-CSE | SAPP 1-10</li>
+                                                        <li>2019 APP CSE | APP non-CSE</li>
+                                                        <li>2018 APP CSE | APP non-CSE</li>
+                                                        <li>2017 APP CSE | APP non-CSE</li>
+                                                        <li>2016 APP CSE | APP non-CSE</li>
+                                                    </ul>
+                                                    <li>Agency Procurement Compliance and Performance Indicators (APCPI)
+                                                    </li>
+                                                    <ul>
+                                                        <li>2024 APCI</li>
+                                                        <ul>
+                                                            <li>2024 Procurement Monitoring Report (1st Semester)</li>
+                                                            <li>2024 Procurement Monitoring Report (2nd Semester)</li>
+                                                            <li>Annexes </li>
+                                                        </ul>
+                                                        <li>2023 APCPI</li>
+                                                        <ul>
+                                                            <li>2023 Procurement Monitoring Report (2nd Semester)</li>
+                                                            <li>2023 Procurement Monitoring Report (1st Semester)</li>
+                                                        </ul>
+                                                        <li>2022 APCPI</li>
+                                                        <ul>
+                                                            <li>2022 Procurement Monitoring Report (2nd Semester)</li>
+                                                            <li>2022 Procurement Monitoring Report (1st Semester)</li>
+                                                        </ul>
+                                                        <li>2021 APCPI</li>
+                                                        <ul>
+                                                            <li>2021 Procurement Monitoring Report (2nd Sem)</li>
+                                                        </ul>
+                                                    </ul>
+                                                </ul>
+                                                <li style="color: #0c243d;"><b>Quality Management System Certification</b></li>
+                                                <li style="color: #0c243d;"><b>System of Agency Ranking Delivery Units</b></li>
+                                                <li style="color: #0c243d;"><b>The Agency Review and Compliance Procedure of Statements and Financial Disclosure</b></li>
+                                                <ul>
+                                                    <li style="color: #0c243d;"><b>Procedures on the Review and Compliance of SALN</b></li>
+                                                    <ul>
+                                                        <li>Agency Review and Compliance Procedure (ARCP) (no changes)</li>
+                                                        <li>Review and Compliance Committee (RCC) (no changes)</li>
+                                                    </ul>
+                                                </ul>
+                                                <li style="color: #0c243d;"><b>Freedom of Information (FOI) Manual signed by Head of Agency</b></li>
+                                                <ul>
+                                                    <li>Peoples FOI Manual</li>
+                                                    <li>NCIP One page FOI Manual (English)</li>
+                                                    <li>NCIP One page FOI Manual (Filipino)</li>
+                                                    <li>FOI Reports</li>
+                                                    <li>Certificate of Compliance</li>
+                                                </ul>
+                                                <li style="color: #0c243d;"><b>PBB Compliance</b></li>
+                                                <ul>
+                                                    <li>Scorecards</li>
+                                                    <ul>
+                                                        <li>2023</li>
+                                                        <li>2022</li>
+                                                        <li>2021</li>
+                                                        <li>2020</li>
+                                                        <li>2019</li>
+                                                        <li>2018</li>
+                                                    </ul>
+                                                </ul>
+                                                <li style="color: #0c243d; list-style-type: none;"><b>NCIP Annual Accomplishment Reports (AAR)</b></li>
+                                                <ul>
+                                                    <li>2023 AAR</li>
+                                                    <li>2022 AAR</li>
+                                                    <li>2021 AAR</li>
+                                                    <li>2020 AAR</li>
+                                                    <li>2019 AAR</li>
+                                                </ul>
+                                                </ol>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="features-tab-content features-tab-7 ">
                                             <!-- <h4>MAKE YOUR SITE LIKE THE LIVE PREVIEW IN JUST 5 MINUTES.</h4>
@@ -2406,6 +2612,12 @@
         </div>
     </div>
     <!-- END PRIMARY -->
+
+    <!-- START SLOGAN -->
+    <div class="slogan" style="margin-bottom: 20px; margin-top: -30px;">
+        <h2>PROVINCIAL OFFICE EMPLOYEES</h2>
+    </div>
+    <!-- END SLOGAN  -->  
 
     <!-- START FOOTER -->
     <div id="footer">

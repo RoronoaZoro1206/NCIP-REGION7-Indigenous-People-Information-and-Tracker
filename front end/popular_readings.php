@@ -60,7 +60,7 @@ function renderPopularReadings($limit = 5) {
                     ' . htmlspecialchars($short_title) . '
                 </a>
                 <p class="post-date">' . $formatted_date . '</p>
-                <p class="view-count"><small>(' . $reading['views'] . ' ' . ($reading['views'] == 1 ? 'view' : 'views') . ')</small></p>
+                <p class="view-count"><small>(' . $reading['views'] . ' ' . ($reading['views'] <= 1 ? 'view' : 'views') . ')</small></p>
             </div>
         </div>';
     }

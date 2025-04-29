@@ -1,3 +1,10 @@
+<?php
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en-US">
 <!-- START HEAD -->
@@ -78,6 +85,13 @@
                         <li>
                             <a href="contact.php">CONTACT</a>
                         </li>
+                        
+                        
+                        <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+                            <li>
+                                <a href="admin_contacts.php">Admin Messages</a>
+                            </li>
+                            <?php endif; ?>
                     </ul>
                     <!-- END MAIN NAVIGATION -->
 

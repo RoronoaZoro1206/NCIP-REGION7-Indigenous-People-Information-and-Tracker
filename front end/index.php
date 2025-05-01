@@ -93,7 +93,7 @@
                 <div id="logo" class="span6 group">
                     <div id="logo-container">
                         <a id="logo-img" href="index.php" title="NCIP">
-                            <img src="images/ncip-header-logo.png" title="NCIP" alt="NCIP Header Logo" />
+                            <img src="images/ncip-logo.png" title="NCIP" alt="NCIP Header Logo" />
                         </a>
                         <a id="second-logo-img" href="index.php" title="Bagong Pilipinas">
                             <img src="images/bagong-pilipinas-header-logo.png" title="Bagong Pilipinas" alt="Bagong Pilipinas Header Logo" />

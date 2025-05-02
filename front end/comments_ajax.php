@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $googleEmail = $googleUser['email'] ?? '';
     $googlePic = $googleUser['picture'] ?? null;
 
-    $announcementId = isset($_POST['announcement_id']) ? (int)$_POST['announcement_id'] : null;
+    $announcementId = isset($_POST['ann_id']) ? (int)$_POST['ann_id'] : null;
     $content = trim($_POST['content'] ?? '');
     $parentId = !empty($_POST['parent_id']) ? (int)$_POST['parent_id'] : null;
 

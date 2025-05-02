@@ -84,6 +84,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 APP_ETHNO_GROUP, 
                 APP_PHONE_NUMBER, 
                 APP_EMAIL, 
+                APP_FORM_SIGNED,
+                APP_SIGNATURE_DATE,
+                APP_ENCODED_BY,
+                APP_ENCODING_DATE,
                 ADMIN_CODE
             ) VALUES (
                 :last_name, 
@@ -95,10 +99,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 :civil_status, 
                 :ethno_group, 
                 :phone, 
-                :email, 
+                :email,
+                :form_signed,
+                :signature_date,
+                :encoder_id,
+                CURRENT_TIMESTAMP, 
                 :admin_code
             ) RETURNING APP_CODE
         ");
+        
+        // Process signature verification
+        $formSigned = isset($_POST['form_signed']) ? true : false;
+        $signatureDate = !empty($_POST['signature_date']) ? $_POST['signature_date'] : null;
+        $encoderId = $_SESSION['user_id'] ?? null;
         
         $applicantStmt->bindParam(':last_name', $_POST['last_name']);
         $applicantStmt->bindParam(':first_name', $_POST['first_name']);
@@ -110,10 +123,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $applicantStmt->bindParam(':ethno_group', $_POST['ethno_group']);
         $applicantStmt->bindParam(':phone', $_POST['phone_number']);
         $applicantStmt->bindParam(':email', $_POST['email']);
+        $applicantStmt->bindParam(':form_signed', $formSigned, PDO::PARAM_BOOL);
+        $applicantStmt->bindParam(':signature_date', $signatureDate);
+        $applicantStmt->bindParam(':encoder_id', $encoderId);
         $applicantStmt->bindParam(':admin_code', $adminCode);
         
         $applicantStmt->execute();
         $appCode = $pdo->lastInsertId('applicant_app_code_seq');
+        
+        // Handle signature scan upload if included
+        if(isset($_FILES['signature_scan']) && $_FILES['signature_scan']['error'] == 0) {
+            $fileName = $_FILES['signature_scan']['name'];
+            $fileType = $_FILES['signature_scan']['type'];
+            $fileContent = file_get_contents($_FILES['signature_scan']['tmp_name']);
+            
+            $scanStmt = $pdo->prepare("
+                INSERT INTO SIGNATURE_SCANS (
+                    SCAN_FILENAME,
+                    SCAN_FILETYPE,
+                    SCAN_DATA,
+                    APP_CODE,
+                    USER_ID
+                ) VALUES (
+                    :filename,
+                    :filetype,
+                    :filedata,
+                    :app_code,
+                    :uploaded_by
+                )
+            ");
+            
+            $scanStmt->bindParam(':filename', $fileName);
+            $scanStmt->bindParam(':filetype', $fileType);
+            $scanStmt->bindParam(':filedata', $fileContent, PDO::PARAM_LOB);
+            $scanStmt->bindParam(':app_code', $appCode);
+            $scanStmt->bindParam(':uploaded_by', $encoderId);
+            $scanStmt->execute();
+        }
         
         // 3. Insert into ADDRESS table
         $addressStmt = $pdo->prepare("
@@ -421,6 +467,7 @@ try {
             background-position: top left; 
             background-attachment: scroll; 
         }
+        
 
         #gender, 
         #civil_status, 
@@ -438,7 +485,8 @@ try {
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        
+
+ 
         .scholarship-form header {
             text-align: center;
             margin-bottom: 20px;
@@ -788,7 +836,7 @@ try {
     <!-- END PAGE META -->
         
     <!-- START PRIMARY -->
-    <div class="scholarship-form">
+    <div class="scholarship-form" style="min-height: auto; padding-bottom: 50px;">
         <div class="header-logo">
             <img src="images/ncip-logo.png" alt="NCIP Logo">
         </div>
@@ -1223,45 +1271,47 @@ try {
                 </div>
             </div>
             
-            <!-- SIBLINGS WITH SCHOLARSHIPS Section -->
-            <div class="form-section">
-                <h3>Siblings Enjoying Scholarship</h3>
-                
-                <div id="siblings-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Scholarship</th>
-                                <th>Course and Year</th>
-                            </tr>
-                        </thead>
-                        <tbody id="siblings-table-body">
-                            <tr class="sibling-row">
-                                <td>
-                                    <div class="form-row" style="margin:0">
-                                        <input type="text" name="sib_last_name[0]" placeholder="Last Name" style="width:30%; margin-right:5px;">
-                                        <input type="text" name="sib_first_name[0]" placeholder="First Name" style="width:30%; margin-right:5px;">
-                                        <input type="text" name="sib_middle_initial[0]" placeholder="M.I." style="width:20%; max-width:50px;">
-                                    </div>
-                                </td>
-                                <td>
-                                    <input type="text" name="scholar_name[0]" placeholder="Scholarship Name">
-                                </td>
-                                <td>
-                                    <div class="form-row" style="margin:0">
-                                        <input type="text" name="scholar_course[0]" placeholder="Course" style="width:60%; margin-right:5px;">
-                                        <input type="number" name="scholar_year[0]" placeholder="Year" style="width:30%;">
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <input type="hidden" id="sibling_count" name="sibling_count" value="1">
-                <button type="button" class="add-row-btn" onclick="addSiblingRow()">Add Sibling</button>
+        <!-- Siblings Enjoying Scholarship section -->
+
+        <!-- Siblings Enjoying Scholarship section -->
+        <div class="form-section">
+            <h3>Siblings Enjoying Scholarship</h3>
+            
+            <div id="siblings-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 45%;">Name</th>
+                            <th style="width: 35%;">Scholarship</th>
+                            <th style="width: 20%;">Course and Year</th>
+                        </tr>
+                    </thead>
+                    <tbody id="siblings-table-body">
+                        <tr class="sibling-row">
+                            <td>
+                                <div class="form-row" style="margin:0">
+                                    <input type="text" name="sib_last_name[0]" placeholder="Last Name" style="width:40%; margin-right:5px;">
+                                    <input type="text" name="sib_first_name[0]" placeholder="First Name" style="width:40%; margin-right:5px;">
+                                    <input type="text" name="sib_middle_initial[0]" placeholder="M.I." style="width:40px; min-width:40px; max-width:40px; text-align:center;" maxlength="1">
+                                </div>
+                            </td>
+                            <td>
+                                <input type="text" name="scholar_name[0]" placeholder="Scholarship Name" style="width:95%">
+                            </td>
+                            <td>
+                                <div class="form-row" style="margin:0">
+                                    <input type="text" name="scholar_course[0]" placeholder="Course" style="width:60%; margin-right:5px;">
+                                    <input type="number" name="scholar_year[0]" placeholder="Year" style="width:80px; text-align:center;" min="1900" max="2025">
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
+            
+            <input type="hidden" id="sibling_count" name="sibling_count" value="1">
+            <button type="button" class="add-row-btn" onclick="addSiblingRow()">Add Sibling</button>
+        </div>
             
             <!-- SCHOOL PREFERENCES Section -->
             <div class="form-section">
@@ -1306,13 +1356,42 @@ try {
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <p style="text-align: right; margin-top: 20px;">
-                            <span>Signature of Applicant/Date:_______________________</span>
-                        </p>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" id="form_signed" name="form_signed" value="1" required>
+                                <label for="form_signed">Paper form has been signed by applicant</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="signature_date">Date signed by applicant:</label>
+                        <input type="date" id="signature_date" name="signature_date" max="<?php echo date('Y-m-d'); ?>">
+                    </div>
+                    
+                    <!-- Optional: Upload scanned signature -->
+                    <div class="form-group">
+                        <label for="signature_scan">Upload scan of signature page (optional):</label>
+                        <input type="file" id="signature_scan" name="signature_scan" accept="image/jpeg,image/png,application/pdf">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="encoder_name">Encoded by:</label>
+                        <input type="text" id="encoder_name" name="encoder_name" value="<?php echo htmlspecialchars($_SESSION['user']); ?>" readonly>
+                        <input type="hidden" name="encoder_id" value="<?php echo htmlspecialchars($_SESSION['user_id']); ?>">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="encoding_date">Date encoded:</label>
+                        <input type="text" id="encoding_date" value="<?php echo date('Y-m-d'); ?>" readonly>
                     </div>
                 </div>
             </div>
-            
+                        
             <button type="submit" class="btn-submit">Submit Application</button>
         </form>
     </div>
@@ -1422,34 +1501,69 @@ try {
     let siblingCount = 1;
     
     function addSiblingRow() {
-        siblingCount++;
-        document.getElementById('sibling_count').value = siblingCount;
-        
-        const tbody = document.getElementById('siblings-table-body');
-        const newRow = document.createElement('tr');
-        newRow.className = 'sibling-row';
-        
-        newRow.innerHTML = `
-            <td>
-                <div class="form-row" style="margin:0">
-                    <input type="text" name="sib_last_name[${siblingCount-1}]" placeholder="Last Name" style="width:30%; margin-right:5px;">
-                    <input type="text" name="sib_first_name[${siblingCount-1}]" placeholder="First Name" style="width:30%; margin-right:5px;">
-                    <input type="text" name="sib_middle_initial[${siblingCount-1}]" placeholder="M.I." style="width:20%; max-width:50px;">
-                </div>
-            </td>
-            <td>
-                <input type="text" name="scholar_name[${siblingCount-1}]" placeholder="Scholarship Name">
-            </td>
-            <td>
-                <div class="form-row" style="margin:0">
-                    <input type="text" name="scholar_course[${siblingCount-1}]" placeholder="Course" style="width:60%; margin-right:5px;">
-                    <input type="number" name="scholar_year[${siblingCount-1}]" placeholder="Year" style="width:30%;">
-                </div>
-            </td>
-        `;
-        
-        tbody.appendChild(newRow);
+    siblingCount++;
+    document.getElementById('sibling_count').value = siblingCount;
+    
+    const tbody = document.getElementById('siblings-table-body');
+    const newRow = document.createElement('tr');
+    newRow.className = 'sibling-row';
+    
+    const currentYear = new Date().getFullYear();
+    
+    newRow.innerHTML = `
+        <td>
+            <div class="form-row" style="margin:0">
+                <input type="text" name="sib_last_name[${siblingCount-1}]" placeholder="Last Name" style="width:40%; margin-right:5px;">
+                <input type="text" name="sib_first_name[${siblingCount-1}]" placeholder="First Name" style="width:40%; margin-right:5px;">
+                <input type="text" name="sib_middle_initial[${siblingCount-1}]" placeholder="M.I." style="width:40px; min-width:40px; max-width:40px; text-align:center;" maxlength="1">
+            </div>
+        </td>
+        <td>
+            <input type="text" name="scholar_name[${siblingCount-1}]" placeholder="Scholarship Name" style="width:95%">
+        </td>
+        <td>
+            <div class="form-row" style="margin:0">
+                <input type="text" name="scholar_course[${siblingCount-1}]" placeholder="Course" style="width:60%; margin-right:5px;">
+                <input type="number" name="scholar_year[${siblingCount-1}]" placeholder="Year" style="width:80px; text-align:center;" min="1900" max="${currentYear}">
+            </div>
+        </td>
+    `;
+    
+    tbody.appendChild(newRow);
+    
+    // Apply validation to the new middle initial field
+    const newMiddleInitial = newRow.querySelector(`input[name="sib_middle_initial[${siblingCount-1}]"]`);
+    if (newMiddleInitial) {
+        newMiddleInitial.addEventListener('input', function() {
+            if (this.value.length > 1) {
+                this.value = this.value.slice(0, 1);
+            }
+        });
     }
+    
+    // Apply validation to the new year field
+    const newYearField = newRow.querySelector(`input[name="scholar_year[${siblingCount-1}]"]`);
+    if (newYearField) {
+        newYearField.addEventListener('input', function() {
+            if (this.value > currentYear) {
+                this.value = currentYear;
+            }
+        });
+        
+        newYearField.addEventListener('blur', function() {
+            if (this.value > currentYear) {
+                this.value = currentYear;
+            }
+        });
+        
+        newYearField.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowUp' && parseInt(this.value) >= currentYear) {
+                this.value = currentYear;
+                e.preventDefault();
+            }
+        });
+    }
+}
 
     document.addEventListener('DOMContentLoaded', function() {
     // Format income inputs to show decimals and commas
@@ -1498,6 +1612,199 @@ try {
         dobInput.setAttribute('max', currentDate);
     }
 });
+
+// This JavaScript will improve the validation for all year fields and fix the M.I. field width
+document.addEventListener('DOMContentLoaded', function() {
+    // Current year for validation
+    const currentYear = new Date().getFullYear();
+    
+    // 1. Fix validation for all year fields in Educational Attainment section
+    const yearGraduatedInputs = document.querySelectorAll('input[name^="year_graduated"]');
+    
+    yearGraduatedInputs.forEach(input => {
+        // Set attributes
+        input.setAttribute('max', currentYear);
+        input.setAttribute('type', 'number');
+        input.setAttribute('min', '1900');
+        
+        // Add validation on input
+        input.addEventListener('input', function() {
+            if (parseInt(this.value) > currentYear) {
+                this.value = currentYear;
+            }
+        });
+        
+        // Add validation on blur
+        input.addEventListener('blur', function() {
+            if (parseInt(this.value) > currentYear) {
+                this.value = currentYear;
+            }
+        });
+        
+        // Prevent arrow up from exceeding current year
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowUp' && parseInt(this.value) >= currentYear) {
+                this.value = currentYear;
+                e.preventDefault();
+            }
+        });
+    });
+    
+    // 2. Fix validation for all year fields in Siblings Enjoying Scholarship section
+    const scholarYearInputs = document.querySelectorAll('input[name^="scholar_year"]');
+    
+    scholarYearInputs.forEach(input => {
+        // Set attributes
+        input.setAttribute('max', currentYear);
+        input.setAttribute('type', 'number');
+        input.setAttribute('min', '1900');
+        
+        // Add validation on input
+        input.addEventListener('input', function() {
+            if (parseInt(this.value) > currentYear) {
+                this.value = currentYear;
+            }
+        });
+        
+        // Add validation on blur
+        input.addEventListener('blur', function() {
+            if (parseInt(this.value) > currentYear) {
+                this.value = currentYear;
+            }
+        });
+        
+        // Prevent arrow up from exceeding current year
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowUp' && parseInt(this.value) >= currentYear) {
+                this.value = currentYear;
+                e.preventDefault();
+            }
+        });
+    });
+    
+    // 3. Fix width and styling for middle initial inputs in Siblings section
+    const middleInitialInputs = document.querySelectorAll('input[name^="sib_middle_initial"]');
+    
+    middleInitialInputs.forEach(input => {
+        // Improve width and styling for better placeholder visibility
+        input.style.width = '40px';
+        input.style.minWidth = '40px';
+        input.setAttribute('placeholder', 'M.I.');
+        
+        // Ensure maxlength is set
+        input.setAttribute('maxlength', '1');
+        
+        // Add validation to restrict to 1 character
+        input.addEventListener('input', function() {
+            if (this.value.length > 1) {
+                this.value = this.value.slice(0, 1);
+            }
+        });
+    });
+    
+    // 4. Update the addSiblingRow function to apply these validations to new rows
+    // Get the original function
+    const originalAddSiblingRow = window.addSiblingRow;
+    
+    // Replace it with an enhanced version that includes our validations
+    window.addSiblingRow = function() {
+        // Call the original function first
+        originalAddSiblingRow();
+        
+        // Get the latest index
+        const index = siblingCount - 1;
+        
+        // Apply validations to new middle initial field
+        const newMiddleInitial = document.querySelector(`input[name="sib_middle_initial[${index}]"]`);
+        if (newMiddleInitial) {
+            newMiddleInitial.style.width = '40px';
+            newMiddleInitial.style.minWidth = '40px';
+            newMiddleInitial.setAttribute('placeholder', 'M.I.');
+            newMiddleInitial.setAttribute('maxlength', '1');
+            
+            newMiddleInitial.addEventListener('input', function() {
+                if (this.value.length > 1) {
+                    this.value = this.value.slice(0, 1);
+                }
+            });
+        }
+        
+        // Apply validations to new year field
+        const newYearField = document.querySelector(`input[name="scholar_year[${index}]"]`);
+        if (newYearField) {
+            newYearField.setAttribute('max', currentYear);
+            newYearField.setAttribute('type', 'number');
+            newYearField.setAttribute('min', '1900');
+            
+            newYearField.addEventListener('input', function() {
+                if (parseInt(this.value) > currentYear) {
+                    this.value = currentYear;
+                }
+            });
+            
+            newYearField.addEventListener('blur', function() {
+                if (parseInt(this.value) > currentYear) {
+                    this.value = currentYear;
+                }
+            });
+            
+            newYearField.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowUp' && parseInt(this.value) >= currentYear) {
+                    this.value = currentYear;
+                    e.preventDefault();
+                }
+            });
+        }
+    };
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Current year constant - this will be 2025 based on the system date
+    const currentYear = new Date().getFullYear();
+    
+    // Target specifically the Year of ITR Attached input fields
+    const itrYearFields = document.querySelectorAll('input[name^="fam_year_itr_"]');
+    
+    itrYearFields.forEach(field => {
+        // Ensure max attribute is set correctly
+        field.setAttribute('max', currentYear);
+        field.setAttribute('type', 'number');
+        field.setAttribute('min', '1900');
+        
+        // Stronger input validation - prevent typing values beyond current year
+        field.addEventListener('input', function() {
+            if (this.value && parseInt(this.value) > currentYear) {
+                this.value = currentYear;
+            }
+        });
+        
+        // Additional validation when field loses focus
+        field.addEventListener('blur', function() {
+            if (this.value && parseInt(this.value) > currentYear) {
+                this.value = currentYear;
+            }
+        });
+        
+        // Prevent up arrow key from exceeding current year
+        field.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowUp' && parseInt(this.value) >= currentYear) {
+                e.preventDefault();
+                this.value = currentYear;
+            }
+        });
+        
+        // Intercept mouse wheel events for spinner (additional browser compatibility)
+        field.addEventListener('wheel', function(e) {
+            const value = parseInt(this.value || 0);
+            if (value >= currentYear) {
+                e.preventDefault();
+                this.value = currentYear;
+            }
+        }, { passive: false });
+    });
+});
+
+
 </script>
 
 </body>

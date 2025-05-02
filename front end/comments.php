@@ -11,12 +11,12 @@ function getComments($announcementId, $parentId = null) {
     $query = "SELECT c.*, 
             (SELECT COUNT(*) FROM comments WHERE coms_parent_id = c.coms_id) as reply_count 
             FROM comments c 
-            WHERE c.coms_announcement_id = :announcement_id 
+            WHERE c.ann_id  = :ann_id 
             AND c.coms_parent_id " . ($parentId === null ? "IS NULL" : "= :parent_id") . " 
             ORDER BY c.coms_created_at DESC";
     
     $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':announcement_id', $announcementId, PDO::PARAM_INT);
+    $stmt->bindParam(':ann_id', $announcementId, PDO::PARAM_INT);
     
     if ($parentId !== null) {
         $stmt->bindParam(':parent_id', $parentId, PDO::PARAM_INT);
@@ -30,11 +30,11 @@ function getComments($announcementId, $parentId = null) {
 function addComment($announcementId, $googleName, $googleEmail, $googlePic, $content, $parentId = null) {
     global $pdo;
     
-    $query = "INSERT INTO comments (coms_announcement_id, coms_google_name, coms_google_email, coms_google_pic, coms_content, coms_parent_id) 
-              VALUES (:announcement_id, :name, :email, :picture, :content, :parent_id)";
+    $query = "INSERT INTO comments (ann_id, coms_google_name, coms_google_email, coms_google_pic, coms_content, coms_parent_id) 
+              VALUES (:ann_id, :name, :email, :picture, :content, :parent_id)";
     
     $stmt = $pdo->prepare($query);
-    $stmt->bindParam(':announcement_id', $announcementId, PDO::PARAM_INT);
+    $stmt->bindParam(':ann_id', $announcementId, PDO::PARAM_INT);
     $stmt->bindParam(':name', $googleName, PDO::PARAM_STR);
     $stmt->bindParam(':email', $googleEmail, PDO::PARAM_STR);
     $stmt->bindParam(':picture', $googlePic, PDO::PARAM_STR);
@@ -53,10 +53,10 @@ function addComment($announcementId, $googleName, $googleEmail, $googlePic, $con
 function getRecentComments($limit = 5) {
     global $pdo;
     
-    $query = "SELECT c.*, a.announcement_title 
+    $query = "SELECT c.*, a.ann_title 
               FROM comments c
-              LEFT JOIN announcements a ON c.coms_announcement_id = a.announcement_id
-              WHERE c.coms_parent_id IS NULL  
+              LEFT JOIN announcements a ON c.ann_id = a.ann_id              
+            WHERE c.coms_parent_id IS NULL  
               ORDER BY c.coms_created_at DESC
               LIMIT :limit";
     
@@ -136,7 +136,7 @@ function renderCommentForm($announcementId) {
         <div class="comment-form-container">
             <form class="comment-form" method="post" data-announcement-id="' . $announcementId . '">
                 <input type="hidden" name="action" value="add_comment">
-                <input type="hidden" name="announcement_id" value="' . $announcementId . '">
+                <input type="hidden" name="ann_id" value="' . $announcementId . '">
                 <input type="hidden" name="parent_id" class="parent-id-input" value="">
                 
             <div class="user-info">
@@ -178,7 +178,7 @@ function renderRecentComments($limit = 5) {
     
     foreach ($recentComments as $comment) {
         $profilePic = !empty($comment['coms_google_pic']) ? $comment['coms_google_pic'] : 'images/gavatar.png';
-        $announcementTitle = !empty($comment['announcement_title']) ? $comment['announcement_title'] : 'Announcement';
+        $announcementTitle = !empty($comment['ann_title']) ? $comment['ann_title'] : 'Announcement';
         $dateFormatted = date('F j, Y \a\t g:i a', strtotime($comment['coms_created_at']));
         $shortContent = strlen($comment['coms_content']) > 50 ? substr($comment['coms_content'], 0, 50) . '...' : $comment['coms_content'];
         
@@ -192,7 +192,7 @@ function renderRecentComments($limit = 5) {
             </div>
             <div class="comment-details">
                 <span class="comment-author"><strong>' . htmlspecialchars($comment['coms_google_name']) . '</strong></span>
-                <span class="comment-on">on <a href="#announcement-' . $comment['coms_announcement_id'] . '">' . htmlspecialchars($announcementTitle) . '</a></span>
+                <span class="comment-on">on <a href="#announcement-' . $comment['ann_id'] . '">' . htmlspecialchars($announcementTitle) . '</a></span>
                 <p class="comment-excerpt">' . htmlspecialchars($shortContent) . '</p>
                 <span class="comment-date">' . $dateFormatted . '</span>
             </div>
@@ -239,7 +239,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $googlePic = $googleUser['picture'] ?? null;
     
     // Get comment data
-    $announcementId = isset($_POST['announcement_id']) ? (int)$_POST['announcement_id'] : null;
+    $announcementId = isset($_POST['ann_id']) ? (int)$_POST['ann_id'] : null;
     $content = $_POST['content'] ?? '';
     $parentId = !empty($_POST['parent_id']) ? (int)$_POST['parent_id'] : null;
     

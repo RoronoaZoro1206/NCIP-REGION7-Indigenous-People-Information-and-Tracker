@@ -6,7 +6,7 @@ require_once 'db.php';
 require_once 'google_auth.php';
 require_once 'comments.php';
 
-$announcementId = isset($_GET['announcement_id']) ? (int)$_GET['announcement_id'] : null;
+$announcementId = isset($_GET['ann_id']) ? (int)$_GET['ann_id'] : null;
 
 if ($announcementId) {
     $comments = renderComments($announcementId);

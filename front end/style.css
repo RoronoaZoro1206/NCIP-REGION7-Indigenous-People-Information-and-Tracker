@@ -1882,3 +1882,73 @@ button.show-more-comments:hover,
 button.show-less-comments:hover {
     color: #575858;
 }
+
+.sibling-row input[name^="sib_last_name"] {
+    width: 40%;
+    margin-right: 5px;
+}
+
+.sibling-row input[name^="sib_first_name"] {
+    width: 40%;
+    margin-right: 5px;
+}
+
+.sibling-row input[name^="sib_middle_initial"] {
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
+    text-align: center;
+}
+
+/* Improve styling for scholarship inputs */
+.sibling-row input[name^="scholar_name"] {
+    width: 95%;
+}
+
+/* Improve styling for course and year inputs */
+.sibling-row input[name^="scholar_course"] {
+    width: 60%;
+    margin-right: 5px;
+}
+
+.sibling-row input[name^="scholar_year"] {
+    width: 80px;
+    text-align: center;
+}
+
+/* Table header styling */
+#siblings-table-body th {
+    padding: 8px;
+    text-align: left;
+    background-color: #f5f5f5;
+}
+
+/* Make table more responsive */
+#siblings-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#siblings-container th:nth-child(1) {
+    width: 45%;
+}
+
+#siblings-container th:nth-child(2) {
+    width: 35%;
+}
+
+#siblings-container th:nth-child(3) {
+    width: 20%;
+}
+
+/* Improve visibility of placeholder text */
+input::placeholder {
+    opacity: 0.7;
+}
+
+/* Ensure consistent height for all input fields */
+.sibling-row input {
+    height: 32px;
+    padding: 4px 8px;
+    box-sizing: border-box;
+}

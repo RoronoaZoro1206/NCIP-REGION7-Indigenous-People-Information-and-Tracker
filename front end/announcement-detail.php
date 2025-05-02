@@ -644,7 +644,7 @@ document.querySelectorAll('.comment-form').forEach(form => {
                 }
                 
                 // Reload comments for this announcement
-                fetch(`get_comments.php?announcement_id=${announcementId}`)
+                fetch(`get_comments.php?ann_id=${announcementId}`)
                     .then(res => res.text())
                     .then(html => {
                         commentsContainer.innerHTML = html;

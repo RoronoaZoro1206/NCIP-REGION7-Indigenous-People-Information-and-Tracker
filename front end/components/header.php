@@ -37,7 +37,7 @@
 <!-- END TOP BAR -->
 
 <!-- START HEADER -->
-<div id="header" class="group margin-bottom">
+<div id="header" class="group margin-bottom" style="padding-bottom: 30px;">
 
     <div class="group container">
         <div class="row" id="logo-headersidebar-container">

@@ -12,21 +12,6 @@ if (!isset($_SESSION["user"])) {
 // Include database connection
 require_once 'db.php';
 
-$educationLevels = [
-    '' => 'Select Education Level',
-    'No Formal Education' => 'No Formal Education',
-    'Elementary (Incomplete)' => 'Elementary (Incomplete)',
-    'Elementary Graduate' => 'Elementary Graduate',
-    'High School (Incomplete)' => 'High School (Incomplete)',
-    'High School Graduate' => 'High School Graduate',
-    'Vocational/Technical Course' => 'Vocational/Technical Course',
-    'College (Incomplete)' => 'College (Incomplete)',
-    'College Graduate' => 'College Graduate',
-    'Post Graduate' => 'Post Graduate',
-    'Masteral' => 'Masteral',
-    'Doctorate' => 'Doctorate'
-];
-
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
@@ -444,12 +429,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// Fetch education categories from database
 try {
-    $stmt = $pdo->query("SELECT * FROM EDUCATION_CATEGORY ORDER BY EDUC_ID");
-    $educationCategories = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $educStmt = $pdo->query("SELECT * FROM EDUCATION_CATEGORY ORDER BY EDUC_ID");
+    $educationCategories = [];
+    while ($row = $educStmt->fetch(PDO::FETCH_ASSOC)) {
+       
+        $educationCategories[] = [
+            'EDUC_ID' => $row['educ_id'] ?? $row['EDUC_ID'],
+            'EDUC_NAME' => $row['educ_name'] ?? $row['EDUC_NAME']
+        ];
+    }
 } catch (PDOException $e) {
-    // If unable to fetch from database, use hardcoded values
+    // If unable to fetch, use hardcoded fallback
     $educationCategories = [
         ['EDUC_ID' => 1, 'EDUC_NAME' => 'Elementary'],
         ['EDUC_ID' => 2, 'EDUC_NAME' => 'High School'],
@@ -1076,46 +1067,47 @@ try {
 <div class="form-section">
     <h3>Educational Attainment</h3>
     
-    <table>
-        <thead>
-            <tr>
-                <th>Category</th>
-                <th>School Information</th>
-                <th>Year Graduated</th>
-                <th>Grade Average</th>
-                <th>Rank</th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($educationCategories as $index => $category): ?>
-        <tr>
-            <td><?php 
-            if (isset($category['EDUC_NAME'])) {
-                echo $category['EDUC_NAME'];
-            } elseif (isset($category['educ_name'])) {
-                echo $category['educ_name']; 
-            } else {
-                echo "Category: " . print_r($category, true);
-            }
-            ?></td>
-            <td>
-                <div class="school-name-address-container">
-                    <input type="text" name="school_name[<?php echo $index; ?>]" placeholder="School Name" autocomplete="off">
-                    <input type="text" name="school_address[<?php echo $index; ?>]" placeholder="School Address" autocomplete="off">
-                </div>
+    <table style="width: 100%; table-layout: fixed;">         
+        <thead>             
+            <tr>                 
+                <th style="width: 15%;">Category</th>                 
+                <th style="width: 25%;">School Name</th>
+                <th style="width: 25%;">School Address</th>                 
+                <th style="width: 12%;">Year Graduated</th>                 
+                <th style="width: 12%;">Grade Average</th>                 
+                <th style="width: 12%;">Rank</th>             
+            </tr>          
+        </thead>         
+        <tbody>         
+        <?php foreach ($educationCategories as $index => $category): ?>         
+        <tr>             
+            <td><?php              
+            if (isset($category['EDUC_NAME'])) {                 
+                echo $category['EDUC_NAME'];             
+            } elseif (isset($category['educ_name'])) {                 
+                echo $category['educ_name'];              
+            } else {                 
+                echo "Category: " . print_r($category, true);             
+            }             
+            ?></td>             
+            <td>                 
+                <input type="text" name="school_name[<?php echo $index; ?>]"style="width: 100%;" autocomplete="off">
             </td>
             <td>
-                <input type="number" name="year_graduated[<?php echo $index; ?>]" min="1900" max="<?php echo date('Y'); ?>" placeholder="Year" autocomplete="off">
-            </td>
-            <td>
-                <input type="number" name="grade_average[<?php echo $index; ?>]" step="0.01" min="0" max="100" placeholder="Average" autocomplete="off">
-            </td>
-            <td>
-                <input type="text" name="rank[<?php echo $index; ?>]" placeholder="Rank" autocomplete="off">
-            </td>
-        </tr>
-        <?php endforeach; ?>
-        </tbody>
+                <input type="text" name="school_address[<?php echo $index; ?>]" style="width: 100%;" autocomplete="off">                 
+            </td>             
+            <td>                 
+                <input type="number" name="year_graduated[<?php echo $index; ?>]" min="1900" max="<?php echo date('Y'); ?>" style="width: 100%;" autocomplete="off">             
+            </td>             
+            <td>                 
+                <input type="number" name="grade_average[<?php echo $index; ?>]" min="0" max="100" style="width: 100%;" autocomplete="off">             
+            </td>             
+            <td>                 
+                <input type="text" name="rank[<?php echo $index; ?>]" style="width: 100%;" autocomplete="off">             
+            </td>         
+        </tr>         
+        <?php endforeach; ?>         
+        </tbody>     
     </table>
 </div>
             
@@ -1160,11 +1152,13 @@ try {
                         <div class="form-group">
                             <label for="fam_educ_attain_father">Educational Attainment:</label>
                             <select id="fam_educ_attain_father" name="fam_educ_attain_father">
-                                <?php foreach($educationLevels as $value => $label): ?>
-                                    <option value="<?php echo $value; ?>"><?php echo $label; ?></option>
+                                <option value="">Select Education Level</option>
+                                <?php foreach($educationCategories as $category): ?>
+                                    <option value="<?php echo $category['EDUC_NAME']; ?>"><?php echo $category['EDUC_NAME']; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
+
                                                 
                         <div class="form-group">
                             <label for="fam_ethno_group_father">Ethnolinguistic Group:</label>
@@ -1218,12 +1212,13 @@ try {
                         <div class="form-group">
                             <label for="fam_educ_attain_mother">Educational Attainment:</label>
                             <select id="fam_educ_attain_mother" name="fam_educ_attain_mother">
-                                <?php foreach($educationLevels as $value => $label): ?>
-                                    <option value="<?php echo $value; ?>"><?php echo $label; ?></option>
+                                <option value="">Select Education Level</option>
+                                <?php foreach($educationCategories as $category): ?>
+                                    <option value="<?php echo $category['EDUC_NAME']; ?>"><?php echo $category['EDUC_NAME']; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
-                                                
+                                                                        
                         <div class="form-group">
                             <label for="fam_ethno_group_mother">Ethnolinguistic Group:</label>
                             <input type="text" id="fam_ethno_group_mother" name="fam_ethno_group_mother" autocomplete="off">
@@ -1276,8 +1271,9 @@ try {
                         <div class="form-group">
                             <label for="fam_educ_attain_guardian">Educational Attainment:</label>
                             <select id="fam_educ_attain_guardian" name="fam_educ_attain_guardian">
-                                <?php foreach($educationLevels as $value => $label): ?>
-                                    <option value="<?php echo $value; ?>"><?php echo $label; ?></option>
+                                <option value="">Select Education Level</option>
+                                <?php foreach($educationCategories as $category): ?>
+                                    <option value="<?php echo $category['EDUC_NAME']; ?>"><?php echo $category['EDUC_NAME']; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -1314,31 +1310,31 @@ try {
                         </tr>
                     </thead>
                     <tbody id="siblings-table-body">
-                        <tr class="sibling-row">
-                            <td>
-                                <div class="form-row" style="margin:0">
-                                    <input type="text" name="sib_last_name[0]" placeholder="Last Name" style="width:40%; margin-right:5px;">
-                                    <input type="text" name="sib_first_name[0]" placeholder="First Name" style="width:40%; margin-right:5px;">
-                                    <input type="text" name="sib_middle_initial[0]" placeholder="M.I." style="width:40px; min-width:40px; max-width:40px; text-align:center;" maxlength="1">
-                                </div>
-                            </td>
-                            <td>
-                                <input type="text" name="scholar_name[0]" placeholder="Scholarship Name" style="width:95%">
-                            </td>
-                            <td>
-                                <div class="form-row" style="margin:0">
-                                    <input type="text" name="scholar_course[0]" placeholder="Course" style="width:60%; margin-right:5px;">
-                                    <select name="scholar_year[0]" style="width:80px; padding: 8px 5px;">
-                                        <option value="">Year</option>
-                                        <option value="1st Year">1st Year</option>
-                                        <option value="2nd Year">2nd Year</option>
-                                        <option value="3rd Year">3rd Year</option>
-                                        <option value="4th Year">4th Year</option>
-                                        <option value="5th Year">5th Year</option>
-                                    </select>
-                                </div>
-                            </td>
-                        </tr>
+                    <tr class="sibling-row">
+                        <td>
+                            <div class="form-row" style="margin:0">
+                                <input type="text" name="sib_last_name[0]" placeholder="Last Name" style="width:40%; margin-right:5px;" autocomplete="off">
+                                <input type="text" name="sib_first_name[0]" placeholder="First Name" style="width:40%; margin-right:5px;" autocomplete="off">
+                                <input type="text" name="sib_middle_initial[0]" placeholder="M.I." style="width:40px; min-width:40px; max-width:40px; text-align:center;" maxlength="1" autocomplete="off">
+                            </div>
+                        </td>
+                        <td>
+                            <input type="text" name="scholar_name[0]" placeholder="Scholarship Name" style="width:95%" autocomplete="off">
+                        </td>
+                        <td>
+                            <div class="form-row" style="margin:0">
+                                <input type="text" name="scholar_course[0]" placeholder="Course" style="width:60%; margin-right:5px;" autocomplete="off">
+                                <select name="scholar_year[0]" style="width:80px; padding: 8px 5px;">
+                                    <option value="">Year</option>
+                                    <option value="1st Year">1st Year</option>
+                                    <option value="2nd Year">2nd Year</option>
+                                    <option value="3rd Year">3rd Year</option>
+                                    <option value="4th Year">4th Year</option>
+                                    <option value="5th Year">5th Year</option>
+                                </select>
+                            </div>
+                        </td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -1533,17 +1529,17 @@ try {
     newRow.innerHTML = `
         <td>
             <div class="form-row" style="margin:0">
-                <input type="text" name="sib_last_name[${siblingCount-1}]" placeholder="Last Name" style="width:40%; margin-right:5px;">
-                <input type="text" name="sib_first_name[${siblingCount-1}]" placeholder="First Name" style="width:40%; margin-right:5px;">
-                <input type="text" name="sib_middle_initial[${siblingCount-1}]" placeholder="M.I." style="width:40px; min-width:40px; max-width:40px; text-align:center;" maxlength="1">
+                <input type="text" name="sib_last_name[${siblingCount-1}]" placeholder="Last Name" style="width:40%; margin-right:5px;" autocomplete="off">
+                <input type="text" name="sib_first_name[${siblingCount-1}]" placeholder="First Name" style="width:40%; margin-right:5px;" autocomplete="off">
+                <input type="text" name="sib_middle_initial[${siblingCount-1}]" placeholder="M.I." style="width:40px; min-width:40px; max-width:40px; text-align:center;" maxlength="1" autocomplete="off">
             </div>
         </td>
         <td>
-            <input type="text" name="scholar_name[${siblingCount-1}]" placeholder="Scholarship Name" style="width:95%">
+            <input type="text" name="scholar_name[${siblingCount-1}]" placeholder="Scholarship Name" style="width:95%" autocomplete="off">
         </td>
         <td>
             <div class="form-row" style="margin:0">
-                <input type="text" name="scholar_course[${siblingCount-1}]" placeholder="Course" style="width:60%; margin-right:5px;">
+                <input type="text" name="scholar_course[${siblingCount-1}]" placeholder="Course" style="width:60%; margin-right:5px;" autocomplete="off">
                 <select name="scholar_year[${siblingCount-1}]" style="width:80px; padding: 8px 5px;">
                     <option value="">Year</option>
                     <option value="1st Year">1st Year</option>
@@ -1831,7 +1827,43 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-
+document.addEventListener('DOMContentLoaded', function() {
+    // Target all grade average inputs
+    const gradeAverageInputs = document.querySelectorAll('input[name^="grade_average"]');
+    
+    gradeAverageInputs.forEach(input => {
+        // Ensure attributes are set correctly
+        input.setAttribute('min', '0');
+        input.setAttribute('max', '100');
+        input.setAttribute('type', 'number');
+        
+        // Validate on input to prevent negative numbers and values over 100
+        input.addEventListener('input', function() {
+            // Check for negative values
+            if (this.value && parseFloat(this.value) < 0) {
+                this.value = 0;
+            }
+            
+            // Check for values over 100
+            if (this.value && parseFloat(this.value) > 100) {
+                this.value = 100;
+            }
+        });
+        
+        // Additional validation when field loses focus
+        input.addEventListener('blur', function() {
+            // Check for negative values
+            if (this.value && parseFloat(this.value) < 0) {
+                this.value = 0;
+            }
+            
+            // Check for values over 100
+            if (this.value && parseFloat(this.value) > 100) {
+                this.value = 100;
+            }
+        });
+    });
+});
 </script>
 
 </body>

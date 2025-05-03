@@ -730,6 +730,10 @@ try {
 <!-- START WRAPPER -->
     <div id="wrapper" class="container group">
 
+
+    <!-- SCROLL TO TOP BUTTON -->
+    <?php include 'components/scroll-to-top.php'; ?>
+
     <!-- START TOP BAR -->
     <div id="topbar">
         <div class="container">

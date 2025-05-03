@@ -7,10 +7,10 @@ function getPopularReadings($limit = 5) {
     
     // Query to get the most viewed announcements
     $query = "
-        SELECT a.announcement_id, a.announcement_title, a.announcement_date, COALESCE(av.view_count, 0) as views
+        SELECT a.ann_id, a.ann_title, a.ann_date, COALESCE(av.annv_count, 0) as views
         FROM announcements a
-        LEFT JOIN announcement_views av ON a.announcement_id = av.announcement_id
-        ORDER BY views DESC, a.announcement_date DESC
+        LEFT JOIN announcement_views av ON a.ann_id = av.ann_id
+        ORDER BY views DESC, a.ann_date DESC
         LIMIT ?
     ";
     
@@ -39,15 +39,15 @@ function renderPopularReadings($limit = 5) {
         ];
         
         // Get image path and URL, use defaults if not found
-        $image_path = $image_mapping[$reading['announcement_id']] ?? 'images/default-thumbnail.jpg';
-        $url = $url_mapping[$reading['announcement_id']] ?? '#';
+        $image_path = $image_mapping[$reading['ann_id']] ?? 'images/default-thumbnail.jpg';
+        $url = $url_mapping[$reading['ann_id']] ?? '#';
         
         // Format the date
-        $date = new DateTime($reading['announcement_date']);
+        $date = new DateTime($reading['ann_date']);
         $formatted_date = $date->format('F j, Y');
         
         // Create shortened title if too long (over 40 chars)
-        $title = $reading['announcement_title'];
+        $title = $reading['ann_title'];
         $short_title = (strlen($title) > 40) ? substr($title, 0, 37) . '...' : $title;
         
         $output .= '
@@ -60,7 +60,7 @@ function renderPopularReadings($limit = 5) {
                     ' . htmlspecialchars($short_title) . '
                 </a>
                 <p class="post-date">' . $formatted_date . '</p>
-                <p class="view-count"><small>(' . $reading['views'] . ' ' . ($reading['views'] == 1 ? 'view' : 'views') . ')</small></p>
+                <p class="view-count"><small>(' . $reading['views'] . ' ' . ($reading['views'] <= 1 ? 'view' : 'views') . ')</small></p>
             </div>
         </div>';
     }

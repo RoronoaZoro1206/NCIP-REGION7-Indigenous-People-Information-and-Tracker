@@ -134,36 +134,18 @@ $authSuccess = isset($_GET['auth_success']);
 
                     <div class="widget-last widget widget_text">
                         <div class="textwidget">
-                        <div class="socials-default-small facebook-small default">
-                                <a href="https://www.facebook.com/CebuPO" target="_blank" class="socials-default-small default facebook" >facebook</a>
+                            <div class="socials-default-small facebook-small default">
+                                <a href="https://www.facebook.com/CebuPO" target="_blank" class="socials-default-small default facebook">facebook</a>
                             </div>
 
                             <div class="socials-default-small instagram-small default">
-                                <a href="https://www.instagram.com/ncipcebupo/" target="_blank" class="socials-default-small default instagram" >instagram</a>
+                                <a href="https://www.instagram.com/ncipcebupo/" target="_blank" class="socials-default-small default instagram">instagram</a>
                             </div>
 
                             <div class="socials-default-small google-small default">
-                            <a href="mailto:region67.cebupo@ncip.gov.ph" target="_blank" class="socials-default-small default google">Gmail</a>
+                                <a href="mailto:region67.cebupo@ncip.gov.ph" target="_blank" class="socials-default-small default google">Gmail</a>
                             </div>
-
-                            <div class="socials-default-small twitter-small default">
-                                <a href="#" class="socials-default-small default twitter" >twitter</a>
-                            </div>
-
-                            <div class="socials-default-small flickr-small default">
-                                <a href="#" class="socials-default-small default flickr" >flickr</a>
-                            </div>
-
-                            <div class="socials-default-small rss-small default">
-                                <a href="#" class="socials-default-small default rss" >rss</a>
-                            </div>
-
-                            <div class="socials-default-small pinterest-small default">
-                                <a href="#" class="socials-default-small default pinterest" >pinterest</a>
-
-                            </div>
-                         </div>
-
+                        </div>
                     </div>
                 </div>
             </div>
@@ -662,7 +644,7 @@ document.querySelectorAll('.comment-form').forEach(form => {
                 }
                 
                 // Reload comments for this announcement
-                fetch(`get_comments.php?announcement_id=${announcementId}`)
+                fetch(`get_comments.php?ann_id=${announcementId}`)
                     .then(res => res.text())
                     .then(html => {
                         commentsContainer.innerHTML = html;

@@ -1,3 +1,10 @@
+<?php
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en-US">
 <!-- START HEAD -->
@@ -78,6 +85,13 @@
                         <li>
                             <a href="contact.php">CONTACT</a>
                         </li>
+                        
+                        
+                        <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+                            <li>
+                                <a href="admin_contacts.php">Admin Messages</a>
+                            </li>
+                            <?php endif; ?>
                     </ul>
                     <!-- END MAIN NAVIGATION -->
 
@@ -96,7 +110,7 @@
                 <div id="logo" class="span6 group">
                     <div id="logo-container">
                         <a id="logo-img" href="index.php" title="NCIP">
-                            <img src="images/ncip-header-logo.png" title="NCIP" alt="NCIP Header Logo" />
+                            <img src="images/ncip-logo.png" title="NCIP" alt="NCIP Header Logo" />
                         </a>
                         <a id="second-logo-img" href="index.php" title="Bagong Pilipinas">
                             <img src="images/bagong-pilipinas-header-logo.png" title="Bagong Pilipinas" alt="Bagong Pilipinas Header Logo" />
@@ -127,36 +141,18 @@
 
                     <div class="widget-last widget widget_text">
                         <div class="textwidget">
-                        <div class="socials-default-small facebook-small default">
-                                <a href="https://www.facebook.com/CebuPO" target="_blank" class="socials-default-small default facebook" >facebook</a>
+                            <div class="socials-default-small facebook-small default">
+                                <a href="https://www.facebook.com/CebuPO" target="_blank" class="socials-default-small default facebook">facebook</a>
                             </div>
 
                             <div class="socials-default-small instagram-small default">
-                                <a href="https://www.instagram.com/ncipcebupo/" target="_blank" class="socials-default-small default instagram" >instagram</a>
+                                <a href="https://www.instagram.com/ncipcebupo/" target="_blank" class="socials-default-small default instagram">instagram</a>
                             </div>
 
                             <div class="socials-default-small google-small default">
-                            <a href="mailto:region67.cebupo@ncip.gov.ph" target="_blank" class="socials-default-small default google">Gmail</a>
+                                <a href="mailto:region67.cebupo@ncip.gov.ph" target="_blank" class="socials-default-small default google">Gmail</a>
                             </div>
-
-                            <div class="socials-default-small twitter-small default">
-                                <a href="#" class="socials-default-small default twitter" >twitter</a>
-                            </div>
-
-                            <div class="socials-default-small flickr-small default">
-                                <a href="#" class="socials-default-small default flickr" >flickr</a>
-                            </div>
-
-                            <div class="socials-default-small rss-small default">
-                                <a href="#" class="socials-default-small default rss" >rss</a>
-                            </div>
-
-                            <div class="socials-default-small pinterest-small default">
-                                <a href="#" class="socials-default-small default pinterest" >pinterest</a>
-
-                            </div>
-                         </div>
-
+                        </div>
                     </div>
                 </div>
             </div>

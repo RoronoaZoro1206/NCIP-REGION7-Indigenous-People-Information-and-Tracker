@@ -69,7 +69,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $adminStmt->bindParam(':assistance_type', $_POST['assistance_type']);
         
         $adminStmt->execute();
-        $adminCode = $pdo->lastInsertId('administrator_admin_code_seq');
+
+        $adminCode = null;
+        if ($adminStmt->rowCount() > 0) {
+            $result = $adminStmt->fetch(PDO::FETCH_ASSOC);
+            $adminCode = $result['admin_code'];
+        }
+        
+        if (!$adminCode) {
+            throw new Exception("Failed to get ADMIN_CODE after insertion");
+        }
         
         // 2. Insert into APPLICANT table
         $applicantStmt = $pdo->prepare("
@@ -86,8 +95,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 APP_EMAIL, 
                 APP_FORM_SIGNED,
                 APP_SIGNATURE_DATE,
-                APP_ENCODED_BY,
-                APP_ENCODING_DATE,
                 ADMIN_CODE
             ) VALUES (
                 :last_name, 
@@ -102,8 +109,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 :email,
                 :form_signed,
                 :signature_date,
-                :encoder_id,
-                CURRENT_TIMESTAMP, 
                 :admin_code
             ) RETURNING APP_CODE
         ");
@@ -125,11 +130,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $applicantStmt->bindParam(':email', $_POST['email']);
         $applicantStmt->bindParam(':form_signed', $formSigned, PDO::PARAM_BOOL);
         $applicantStmt->bindParam(':signature_date', $signatureDate);
-        $applicantStmt->bindParam(':encoder_id', $encoderId);
         $applicantStmt->bindParam(':admin_code', $adminCode);
         
         $applicantStmt->execute();
-        $appCode = $pdo->lastInsertId('applicant_app_code_seq');
+
+        $appCode = null;
+        if ($applicantStmt->rowCount() > 0) {
+            $result = $applicantStmt->fetch(PDO::FETCH_ASSOC);
+            $appCode = $result['app_code'];
+        }
+        
+        if (!$appCode) {
+            throw new Exception("Failed to get APP_CODE after insertion");
+        }
         
         // Handle signature scan upload if included
         if(isset($_FILES['signature_scan']) && $_FILES['signature_scan']['error'] == 0) {
@@ -142,14 +155,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     SCAN_FILENAME,
                     SCAN_FILETYPE,
                     SCAN_DATA,
-                    APP_CODE,
-                    USER_ID
+                    APP_CODE
                 ) VALUES (
                     :filename,
                     :filetype,
                     :filedata,
-                    :app_code,
-                    :uploaded_by
+                    :app_code
                 )
             ");
             
@@ -157,7 +168,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $scanStmt->bindParam(':filetype', $fileType);
             $scanStmt->bindParam(':filedata', $fileContent, PDO::PARAM_LOB);
             $scanStmt->bindParam(':app_code', $appCode);
-            $scanStmt->bindParam(':uploaded_by', $encoderId);
             $scanStmt->execute();
         }
         
@@ -202,7 +212,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             
             // Get category ID
-            $categoryId = $index + 1; // Assuming IDs match the order in the array
+            $categoryId = $index + 1; 
             
             // Insert education attainment
             $eduStmt = $pdo->prepare("
@@ -219,7 +229,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $eduStmt->bindParam(':app_code', $appCode);
             $eduStmt->execute();
             
-            $eduCode = $pdo->lastInsertId('education_attainment_edua_code_seq');
+            $eduCode = null;
+
+            if ($eduStmt->rowCount() > 0) {
+                $result = $eduStmt->fetch(PDO::FETCH_ASSOC);
+                $eduCode = $result['edua_code'];
+            }
+            
+            if (!$eduCode) {
+                throw new Exception("Failed to get EDUA_CODE after insertion for category: " . $category);
+            }
+            
             
             // Insert school details
             $schoolStmt = $pdo->prepare("
@@ -241,7 +261,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             ");
             
             $schoolStmt->bindParam(':name', $_POST['school_name'][$index]);
-            $schoolStmt->bindParam(':address', $_POST['school_address'][$index] ?? '');
+            $schoolAddress = $_POST['school_address'][$index] ?? '';
+            $schoolStmt->bindParam(':address', $schoolAddress);
             $yearGraduated = !empty($_POST['year_graduated'][$index]) ? (int)$_POST['year_graduated'][$index] : null;
             $schoolStmt->bindParam(':year_grad', $yearGraduated);
             $gradeAverage = !empty($_POST['grade_average'][$index]) ? (float)$_POST['grade_average'][$index] : null;
@@ -339,7 +360,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $sibStmt->bindParam(':app_code', $appCode);
             
             $sibStmt->execute();
-            $sibCode = $pdo->lastInsertId('sibling_sib_code_seq');
+            
+            $sibCode = null;
+
+            if ($sibStmt->rowCount() > 0) {
+                $result = $sibStmt->fetch(PDO::FETCH_ASSOC);
+                $sibCode = $result['sib_code'];
+            }
+            
+            if (!$sibCode) {
+                throw new Exception("Failed to get SIB_CODE after insertion for sibling: " . $_POST['sib_first_name'][$i]);
+            }
             
             // Insert scholarship details if applicable
             if (!empty($_POST['scholar_name'][$i])) {
@@ -359,7 +390,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 
                 $scholarStmt->bindParam(':name', $_POST['scholar_name'][$i]);
                 $scholarStmt->bindParam(':course', $_POST['scholar_course'][$i]);
-                $scholarYear = !empty($_POST['scholar_year'][$i]) ? (int)$_POST['scholar_year'][$i] : null;
+        $scholarYear = !empty($_POST['scholar_year'][$i]) ? $_POST['scholar_year'][$i] : null;
                 $scholarStmt->bindParam(':year', $scholarYear);
                 $scholarStmt->bindParam(':sib_code', $sibCode);
                 
@@ -558,8 +589,6 @@ try {
             height: 38px; 
         }
 
-
-        /* Create two separate fields for school name and address */
 .school-name-address-container {
     display: flex;
     gap: 10px;
@@ -1272,8 +1301,6 @@ try {
             </div>
             
         <!-- Siblings Enjoying Scholarship section -->
-
-        <!-- Siblings Enjoying Scholarship section -->
         <div class="form-section">
             <h3>Siblings Enjoying Scholarship</h3>
             
@@ -1301,7 +1328,14 @@ try {
                             <td>
                                 <div class="form-row" style="margin:0">
                                     <input type="text" name="scholar_course[0]" placeholder="Course" style="width:60%; margin-right:5px;">
-                                    <input type="number" name="scholar_year[0]" placeholder="Year" style="width:80px; text-align:center;" min="1900" max="2025">
+                                    <select name="scholar_year[0]" style="width:80px; padding: 8px 5px;">
+                                        <option value="">Year</option>
+                                        <option value="1st Year">1st Year</option>
+                                        <option value="2nd Year">2nd Year</option>
+                                        <option value="3rd Year">3rd Year</option>
+                                        <option value="4th Year">4th Year</option>
+                                        <option value="5th Year">5th Year</option>
+                                    </select>
                                 </div>
                             </td>
                         </tr>
@@ -1371,23 +1405,9 @@ try {
                         <input type="date" id="signature_date" name="signature_date" max="<?php echo date('Y-m-d'); ?>">
                     </div>
                     
-                    <!-- Optional: Upload scanned signature -->
                     <div class="form-group">
-                        <label for="signature_scan">Upload scan of signature page (optional):</label>
+                        <label for="signature_scan">Upload scan of e-signature:</label>
                         <input type="file" id="signature_scan" name="signature_scan" accept="image/jpeg,image/png,application/pdf">
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="encoder_name">Encoded by:</label>
-                        <input type="text" id="encoder_name" name="encoder_name" value="<?php echo htmlspecialchars($_SESSION['user']); ?>" readonly>
-                        <input type="hidden" name="encoder_id" value="<?php echo htmlspecialchars($_SESSION['user_id']); ?>">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="encoding_date">Date encoded:</label>
-                        <input type="text" id="encoding_date" value="<?php echo date('Y-m-d'); ?>" readonly>
                     </div>
                 </div>
             </div>
@@ -1524,7 +1544,14 @@ try {
         <td>
             <div class="form-row" style="margin:0">
                 <input type="text" name="scholar_course[${siblingCount-1}]" placeholder="Course" style="width:60%; margin-right:5px;">
-                <input type="number" name="scholar_year[${siblingCount-1}]" placeholder="Year" style="width:80px; text-align:center;" min="1900" max="${currentYear}">
+                <select name="scholar_year[${siblingCount-1}]" style="width:80px; padding: 8px 5px;">
+                    <option value="">Year</option>
+                    <option value="1st Year">1st Year</option>
+                    <option value="2nd Year">2nd Year</option>
+                    <option value="3rd Year">3rd Year</option>
+                    <option value="4th Year">4th Year</option>
+                    <option value="5th Year">5th Year</option>
+                </select>
             </div>
         </td>
     `;

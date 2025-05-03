@@ -51,123 +51,10 @@
 <!-- START WRAPPER -->
     <div id="wrapper" class="container group">
 
-    <!-- START SCROLL TO TOP BUTTON -->
+    <!-- SCROLL TO TOP BUTTON -->
     <?php include 'components/scroll-to-top.php'; ?>
-    <!-- END SCROLL TO TOP BUTTON -->
-
-    <!-- START TOP BAR -->
-    <div id="topbar">
-        <div class="container">
-            <div class="row">
-                <div id="nav" class="span12 light">
-
-                    <!-- START MAIN NAVIGATION -->
-                    <ul id="menu-menu" class="level-1">
-                        <li>
-                            <a href="index.php" >HOME</a>
-                        </li>
-                        <li>
-                            <a href="about.php">ABOUT</a>
-                        </li>
-                        <li>
-                            <a href="program.php">PROGRAM</a>
-                        </li>
-                        <li>
-                            <a href="portfolio.php">PORTFOLIO</a>
-                        </li>
-                        <li>
-                            <a href="announcement.php">ANNOUNCEMENT</a>
-                        </li>
-                        <li>
-                            <a href="e-service.php">E-SERVICE</a>
-                        </li>
-                        <li>
-                            <a href="contact.php">CONTACT</a>
-                        </li>
-                    </ul>
-                    <!-- END MAIN NAVIGATION -->
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- END TOP BAR -->
-
-    <!-- START HEADER -->
-    <div id="header" class="group margin-bottom" style="padding-bottom: 30px;">
-
-        <div class="group container">
-            <div class="row" id="logo-headersidebar-container">
-                <!-- START LOGO -->
-                <div id="logo" class="span6 group">
-                    <div id="logo-container">
-                        <a id="logo-img" href="index.php" title="NCIP">
-                            <img src="images/ncip-header-logo.png" title="NCIP" alt="NCIP Header Logo" />
-                        </a>
-                        <a id="second-logo-img" href="index.php" title="Bagong Pilipinas">
-                            <img src="images/bagong-pilipinas-header-logo.png" title="Bagong Pilipinas" alt="Bagong Pilipinas Header Logo" />
-                        </a>
-                    </div>
-                    <div id="textual">
-                        <p id='tagline'>
-                            REPUBLIC OF THE PHILIPPINES<br>
-                            OFFICE OF THE PRESIDENT<br>
-                            <strong>NATIONAL COMMISSION ON INDIGENOUS PEOPLES</strong>
-                        </p>
-                    </div>
-                </div>                              
-                <!-- END LOGO -->
-
-                <!-- START HEADER SIDEBAR -->
-                <div id="header-sidebar" class="span6 group">
-                    <div class="widget-first widget header-text-image">
-                        <div class="text-image" style="text-align:left">
-                            <img src="images/phone1.png" alt="CUSTOMER SUPPORT" />
-                        </div>
-
-                        <div class="text-content">
-                            <h3>CUSTOMER SUPPORT</h3>
-                            <p>+63 &nbsp;998 - 765 - 4321</p>
-                        </div>
-                    </div>
-
-                    <div class="widget-last widget widget_text">
-                        <div class="textwidget">
-                        <div class="socials-default-small facebook-small default">
-                                <a href="https://www.facebook.com/CebuPO" target="_blank" class="socials-default-small default facebook" >facebook</a>
-                            </div>
-
-                            <div class="socials-default-small instagram-small default">
-                                <a href="https://www.instagram.com/ncipcebupo/" target="_blank" class="socials-default-small default instagram" >instagram</a>
-                            </div>
-
-                            <div class="socials-default-small google-small default">
-                            <a href="mailto:region67.cebupo@ncip.gov.ph" target="_blank" class="socials-default-small default google">Gmail</a>
-                            </div>
-
-                            <div class="socials-default-small twitter-small default">
-                                <a href="#" class="socials-default-small default twitter" >twitter</a>
-                            </div>
-
-                            <div class="socials-default-small flickr-small default">
-                                <a href="#" class="socials-default-small default flickr" >flickr</a>
-                            </div>
-
-                            <div class="socials-default-small rss-small default">
-                                <a href="#" class="socials-default-small default rss" >rss</a>
-                            </div>
-
-                            <div class="socials-default-small pinterest-small default">
-                                <a href="#" class="socials-default-small default pinterest" >pinterest</a>
-
-                            </div>
-                         </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- END HEADER -->
+    <!-- HEADER -->
+    <?php include 'components/header.php'; ?>
 
     <!-- SLOGAN -->
     <div class="slogan">
@@ -339,194 +226,191 @@
                                                 <h4 class="tab-index tab-closed"><a href="#" title="Close" style="font-size: 12px;"><span class="icon-plus-sign"></span><b> National Commission on Indigenous Cultural Communities/lndigenous Peoples (NCIP) Compliance with Section 93 (Transparency Seal)</b></a></h4>
 
                                                 <div class="content-tab closed">
-                                                <ol type="I" style="margin-left: 30px; padding-left: 0; list-style-position: inside;">
-                                                <li style="color: #0c243d;"><b>Agency’s Mandate, Vision, Mission and List of Officials</b></li>
-                                                <ul>
-                                                    <li>NCIP’s Mandate, Vision & Mission and Functions</li>
-                                                    <li>NCIP Officials</li>
-                                                </ul>
-                                                <li style="color: #0c243d;"><b>Annual Financial Reports</b></li>
-                                                <ul>
-                                                    <li>Annual Physical Report of Operations/Physical Plan</li>
+                                                    <ol type="I" style="margin-left: 30px; padding-left: 0; list-style-position: inside;">
+                                                    <li style="color: #0c243d;"><b>Agency’s Mandate, Vision, Mission and List of Officials</b></li>
                                                     <ul>
-                                                        <li>2023 BAR I</li>
-                                                        <li>2022 BAR I</li>
-                                                        <li>2021 BAR I</li>
-                                                        <li>2020 BAR I</li>
-                                                        <li>2019 BAR I</li>
-                                                        <li>2018 BAR I</li>
-                                                        <li>2017 BAR I</li>
-                                                        <li>2016 BAR I</li>
-                                                        <li>2015 BAR I</li>
+                                                        <li><a href="https://ncip.gov.ph/?page_id=89" target="_blank">NCIP’s Mandate, Vision & Mission and Functions</a></li>
+                                                        <li><a href="https://ncip.gov.ph/ncip-officials/" target="_blank">NCIP Officials</a></li>
                                                     </ul>
-                                                </ul>
-                                                <ul>
-                                                    <li>Statement of Appropriations, Allotments, Obligations, Disbursements and Balances (SAAOBDB)</li>
+
+                                                    <li style="color: #0c243d;"><b>Annual Financial Reports</b></li>
                                                     <ul>
-                                                        <li>2023 FAR No. 1 | Continuing as of December 2023 | Current as of December 2023</li>
-                                                        <li>2022 FAR No. 1 | 1st Quarter | 2nd Quarter | 4th Quarter</li>
-                                                        <li>2021 FAR No. 1 | 1st Quarter | 2nd Quarter</li>
-                                                        <li>2020 FAR No. 1</li>
-                                                        <li>2019 FAR No. 1</li>
-                                                        <li>2018 FAR No. 1</li>
-                                                        <li>2017 FAR No. 1</li>
-                                                        <li>2016 FAR No. 1</li>
+                                                        <li>Annual Physical Report of Operations/Physical Plan</li>
+                                                        <ul>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/2023-NCIP-BAR-1-as-of-Dec-31-2023.pdf" target="_blank">2023 BAR I</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2023/03/2022-BAR-1-Summary-Transparency-Seal.pdf" target="_blank">2022 BAR I</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2023/03/SUMMARY-BAR-1-URS-4th-Quarter-2021-with-comments-merged.pdf" target="_blank">2021 BAR I</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2021/06/bar-2020.pdf" target="_blank">2020 BAR I</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/Consolidated-BAR-1-Report-FY-2019.pdf" target="_blank">2019 BAR I</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/2018-Consolidated-BAR-1-Report.pdf" target="_blank">2018 BAR I</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/Consolidated-BAR-1-Report-as-of-December-31-2017-Current.pdf" target="_blank">2017 BAR I</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/Updated-Continuing-Appropriation.pdf" target="_blank">2016 BAR I</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/NCIP-CONSOLIDATED-BAR-1-REPORT-2015-.pdf" target="_blank">2015 BAR I</a></li>
+                                                        </ul>
+                                                        <li>Statement of Appropriations, Allotments, Obligations, Disbursements and Balances (SAAOBDB)</li>
+                                                        <ul>
+                                                            <li>2023 FAR No. 1 | <a href="https://ncip.gov.ph/wp-content/uploads/2024/03/Consolidated-FAR-1-Continuing-for-Quarter-Ending-Dec-31-2024.pdf" target="_blank">Continuing as of December 2023</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2024/03/Consolidated-FAR-1-Current-for-Quarter-Ending-Dec-31-2023.pdf" target="_blank">Current as of December 2023</a></li>
+                                                            <li>2022 FAR No. 1 | <a href="https://ncip.gov.ph/wp-content/uploads/2022/08/FAR-1-1st-Quarter-2022.pdf" target="_blank">1st Quarter</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2022/08/FAR-1-2nd-QTR.pdf" target="_blank">2nd Quarter</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2023/03/FAR-1-4th-Quarter.pdf" target="_blank">4th Quarter</a></li>
+                                                            <li>2021 FAR No. 1 | <a href="https://ncip.gov.ph/wp-content/uploads/2021/06/FAR-1-1st-quarter.pdf" target="_blank">1st Quarter</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2022/08/FAR-1-2nd-QTR.pdf" target="_blank">2nd Quarter</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2021/06/FAR-12020.pdf" target="_blank">2020 FAR No. 1</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/FAR-1-Dec-2019.pdf" target="_blank">2019 FAR No. 1</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/FAR-No.-1-Authorization-01-December-31-2018.pdf" target="_blank">2018 FAR No. 1</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/Far-1-Dec-31-2017-Authorization-01.pdf" target="_blank">2017 FAR No. 1</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/FAR-No.-1-Dec-31-2016.pdf" target="_blank">2016 FAR No. 1</a></li>
+                                                        </ul>
+                                                        <li>Aging of Unpaid Obligations</li>
+                                                        <ul>
+                                                            <li>2023 FAR No. 3 | <a href="https://ncip.gov.ph/wp-content/uploads/2024/03/Consolidated-FAR-3-as-of-December-31-2023.pdf" target="_blank">4th Quarter</a></li>
+                                                            <li>2022 FAR No. 3 | <a href="https://ncip.gov.ph/wp-content/uploads/2023/03/FAR-3-December-31-2022.pdf" target="_blank">4th Quarter</a></li>
+                                                        </ul>
+                                                        <li>Monthly Report of Disbursements</li>
+                                                        <ul>
+                                                            <li>2023 FAR No. 4 | (Regular, Trust Fund as of <a href="https://ncip.gov.ph/wp-content/uploads/2024/03/Consolidated-FAR-4-Regular-Fund-October-2023.pdf" target="_blank">October</a> / <a href="https://ncip.gov.ph/wp-content/uploads/2024/03/Consolidated-FAR-4-Regular-November-2023.pdf" target="_blank">November</a> / <a href="https://ncip.gov.ph/wp-content/uploads/2024/03/Consolidated-FAR-4-Trust-Fund-December-2023.pdf" target="_blank">December</a> 2023)</li>
+                                                            <li>2022 FAR No. 4 | <a href="https://ncip.gov.ph/wp-content/uploads/2022/08/FAR-1-1st-Quarter-2022.pdf" target="_blank">1st Quarter</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2022/08/FAR-4-2nd-QTR.pdf" target="_blank">2nd Quarter</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2023/03/FAR-4-4th-Quarter.pdf" target="_blank">4th Quarter</a></li>
+                                                            <li>2021 FAR No. 4 | January | February | March | <a href="https://ncip.gov.ph/wp-content/uploads/2021/08/FAR4_MRD_Apr2021.pdf" target="_blank">April</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2021/08/FAR4_MRD_May2021.pdf" target="_blank">May</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2021/08/FAR4_MRD_June2021.pdf" target="_blank">June</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2021/06/FAR-4-2020.pdf" target="_blank">2020 FAR No. 4</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/FAR-4-Dec-2019.pdf" target="_blank">2019 FAR No. 4</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/FAR-No.-4.pdf" target="_blank">2018 FAR No. 4</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/FAR-NO.-4.pdf" target="_blank">2017 FAR No. 4</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/FAR-No.-4-Dec-31-2016.pdf" target="_blank">2016 FAR No. 4</a></li>
+                                                        </ul>
+                                                        <li>Quarterly Report on Revenue and Other Receipts</li>
+                                                        <ul>
+                                                            <li>2023 FAR No. 5 | (<a href="https://ncip.gov.ph/wp-content/uploads/2024/03/Consolidated-FAR-5-Trust-Fund-for-the-Quarter-Ending-December-31-2023.pdf" target="_blank">Regular, Trust</a> Fund as of December 2023)</li>
+                                                            <li>2022 FAR No. 5 | 1st Quarter | <a href="https://ncip.gov.ph/wp-content/uploads/2022/08/FAR-5-2nd-QTR.pdf" target="_blank">2nd Quarter</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2023/03/FAR-5-4th-Quarter.pdf" target="_blank">4th Quarter</a></li>
+                                                            <li>2021 FAR No. 5 | 1st Quarter | <a href="https://ncip.gov.ph/wp-content/uploads/2021/08/FAR5_2ndQtr2021.pdf" target="_blank">2nd Quarter</a></li>
+                                                            <li>2020 FAR No. 5 | <a href="https://ncip.gov.ph/wp-content/uploads/2020/11/FAR-5-as-of-MAr-312-020-1.pdf" target="_blank">1st Quarter</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2020/11/FAR-5-as-of-June-30-2020-1.pdf" target="_blank">2nd Quarter</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2020/11/FAR-5.pdf" target="_blank">3rd Quarter</a></li>
+                                                            <li>2019 FAR No. 5</li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/FAR-No.-5-Dec-31-2018.pdf" target="_blank">2018 FAR No. 5</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/FAR-NO.-5.pdf" target="_blank">2017 FAR No. 5</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/FAR-No.-5-Dec-31-2016.pdf" target="_blank">2016 FAR No. 5</a></li>
+                                                        </ul>
+                                                        <li>Financial Plan (Detailed Statement of Current Year’s Obligations, Disbursements and Unpaid Obligations)</li>
+                                                        <ul>
+                                                            <li>2023 FAR No. 1-A | <a href="https://ncip.gov.ph/wp-content/uploads/2024/03/Consolidated-FAR-1A-Continuing-for-Quarter-Ending-Dec-31-2023.pdf" target="_blank">Continuing as of December 2023</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2024/03/Consolidated-FAR-1A-Current-for-Quarter-Ending-Dec-31-2023.pdf" target="_blank">Current as of December 2023</a></li>
+                                                            <li>2022 FAR No. 1-A | <a href="https://ncip.gov.ph/wp-content/uploads/2022/08/FAR-1-1st-Quarter-2022.pdf" target="_blank">1st Quarter</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2022/08/FAR-1a-2nd-QTR.pdf" target="_blank">2nd Quarter</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2023/03/FAR-1a-4th-Quarter.pdf" target="_blank">4th QuarterA</a></li>
+                                                            <li>2021 FAR No. 1-A | 1ST Quarter | <a href="https://ncip.gov.ph/wp-content/uploads/2021/08/FAR1A_2ndQtr2021.pdf" target="_blank">2nd Quarter</a></li>
+                                                            <li>2020 FAR No. 1-A | <a href="https://ncip.gov.ph/wp-content/uploads/2020/11/FAR-1a-as-of-MAr-312-020.pdf" target="_blank">1st Quarter</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2020/11/FAR1a_Current-as-of-June-30-2020.pdf" target="_blank">2nd Quarter</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2020/11/FAR1A.pdf" target="_blank">3rd Quarter</a></li>
+                                                            <li>2019 FAR No. 1-A</li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/FAR-No.-5-Dec-31-2018.pdf" target="_blank">2018 FAR No. 1-A</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/Far-1-A-Dec-31-2017-Authorization-01.pdf" target="_blank">2017 FAR No. 1-A</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/FAR-No.-1-A-Dec-31-2016.pdf" target="_blank">2016 FAR No. 1-A</a></li>
+                                                        </ul>
+                                                        <li>List of Allotments and Sub-allotments</li>
+                                                        <ul>
+                                                            <li>2022 FAR No. 1B | <a href="https://ncip.gov.ph/wp-content/uploads/2023/03/FAR-1B-December-31-2022.pdf" target="_blank">4th Quarter</a></li>
+                                                        </ul>
                                                     </ul>
-                                                </ul>
-                                                <ul>
-                                                    <li>Aging of Unpaid Obligations</li>
+
+                                                    <li style="color: #0c243d;"><b>DBM Approved Budget and Corresponding Targets</b></li>
                                                     <ul>
-                                                        <li>2023 FAR No. 3 | 4th Quarter</li>
-                                                        <li>2022 FAR No. 3 | 4th Quarter</li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2023/10/NCIP-GAA-2023-Targets_merged.pdf" target="_blank">2023</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2023/10/NCIP-GAA-2022_merged.pdf" target="_blank">2022</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2022/08/2021-GAA.pdf" target="_blank">2021</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/2020.pdf" target="_blank">2020</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/2019.pdf" target="_blank">2019</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/2018.pdf" target="_blank">2018</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/2017.pdf" target="_blank">2017</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2020/08/2016.pdf" target="_blank">2016</a></li>
                                                     </ul>
-                                                </ul>
-                                                <ul>
-                                                    <li>Monthly Report of Disbursements</li>
+
+                                                    <li style="color: #0c243d;"><b>Projects, Programs and Activities, Beneficiaries, and Status of Implementation</b></li>
                                                     <ul>
-                                                        <li>2023 FAR No. 4 | (Regular, Trust Fund as of October 2023) | (Regular, Trust Fund as of November 2023) | (Regular, Trust Fund as of December 2023)</li>
-                                                        <li>2022 FAR No. 4 | 1st Quarter | 2nd Quarter | 4th Quarter</li>
-                                                        <li>2021 FAR No. 4 | January | February | March | April | May | June</li>
-                                                        <li>2020 FAR No. 4</li>
-                                                        <li>2019 FAR No. 4</li>
-                                                        <li>2018 FAR No. 4</li>
-                                                        <li>2017 FAR No. 4</li>
-                                                        <li>2016 FAR No. 4</li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2025/04/PPBER-Transparency-Seal-2024.pdf" target="_blank">2024</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2025/04/PPBER-Transparency-Seal-2023.pdf" target="_blank">2023</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2023/08/PPBER-Transparency-Seal-2022.pdf" target="_blank">2022</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2022/08/Projects-Programs-and-Activities-Beneficiaries-and-Status-of-Implementation-2021.pdf" target="_blank">2021</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2022/08/Projects-Programs-and-Activities-Beneficiaries-and-Status-of-Implementation-2020.pdf" target="_blank">2020</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2022/08/Projects-Programs-and-Activities-Beneficiaries-and-Status-of-Implementation-2019.pdfhttps://ncip.gov.ph/wp-content/uploads/2022/08/Projects-Programs-and-Activities-Beneficiaries-and-Status-of-Implementation-2019.pdf" target="_blank">2019</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2022/08/Projects-Programs-and-Activities-Beneficiaries-and-Status-of-Implementation-2018.pdf" target="_blank">2018</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2022/08/Projects-Programs-and-Activities-Beneficiaries-and-Status-of-Implementation-2017.pdf" target="_blank">2017</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2022/08/Projects-Programs-and-Activities-Beneficiaries-and-Status-of-Implementation-2016.pdf" target="_blank">2016</a></li>
                                                     </ul>
-                                                </ul>
-                                                <ul>
-                                                    <li>Quarterly Report on Revenue and Other Receipts</li>
+
+                                                    <li style="color: #0c243d;"><b>Agency Procurement Plan</b></li>
                                                     <ul>
-                                                        <li>2023 FAR No. 5 | (Regular, Trust Fund as of December 2023)</li>
-                                                        <li>2022 FAR No. 5 | 1st Quarter | 2nd Quarter | 4th Quarter</li>
-                                                        <li>2021 FAR No. 5 | 1st Quarter | 2nd Quarter</li>
-                                                        <li>2020 FAR No. 5 | 1st Quarter | 2nd Quarter | 3rd Quarter</li>
-                                                        <li>2019 FAR No. 5</li>
-                                                        <li>2018 FAR No. 5</li>
-                                                        <li>2017 FAR No. 5</li>
-                                                        <li>2016 FAR No. 5</li>
-                                                    </ul>
-                                                </ul>
-                                                <ul>
-                                                    <li>Financial Plan (Detailed Statement of Current Year’s Obligations, Disbursements and Unpaid Obligations)</li>
-                                                    <ul>
-                                                        <li>2023 FAR No. 1-A | Continuing as of December 2023 | Current as of December 2023</li>
-                                                        <li>2022 FAR No. 1-A | 1st Quarter | 2nd Quarter | 4th Quarter</li>
-                                                        <li>2021 FAR No. 1-A | 1ST Quarter | 2nd Quarter</li>
-                                                        <li>2019 FAR No. 1-A</li>
-                                                        <li>2018 FAR No. 1-A</li>
-                                                        <li>2017 FAR No. 1-A</li>
-                                                        <li>2016 FAR No. 1-A</li>
-                                                    </ul>
-                                                </ul>
-                                                <ul>
-                                                    <li>List of Allotments and Sub-allotments</li>
-                                                    <ul>
-                                                        <li>2022 FAR No. 1B | 4th Quarter</li>
-                                                    </ul>
-                                                </ul>
-                                                <li style="color: #0c243d;"><b>DBM Approved Budget and Corresponding Targets</b></li>
-                                                <ul>
-                                                    <li>2023</li>
-                                                    <li>2022</li>
-                                                    <li>2021</li>
-                                                    <li>2020</li>
-                                                    <li>2019</li>
-                                                    <li>2018</li>
-                                                    <li>2017</li>
-                                                    <li>2016</li>
-                                                </ul>
-                                                <li style="color: #0c243d;"><b>Projects, Programs and Activities, Beneficiaries, and Status of
-                                                Implementation</b></li>
-                                                <ul>
-                                                    <li>2024</li>
-                                                    <li>2023</li>
-                                                    <li>2022</li>
-                                                    <li>2021</li>
-                                                    <li>2020</li>
-                                                    <li>2019</li>
-                                                    <li>2018</li>
-                                                    <li>2017</li>
-                                                    <li>2016</li>
-                                                </ul>
-                                                <li style="color: #0c243d;"><b>Agency Procurement Plan</b></li>
-                                                <ul>
-                                                    <li>Annual Procurement Plan</li>
-                                                    <ul>
-                                                        <li>2025 Indicative APP Non-CSE | APP 2025  | SAPP no 1</li>
-                                                        <li>2024 Indicated APP NON-CSE | APP 2024 | SAPP no. 1-12  | SAPP no. 12-26</li>
-                                                        <li>2023 Indicative APP | Supplemental Indicative APP no.1 | APP 2023 | SAPP no. 1-16 | SAPP No. 17-26</li>
-                                                        <li>2022 Indicative APP non-CSE | APP 2022 | SAPP 1-11 | SAPP 12-28</li>
-                                                        <li>2021 APP CSE | APP non-CSE | APP non-CSE (Indicative) |SAPP 1-10 | SAPP 10-22</li>
-                                                        <li>2020 APP CSE | APP non-CSE | SAPP 1-10</li>
-                                                        <li>2019 APP CSE | APP non-CSE</li>
-                                                        <li>2018 APP CSE | APP non-CSE</li>
+                                                        <li>Annual Procurement Plan</li>
+                                                        <ul>
+                                                        <li>2025 <a href="https://ncip.gov.ph/wp-content/uploads/2024/11/Indicative-APP-FY-2025-Non-CSE.pdf" target="_blank">Indicative APP Non-CSE</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2025/02/Annual-Procurement-Plan-APP-NON-CSE-FY-2025.pdf" target="_blank">APP 2025</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2025/03/SAPP-No.-1-FY-2025.pdf" target="_blank">SAPP no 1</a></li>
+                                                        <li>2024 <a href="https://ncip.gov.ph/wp-content/uploads/2023/09/Indicative-APP-non-CSE-FY-2024.pdf" target="_blank">Indicative APP NON-CSE</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2024/01/APP-2024.pdf" target="_blank">APP 2024</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2024/07/SAPP-NO.-1-12-FY-2024.pdf" target="_blank">SAPP no. 1-12</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2025/02/SAPP-No.-12-26-FY-2024.pdf" target="_blank">SAPP no. 12-26</a></li>
+                                                        <li>2023 <a href="https://ncip.gov.ph/wp-content/uploads/2022/09/indicative-APP-FY-2023.pdf" target="_blank">Indicative APP</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2022/11/SIAPP-1-FY-2023.pdf" target="_blank">Supplemental Indicative APP no.1</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2023/01/APP-2023.pdf" target="_blank">APP 2023</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2023/07/SAPP-2023-12st-Semester.pdf" target="_blank">SAPP no. 1-16</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2024/02/SAPP-17-26.pdf" target="_blank">SAPP No. 17-26</a></li>
+                                                        <li>2022 <a href="https://ncip.gov.ph/wp-content/uploads/2021/10/Indicative-APP-non-CSE-FY-2022.pdf" target="_blank">Indicative APP</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2022/01/APP-FY-2022.pdf" target="_blank">APP 2022</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2022/07/SAPP-NO.-1-11-FY-2022.pdf" target="_blank">SAPP 1-11</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2023/02/SAPP-12-28.pdf" target="_blank">SAPP 12-28</a></li>
+                                                        <li>2021 <a href="https://ncip.gov.ph/wp-content/uploads/2021/08/APP_2021.pdf" target="_blank">APP CSE</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2021/03/APP-Non-CSE-FY-2021.pdf" target="_blank">APP non-CSE</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2020/11/Indicative-APP-Non-CSE-FY-2021.pdf" target="_blank">APP non-CSE</a> (Indicative) | <a href="https://ncip.gov.ph/wp-content/uploads/2021/08/SAPP2021_1-10.pdf" target="_blank">SAPP 1-10</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2022/01/SAPP-10-22-FY-2021.pdf" target="_blank">SAPP 10-22</a></li>
+                                                        <li>2020 <a href="https://ncip.gov.ph/wp-content/uploads/2020/10/APP2020.pdf" target="_blank">APP CSE</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2020/09/APP-NON-CSE-2019.pdf" target="_blank">APP non-CSE</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2020/10/SAPP1-10-FY2020.pdf" target="_blank">SAPP 1-10</a></li>
+                                                        <li>2019 <a href="https://ncip.gov.ph/wp-content/uploads/2020/10/APP2020.pdf" target="_blank">APP CSE</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2020/09/APP-NON-CSE-2019.pdf" target="_blank">APP non-CSE</a></li>
+                                                        <li>2018 <a href="https://ncip.gov.ph/wp-content/uploads/2020/09/2018-APP.pdf" target="_blank">APP CSE</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2020/09/NONAPP-2018.pdf" target="_blank">APP non-CSE</a></li>
                                                         <li>2017 APP CSE | APP non-CSE</li>
                                                         <li>2016 APP CSE | APP non-CSE</li>
+                                                        </ul>
+
+                                                        <li>Agency Procurement Compliance and Performance Indicators (APCPI)</li>
+                                                        <ul>
+                                                        <li>2024 APCPI</li>
+                                                        <ul>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2024/07/1st-Semester-FY-2024-NCIP-CO-Procurement-Monitoring-Report.pdf" target="_blank">2024 Procurement Monitoring Report (1st Semester)</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2025/02/FY-2024-PMR-for-2nd-Semester.pdf" target="_blank">2024 Procurement Monitoring Report (2nd Semester)</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2025/03/Annexes_APCPI-FY-2024.pdf" target="_blank">Annexes</a></li>
+                                                        </ul>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2024/04/APCPI-2023.pdf" target="_blank">2023 APCPI</a></li>
+                                                        <ul>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/PMR-2nd-Sem-FY-2023.pdf" target="_blank">2023 Procurement Monitoring Report (2nd Semester)</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2023/07/NCIP-PMR-FY-2023-1st-Sem.pdf" target="_blank">2023 Procurement Monitoring Report (1st Semester)</a></li>
+                                                        </ul>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2023/03/APCPI-FY-2023.pdf" target="_blank">2022 APCPI</a></li>
+                                                        <ul>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2023/01/2-PMR-2nd-Semester-FY-2022.pdf" target="_blank">2022 Procurement Monitoring Report (2nd Semester)</a></li>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2022/07/PMR-1st-Semester-FY-2022.pdf" target="_blank">2022 Procurement Monitoring Report (1st Semester)</a></li>
+                                                        </ul>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2022/02/APCPI-2021.pdf" target="_blank">2021 APCPI</a></li>
+                                                        <ul>
+                                                            <li><a href="https://ncip.gov.ph/wp-content/uploads/2022/01/PMR_2nd-Sem-2021-final.pdf" target="_blank">2021 Procurement Monitoring Report (2nd Sem)</a></li>
+                                                        </ul>
+                                                        </ul>
                                                     </ul>
-                                                    <li>Agency Procurement Compliance and Performance Indicators (APCPI)
-                                                    </li>
+
+                                                    <li style="color: #0c243d;"><b>Quality Management System Certification</b></li>
+                                                    <li style="color: #0c243d;"><b>System of Agency Ranking Delivery Units</b></li>
+
+                                                    <li style="color: #0c243d;"><b>The Agency Review and Compliance Procedure of Statements and Financial Disclosure</b></li>
                                                     <ul>
-                                                        <li>2024 APCI</li>
+                                                        <li style="color: #0c243d;"><b>Procedures on the Review and Compliance of SALN</b></li>
                                                         <ul>
-                                                            <li>2024 Procurement Monitoring Report (1st Semester)</li>
-                                                            <li>2024 Procurement Monitoring Report (2nd Semester)</li>
-                                                            <li>Annexes </li>
-                                                        </ul>
-                                                        <li>2023 APCPI</li>
-                                                        <ul>
-                                                            <li>2023 Procurement Monitoring Report (2nd Semester)</li>
-                                                            <li>2023 Procurement Monitoring Report (1st Semester)</li>
-                                                        </ul>
-                                                        <li>2022 APCPI</li>
-                                                        <ul>
-                                                            <li>2022 Procurement Monitoring Report (2nd Semester)</li>
-                                                            <li>2022 Procurement Monitoring Report (1st Semester)</li>
-                                                        </ul>
-                                                        <li>2021 APCPI</li>
-                                                        <ul>
-                                                            <li>2021 Procurement Monitoring Report (2nd Sem)</li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2021/08/SALN-Compliance.pdf" target="_blank">Agency Review and Compliance Procedure (ARCP)</a> (no changes)</li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2022/02/Review-and-Compliance-Committee-RCC.pdf" target="_blank">Review and Compliance Committee (RCC)</a> (no changes)</li>
                                                         </ul>
                                                     </ul>
-                                                </ul>
-                                                <li style="color: #0c243d;"><b>Quality Management System Certification</b></li>
-                                                <li style="color: #0c243d;"><b>System of Agency Ranking Delivery Units</b></li>
-                                                <li style="color: #0c243d;"><b>The Agency Review and Compliance Procedure of Statements and Financial Disclosure</b></li>
-                                                <ul>
-                                                    <li style="color: #0c243d;"><b>Procedures on the Review and Compliance of SALN</b></li>
+
+                                                    <li style="color: #0c243d;"><b>Freedom of Information (FOI) Manual signed by Head of Agency</b></li>
                                                     <ul>
-                                                        <li>Agency Review and Compliance Procedure (ARCP) (no changes)</li>
-                                                        <li>Review and Compliance Committee (RCC) (no changes)</li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2021/02/07-16.2017-FOI-Manual.pdf" target="_blank">Peoples FOI Manual</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2025/01/NCIP-One-page-FOI-Manual-English-1.png" target="_blank">NCIP One page FOI Manual (English)</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2025/01/NCIP-One-page-FOI-Manual-Filipino-1.png" target="_blank">NCIP One page FOI Manual (Filipino)</a></li>
+                                                        <li><a href="https://docs.google.com/spreadsheets/d/1Fn3ZQmT2H2KkvQO0Vo1yYFdAw9NKB8scGAWsAZohjcc" target="_blank">FOI Reports</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2024/01/2022-COC_NCIP.pdf" target="_blank">Certificate of Compliance</a></li>
                                                     </ul>
-                                                </ul>
-                                                <li style="color: #0c243d;"><b>Freedom of Information (FOI) Manual signed by Head of Agency</b></li>
-                                                <ul>
-                                                    <li>Peoples FOI Manual</li>
-                                                    <li>NCIP One page FOI Manual (English)</li>
-                                                    <li>NCIP One page FOI Manual (Filipino)</li>
-                                                    <li>FOI Reports</li>
-                                                    <li>Certificate of Compliance</li>
-                                                </ul>
-                                                <li style="color: #0c243d;"><b>PBB Compliance</b></li>
-                                                <ul>
-                                                    <li>Scorecards</li>
+
+                                                    <li style="color: #0c243d;"><b>PBB Compliance</b></li>
                                                     <ul>
-                                                        <li>2023</li>
-                                                        <li>2022</li>
-                                                        <li>2021</li>
-                                                        <li>2020</li>
-                                                        <li>2019</li>
-                                                        <li>2018</li>
+                                                        <li>Scorecards</li>
+                                                        <ul>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2025/04/NCIP_2023-Scorecards.pdf" target="_blank">2023</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/NCIP_2022-Scorecard.pdf" target="_blank">2022</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2023/06/NCIP_2021-Scorecard.pdf" target="_blank">2021</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2023/06/NCIP_2020_Scorecard.pdf" target="_blank">2020</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2023/06/NCIP_2019_Scorecard.pdf" target="_blank">2019</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2023/06/NCIP_2018_Scorecard.pdf" target="_blank">2018</a></li>
+                                                        </ul>
                                                     </ul>
-                                                </ul>
-                                                <li style="color: #0c243d; list-style-type: none;"><b>NCIP Annual Accomplishment Reports (AAR)</b></li>
-                                                <ul>
-                                                    <li>2023 AAR</li>
-                                                    <li>2022 AAR</li>
-                                                    <li>2021 AAR</li>
-                                                    <li>2020 AAR</li>
-                                                    <li>2019 AAR</li>
-                                                </ul>
-                                                </ol>
+
+                                                    <li style="color: #0c243d; list-style-type: none;"><b>NCIP Annual Accomplishment Reports (AAR)</b></li>
+                                                    <ul>
+                                                        <li>2023 AAR</li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/2022-AAR.pdf" target="_blank">2022 AAR</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/2021-AARv2.pdf" target="_blank">2021 AAR</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/2020-AAR.pdf" target="_blank">2020 AAR</a></li>
+                                                        <li><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/2019-AAR.pdf" target="_blank">2019 AAR</a></li>
+                                                    </ul>
+                                                    </ol>
                                                 </div>
                                             </div>
                                         </div>

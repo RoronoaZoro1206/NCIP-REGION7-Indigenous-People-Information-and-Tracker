@@ -6,8 +6,8 @@
         position: fixed;
         bottom: 40px;
         right: 40px;
-        width: 45px;
-        height: 45px;
+        width: 35px;
+        height: 35px;
         background: url("images/bg-pattern.png");
         border: none;
         border-radius: 50%;
@@ -35,7 +35,7 @@
         top: 45%;
         left: 50%;
         transform: translate(-50%, -50%);
-        font-size: 24px;
+        font-size: 16px;
         color: #0c243d;
         }
 

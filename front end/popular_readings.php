@@ -11,11 +11,12 @@ function getPopularReadings($limit = 5) {
         FROM announcement a
         LEFT JOIN announcement_view av ON a.ann_id = av.ann_id
         ORDER BY views DESC, a.ann_date DESC
-        LIMIT ?
+        LIMIT :limit
     ";
     
     $stmt = $pdo->prepare($query);
-    $stmt->execute([$limit]);
+    $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+    $stmt->execute();
     
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -38,16 +39,24 @@ function renderPopularReadings($limit = 5) {
             3 => 'https://ncip.gov.ph/news/ncip-nakiisa-sa-forum-para-sa-kababaihan-mula-sa-ibat-ibang-sektor/'
         ];
         
+        $title_mapping = [
+            1 => 'Advisory',
+            2 => 'Makasaysayang araw para sa mga Eskaya!',
+            3 => 'NCIP, nakiisa sa forum para sa kababaihan mula sa iba\'t ibang sektor'
+        ];
+        
         // Get image path and URL, use defaults if not found
         $image_path = $image_mapping[$reading['ann_id']] ?? 'images/default-thumbnail.jpg';
         $url = $url_mapping[$reading['ann_id']] ?? '#';
+        
+        // Override the title if needed for consistent display
+        $title = $title_mapping[$reading['ann_id']] ?? $reading['ann_title'];
         
         // Format the date
         $date = new DateTime($reading['ann_date']);
         $formatted_date = $date->format('F j, Y');
         
         // Create shortened title if too long (over 40 chars)
-        $title = $reading['ann_title'];
         $short_title = (strlen($title) > 40) ? substr($title, 0, 37) . '...' : $title;
         
         $output .= '
@@ -60,11 +69,10 @@ function renderPopularReadings($limit = 5) {
                     ' . htmlspecialchars($short_title) . '
                 </a>
                 <p class="post-date">' . $formatted_date . '</p>
-                <p class="view-count"><small>(' . $reading['views'] . ' ' . ($reading['views'] <= 1 ? 'view' : 'views') . ')</small></p>
+                <p class="view-count" data-announcement-id="' . $reading['ann_id'] . '"><small>(' . $reading['views'] . ' ' . ($reading['views'] <= 1 ? 'view' : 'views') . ')</small></p>
             </div>
         </div>';
     }
     
     return $output;
 }
-?>

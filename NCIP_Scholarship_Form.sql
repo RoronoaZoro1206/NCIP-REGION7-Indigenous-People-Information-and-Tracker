@@ -174,6 +174,28 @@ CREATE INDEX idx_contact_email ON contact_message(CONTM_EMAIL);
 CREATE INDEX idx_contact_status ON contact_message(CONTM_STATUS);
 CREATE INDEX idx_contact_date ON contact_message(CONTM_SUBMISSION_DATE );
 
+CREATE TABLE population_table (
+    POPT_ID 				SERIAL 			PRIMARY KEY,
+    POPT_NAME 				VARCHAR(100),
+    POPT_IP_GROUP 			VARCHAR(50),
+    POPT_LATITUDE 			NUMERIC(9,6),
+    POPT_LONGITUDE 			NUMERIC(9,6),
+    POPT_POPULATION 		INTEGER
+);
+
+INSERT INTO population_table (POPT_NAME, POPT_IP_GROUP, POPT_LATITUDE, POPT_LONGITUDE, POPT_POPULATION) VALUES
+('Sitio Naba Alaska, Brgy. Mambaling, Cebu City', 'BADJAO', 10.2883, 123.8778, 776),
+('Sitio Puntod, Brgy. Mambaling, Cebu City', 'BADJAO', 10.2875, 123.8782, 651),
+('Brgy. Dolho, Bato, Leyte', 'BADJAO', 10.3476, 124.8377, 805),
+('Brgy. Marvel, Municipality of Isabel, Leyte', 'BADJAO', 10.9120, 124.4433, 209),
+('Sitio Buyo, Brgy. South Poblacion, Naga City, Cebu', 'ATI', 10.2081, 123.7560, 214),
+('Brgy. Kagbana, Burauen, Leyte', 'MAMANWA', 10.9775, 124.8990, 61),
+('Brgy. Bunga, Baybay City, Leyte', 'MAMANWA', 10.6787, 124.7993, 10),
+('Sitio Palayan, Brgy. Caucab, Almeria, Biliran', 'MAMANWA', 11.6311, 124.4331, 60),
+('Brgy. Malinao, St. Bernard, Southern Leyte', 'MAMANWA', 10.2897, 125.1522, 179),
+('Sitio Wespal, Brgy. Guirang, Basey, Western Samar', 'MAMANWA', 11.2652, 125.0375, 94),
+('Brgy. Pinamudlan, San Francisco, Southern Leyte', 'MAMANWA', 10.3133, 125.2163, 70);
+
 SELECT * FROM ADDRESS
 SELECT * FROM ADMINISTRATOR
 SELECT * FROM ANNOUNCEMENT_VIEW

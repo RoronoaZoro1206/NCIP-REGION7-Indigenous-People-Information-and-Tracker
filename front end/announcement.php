@@ -139,7 +139,7 @@ $authSuccess = isset($_GET['auth_success']);
                                         <p>On April 16, 2025, the National Commission on Indigenous Peoples – Central Office and Regional Offices will implement a work-from-home...</p>
 
                                         <p>
-                                            <a href="https://ncip.gov.ph/news/advisory/" target="_blank" class="not-btn more-link">
+                                            <a href="https://ncip.gov.ph/news/advisory/" target="_blank" class="not-btn more-link" data-announcement-id="1">
                                                 Read more
                                             </a>
                                         </p>
@@ -214,7 +214,7 @@ $authSuccess = isset($_GET['auth_success']);
                                         <p>Sinaksihan ni National Commission on Indigenous Peoples Chairperson Jennifer Pia Sibug-Las ang pormal na pagkakaloob ng Certificate of Recognition of...</p>
 
                                         <p>
-                                            <a href="https://ncip.gov.ph/news/makasaysayang-araw-para-sa-mga-eskaya/" target="_blank" class="not-btn more-link">
+                                            <a href="https://ncip.gov.ph/news/makasaysayang-araw-para-sa-mga-eskaya/" target="_blank" class="not-btn more-link" data-announcement-id="2">
                                                 Read more
                                             </a>
                                         </p>
@@ -288,7 +288,7 @@ $authSuccess = isset($_GET['auth_success']);
                                         <p>Nakiisa ang National Commission on Indigenous Peoples (NCIP) sa 2025 Philippine Open Government Partnership (PH-OGP) National Women’s Month Forum na...</p>
 
                                         <p>
-                                            <a href="https://ncip.gov.ph/news/ncip-nakiisa-sa-forum-para-sa-kababaihan-mula-sa-ibat-ibang-sektor/" target="_blank" class="not-btn more-link">
+                                            <a href="https://ncip.gov.ph/news/ncip-nakiisa-sa-forum-para-sa-kababaihan-mula-sa-ibat-ibang-sektor/" target="_blank" class="not-btn more-link" data-announcement-id="3">
                                                 Read more
                                             </a>
                                         </p>
@@ -300,7 +300,7 @@ $authSuccess = isset($_GET['auth_success']);
                 </div>
 
                 <div class='general-pagination group'>
-                    <a href='#' class='selected'>1</a>
+                    <a href='announcement.php' class='selected'>1</a>
                     <a href='#'>2</a>
                     <a href='#'>&rsaquo;</a>
                 </div>
@@ -486,65 +486,68 @@ $authSuccess = isset($_GET['auth_success']);
 </div>
 <!-- END BG SHADOW -->
 <script type="text/javascript">
+// Fix both view count tracking and profile image issues
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Document ready - initializing comment system');
     
     // Initial setup - hide extra comments
     setupCommentVisibility();
 
-// Handle comment submission
-document.querySelectorAll('.comment-form').forEach(form => {
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        console.log('Comment form submitted');
-        
-        const formData = new FormData(this);
-        const announcementId = this.dataset.announcementId;
-        const commentsContainer = document.querySelector(`#comments-container-${announcementId}`);
-        
-        fetch('comments.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(response => {
-            if (response.success) {
-                console.log('Comment posted successfully, updating comments...');
-                this.querySelector('textarea').value = '';
-                this.querySelector('.parent-id-input').value = '';
-                
-                // Reset form to comment mode if it was in reply mode
-                if (this.classList.contains('replying-mode')) {
-                    document.querySelectorAll('.comment-item').forEach(item => {
-                        item.classList.remove('being-replied-to');
-                    });
-                    this.querySelector('.reply-info').style.display = 'none';
-                    this.querySelector('textarea').placeholder = 'Write your comment here...';
-                    this.querySelector('button[type="submit"]').textContent = 'Post Comment';
-                    this.classList.remove('replying-mode');
+    // Handle comment submission
+    document.querySelectorAll('.comment-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Comment form submitted');
+            
+            const formData = new FormData(this);
+            const announcementId = this.dataset.announcementId;
+            const commentsContainer = document.querySelector(`#comments-container-${announcementId}`);
+            
+            fetch('comments.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(response => {
+                if (response.success) {
+                    console.log('Comment posted successfully, updating comments...');
+                    this.querySelector('textarea').value = '';
+                    this.querySelector('.parent-id-input').value = '';
+                    
+                    // Reset form to comment mode if it was in reply mode
+                    if (this.classList.contains('replying-mode')) {
+                        document.querySelectorAll('.comment-item').forEach(item => {
+                            item.classList.remove('being-replied-to');
+                        });
+                        this.querySelector('.reply-info').style.display = 'none';
+                        this.querySelector('textarea').placeholder = 'Write your comment here...';
+                        this.querySelector('button[type="submit"]').textContent = 'Post Comment';
+                        this.classList.remove('replying-mode');
+                    }
+                    
+                    // Reload comments for this announcement
+                    fetch(`get_comments.php?ann_id=${announcementId}`)
+                        .then(res => res.text())
+                        .then(html => {
+                            commentsContainer.innerHTML = html;
+                            setupCommentVisibility();
+                            // Fix any broken images in the new comments
+                            fixProfileImages();
+                        });
+                    
+                    // Also refresh the recent comments sidebar
+                    autoRefreshRecentComments();
+                    
+                } else {
+                    alert(response.message || 'An error occurred while posting your comment.');
                 }
-                
-                // Reload comments for this announcement
-                fetch(`get_comments.php?ann_id=${announcementId}`)
-                    .then(res => res.text())
-                    .then(html => {
-                        commentsContainer.innerHTML = html;
-                        setupCommentVisibility();
-                    });
-                
-                // Also refresh the recent comments sidebar
-                autoRefreshRecentComments();
-                
-            } else {
-                alert(response.message || 'An error occurred while posting your comment.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred. Please try again.');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            });
         });
     });
-});
     
     // Handle reply link clicks
     document.addEventListener('click', function(e) {
@@ -634,6 +637,193 @@ document.querySelectorAll('.comment-form').forEach(form => {
             e.target.classList.add('show-more-comments');
         }
     });
+    
+    // Track clicks on all "Read more" links
+    document.querySelectorAll('.not-btn.more-link').forEach(link => {
+        // Add data-announcement-id attributes if missing
+        if (!link.hasAttribute('data-announcement-id')) {
+            let url = link.getAttribute('href');
+            let announcementId = 0;
+            
+            if (url.includes('advisory')) {
+                announcementId = 1;
+                link.setAttribute('data-announcement-id', '1');
+            } else if (url.includes('makasaysayang-araw-para-sa-mga-eskaya')) {
+                announcementId = 2;
+                link.setAttribute('data-announcement-id', '2');
+            } else if (url.includes('ncip-nakiisa-sa-forum-para-sa-kababaihan-mula-sa-ibat-ibang-sektor')) {
+                announcementId = 3;
+                link.setAttribute('data-announcement-id', '3');
+            }
+        }
+        
+        link.addEventListener('click', function(e) {
+            const announcementId = this.getAttribute('data-announcement-id');
+            
+            if (announcementId) {
+                // Send tracking data
+                fetch('track_clicks.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'ann_id=' + announcementId
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Click tracked:', data);
+                    
+                    // Update the view count in the UI without refreshing
+                    updateViewCountUI(announcementId);
+                    
+                    // Update popular readings section
+                    updatePopularReadings();
+                })
+                .catch(error => {
+                    console.error('Error tracking click:', error);
+                });
+            }
+        });
+    });
+    
+    // Function to update view count in UI
+    function updateViewCountUI(announcementId) {
+        // Fetch the updated count from the server
+        fetch('get_view_count.php?ann_id=' + announcementId)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Find and update all instances of this announcement's view count
+                    const viewElements = document.querySelectorAll(`.view-count[data-announcement-id="${announcementId}"]`);
+                    viewElements.forEach(element => {
+                        element.innerHTML = `<small>(${data.count} ${data.count <= 1 ? 'view' : 'views'})</small>`;
+                    });
+                    
+                    // Also check in the popular readings sidebar
+                    const popularReadings = document.querySelectorAll('.recent-post .hentry-post');
+                    popularReadings.forEach(reading => {
+                        const link = reading.querySelector('a.title');
+                        if (link) {
+                            let url = link.getAttribute('href');
+                            let readingId = 0;
+                            
+                            if (url.includes('advisory')) {
+                                readingId = 1;
+                            } else if (url.includes('makasaysayang-araw-para-sa-mga-eskaya')) {
+                                readingId = 2;
+                            } else if (url.includes('ncip-nakiisa-sa-forum-para-sa-kababaihan-mula-sa-ibat-ibang-sektor')) {
+                                readingId = 3;
+                            }
+                            
+                            if (readingId == announcementId) {
+                                const viewCount = reading.querySelector('.view-count');
+                                if (viewCount) {
+                                    viewCount.innerHTML = `<small>(${data.count} ${data.count <= 1 ? 'view' : 'views'})</small>`;
+                                }
+                            }
+                        }
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching updated view count:', error);
+            });
+    }
+    
+    // Function to update popular readings section
+    function updatePopularReadings() {
+        fetch('get_popular_readings.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const popularReadingsContainer = document.querySelector('.recent-post.group');
+                    if (popularReadingsContainer) {
+                        popularReadingsContainer.innerHTML = data.html;
+                        console.log('Popular readings updated!');
+                        
+                        // Fix any broken images in the updated section
+                        fixProfileImages();
+                        
+                        // Re-add data attributes to the new elements
+                        document.querySelectorAll('.recent-post .hentry-post').forEach(post => {
+                            const link = post.querySelector('a.title');
+                            const viewCount = post.querySelector('.view-count');
+                            
+                            if (link && viewCount && !viewCount.hasAttribute('data-announcement-id')) {
+                                let url = link.getAttribute('href');
+                                let announcementId = 0;
+                                
+                                if (url.includes('advisory')) {
+                                    announcementId = 1;
+                                } else if (url.includes('makasaysayang-araw-para-sa-mga-eskaya')) {
+                                    announcementId = 2;
+                                } else if (url.includes('ncip-nakiisa-sa-forum-para-sa-kababaihan-mula-sa-ibat-ibang-sektor')) {
+                                    announcementId = 3;
+                                }
+                                
+                                if (announcementId > 0) {
+                                    viewCount.setAttribute('data-announcement-id', announcementId);
+                                }
+                            }
+                        });
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error updating popular readings:', error);
+            });
+    }
+    
+    // Fix profile image loading issues
+    function fixProfileImages() {
+        document.querySelectorAll('img.avatar, img.photo').forEach(img => {
+            // Add error handler to all avatar images
+            img.onerror = function() {
+                // Replace with default avatar if loading fails
+                console.log('Image failed to load, replacing with default:', this.src);
+                this.src = 'images/gavatar.png';
+                this.onerror = null; // Prevent infinite loop
+            };
+            
+            // If image is already broken, fix it now
+            if (img.complete && (img.naturalWidth === 0 || img.naturalHeight === 0)) {
+                console.log('Fixing already broken image:', img.src);
+                img.src = 'images/gavatar.png';
+            }
+        });
+    }
+    
+    // Fix profile images on page load
+    fixProfileImages();
+    
+    // Add data attributes to view count elements if missing
+    document.querySelectorAll('.recent-post .hentry-post').forEach(post => {
+        const link = post.querySelector('a.title');
+        const viewCount = post.querySelector('.view-count');
+        
+        if (link && viewCount && !viewCount.hasAttribute('data-announcement-id')) {
+            let url = link.getAttribute('href');
+            let announcementId = 0;
+            
+            if (url.includes('advisory')) {
+                announcementId = 1;
+            } else if (url.includes('makasaysayang-araw-para-sa-mga-eskaya')) {
+                announcementId = 2;
+            } else if (url.includes('ncip-nakiisa-sa-forum-para-sa-kababaihan-mula-sa-ibat-ibang-sektor')) {
+                announcementId = 3;
+            }
+            
+            if (announcementId > 0) {
+                viewCount.setAttribute('data-announcement-id', announcementId);
+            }
+        }
+    });
+    
+    // Set interval to refresh comments every 30 seconds
+    setInterval(autoRefreshRecentComments, 30000);
+    
+    // Also set interval to refresh popular readings
+    setInterval(updatePopularReadings, 30000);
 });
 
 // Function to set up initial comment visibility
@@ -690,61 +880,19 @@ function autoRefreshRecentComments() {
                 recentCommentsContainer.innerHTML = html;
                 setupCommentVisibility(recentCommentsContainer); 
                 console.log('Recent comments updated successfully');
+                // Fix any broken images in the new comments
+                document.querySelectorAll('img.avatar, img.photo').forEach(img => {
+                    img.onerror = function() {
+                        this.src = 'images/gavatar.png';
+                        this.onerror = null;
+                    };
+                });
             }
         })
         .catch(error => {
             console.error('Error fetching recent comments:', error);
         });
 }
-
-// Initial load of recent comments
-document.addEventListener('DOMContentLoaded', function() {
-    // Set interval to refresh comments every 30 seconds
-    setInterval(autoRefreshRecentComments, 30000);
-    
-    // Also refresh when a new comment is posted
-    document.querySelectorAll('.comment-form').forEach(form => {
-        form.addEventListener('submit', function() {
-            // Wait a moment for the server to process the comment before refreshing
-            setTimeout(autoRefreshRecentComments, 1000);
-        });
-    });
-
-    document.querySelectorAll('.not-btn.more-link').forEach(link => {
-        link.addEventListener('click', function(e) {
-            // Get announcement ID from the URL path
-            let url = this.getAttribute('href');
-            let announcementId = 0;
-            
-            // Determine announcement ID based on URL
-            if (url.includes('advisory')) {
-                announcementId = 1;
-            } else if (url.includes('makasaysayang-araw-para-sa-mga-eskaya')) {
-                announcementId = 2;
-            } else if (url.includes('ncip-nakiisa-sa-forum-para-sa-kababaihan-mula-sa-ibat-ibang-sektor')) {
-                announcementId = 3;
-            }
-            
-            if (announcementId > 0) {
-                // Send tracking data
-                fetch('track_clicks.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: 'ann_id=' + announcementId
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Click tracked:', data);
-                })
-                .catch(error => {
-                    console.error('Error tracking click:', error);
-                });
-            }
-        });
-    });
-});
 </script>
 
 <script type='text/javascript' src='js/underscore.min.js'></script>

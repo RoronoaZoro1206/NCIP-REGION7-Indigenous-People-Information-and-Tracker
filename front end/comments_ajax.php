@@ -1,6 +1,4 @@
 <?php
-// comments_ajax.php
-
 // Turn off error display (important for clean JSON)
 ini_set('display_errors', 0);
 error_reporting(E_ALL);

@@ -136,7 +136,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $fileContent = file_get_contents($_FILES['signature_scan']['tmp_name']);
             
             $scanStmt = $pdo->prepare("
-                INSERT INTO SIGNATURE_SCANS (
+                INSERT INTO SIGNATURE_SCAN (
                     SCAN_FILENAME,
                     SCAN_FILETYPE,
                     SCAN_DATA,
@@ -730,7 +730,6 @@ try {
 <!-- START WRAPPER -->
     <div id="wrapper" class="container group">
 
-
     <!-- SCROLL TO TOP BUTTON -->
     <?php include 'components/scroll-to-top.php'; ?>
 
@@ -752,7 +751,7 @@ try {
                             <a href="program.php">PROGRAM</a>
                         </li>
                         <li>
-                            <a href="portfolio.php">PORTFOLIO</a>
+                            <a href="heatmap.php">IP LOCATION TRACKER</a>
                         </li>
                         <li>
                             <a href="announcement.php">ANNOUNCEMENT</a>
@@ -1840,6 +1839,7 @@ document.addEventListener('DOMContentLoaded', function() {
         input.setAttribute('min', '0');
         input.setAttribute('max', '100');
         input.setAttribute('type', 'number');
+        input.setAttribute('step', '0.01');
         
         // Validate on input to prevent negative numbers and values over 100
         input.addEventListener('input', function() {

@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($errors)) {
         try {
             // Prepare SQL statement
-            $query = "INSERT INTO contact_messages (CONTM_NAME, CONTM_EMAIL, CONTM_PHONE, CONTM_MESSAGE) 
+            $query = "INSERT INTO contact_message (CONTM_NAME, CONTM_EMAIL, CONTM_PHONE, CONTM_MESSAGE) 
           VALUES (:name, :email, :phone, :message)";
             
             $stmt = $pdo->prepare($query);

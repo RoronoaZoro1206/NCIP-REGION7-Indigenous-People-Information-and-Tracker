@@ -9,8 +9,8 @@ function getComments($announcementId, $parentId = null) {
     global $pdo;
     
     $query = "SELECT c.*, 
-            (SELECT COUNT(*) FROM comments WHERE coms_parent_id = c.coms_id) as reply_count 
-            FROM comments c 
+            (SELECT COUNT(*) FROM comment WHERE coms_parent_id = c.coms_id) as reply_count 
+            FROM comment c 
             WHERE c.ann_id  = :ann_id 
             AND c.coms_parent_id " . ($parentId === null ? "IS NULL" : "= :parent_id") . " 
             ORDER BY c.coms_created_at DESC";
@@ -30,7 +30,7 @@ function getComments($announcementId, $parentId = null) {
 function addComment($announcementId, $googleName, $googleEmail, $googlePic, $content, $parentId = null) {
     global $pdo;
     
-    $query = "INSERT INTO comments (ann_id, coms_google_name, coms_google_email, coms_google_pic, coms_content, coms_parent_id) 
+    $query = "INSERT INTO comment (ann_id, coms_google_name, coms_google_email, coms_google_pic, coms_content, coms_parent_id) 
               VALUES (:ann_id, :name, :email, :picture, :content, :parent_id)";
     
     $stmt = $pdo->prepare($query);
@@ -54,8 +54,8 @@ function getRecentComments($limit = 5) {
     global $pdo;
     
     $query = "SELECT c.*, a.ann_title 
-              FROM comments c
-              LEFT JOIN announcements a ON c.ann_id = a.ann_id              
+              FROM comment c
+              LEFT JOIN announcement a ON c.ann_id = a.ann_id              
             WHERE c.coms_parent_id IS NULL  
               ORDER BY c.coms_created_at DESC
               LIMIT :limit";
@@ -170,7 +170,6 @@ function renderCommentForm($announcementId) {
 }
 
 // Function to render recent comments for the sidebar
-// Modified renderRecentComments function for sidebar
 function renderRecentComments($limit = 5) {
     $recentComments = getRecentComments($limit);
     $html = '';

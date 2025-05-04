@@ -8,8 +8,8 @@ function getPopularReadings($limit = 5) {
     // Query to get the most viewed announcements
     $query = "
         SELECT a.ann_id, a.ann_title, a.ann_date, COALESCE(av.annv_count, 0) as views
-        FROM announcements a
-        LEFT JOIN announcement_views av ON a.ann_id = av.ann_id
+        FROM announcement a
+        LEFT JOIN announcement_view av ON a.ann_id = av.ann_id
         ORDER BY views DESC, a.ann_date DESC
         LIMIT ?
     ";

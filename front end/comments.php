@@ -102,14 +102,17 @@ function renderComments($announcementId) {
 
 // Function to render a single comment
 function renderSingleComment($comment, $announcementId, $isReply = false, $visibilityClass = '') {
-    $profilePic = !empty($comment['coms_google_pic']) ? $comment['coms_google_pic'] : 'images/gavatar.png';
+    // Default profile image if none is provided or if the provided one is invalid
+    $defaultProfilePic = 'images/gavatar.png';
+    $profilePic = !empty($comment['coms_google_pic']) ? $comment['coms_google_pic'] : $defaultProfilePic;
+    
     $replyClass = $isReply ? 'comment-reply' : '';
     $dateFormatted = date('F j, Y \a\t g:i a', strtotime($comment['coms_created_at']));
     
     $html = '
     <div class="the-post group comment-item ' . $replyClass . ' ' . $visibilityClass . '" data-comment-id="' . $comment['coms_id'] . '">
         <div class="avatar">
-            <img alt="" src="' . $profilePic . '" class="avatar photo" height="33" width="33"/>
+            <img alt="" src="' . $profilePic . '" class="avatar photo" height="33" width="33" onerror="this.src=\'' . $defaultProfilePic . '\'"/>
         </div>
         
         <div class="comment-content">
@@ -127,11 +130,18 @@ function renderSingleComment($comment, $announcementId, $isReply = false, $visib
     return $html;
 }
 
+
 // Function to render the comment form for a specific announcement
 function renderCommentForm($announcementId) {
     $html = '';
     
     if (isUserLoggedIn()) {
+        // Default profile image
+        $defaultProfilePic = 'images/gavatar.png';
+        $profilePic = isset($_SESSION['google_user']['picture']) && !empty($_SESSION['google_user']['picture']) 
+            ? $_SESSION['google_user']['picture'] 
+            : $defaultProfilePic;
+            
         $html .= '
         <div class="comment-form-container">
             <form class="comment-form" method="post" data-announcement-id="' . $announcementId . '">
@@ -140,8 +150,8 @@ function renderCommentForm($announcementId) {
                 <input type="hidden" name="parent_id" class="parent-id-input" value="">
                 
             <div class="user-info">
-                <img src="' . htmlspecialchars($_SESSION['google_user']['picture'] ?? 'images/gavatar.png') . '" 
-                    class="avatar photo" height="33" width="33">
+                <img src="' . htmlspecialchars($profilePic) . '" 
+                    class="avatar photo" height="33" width="33" onerror="this.src=\'' . $defaultProfilePic . '\'">
                 <span><span class="comment-mode-text">Commenting</span> as <strong>' . htmlspecialchars($_SESSION['google_user']['name']) . '</strong></span>
                 <a href="?action=logout" class="logout-link">(Logout)</a>
             </div>
@@ -169,14 +179,16 @@ function renderCommentForm($announcementId) {
     return $html;
 }
 
+
 // Function to render recent comments for the sidebar
 function renderRecentComments($limit = 5) {
     $recentComments = getRecentComments($limit);
     $html = '';
     $count = 0;
+    $defaultProfilePic = 'images/gavatar.png';
     
     foreach ($recentComments as $comment) {
-        $profilePic = !empty($comment['coms_google_pic']) ? $comment['coms_google_pic'] : 'images/gavatar.png';
+        $profilePic = !empty($comment['coms_google_pic']) ? $comment['coms_google_pic'] : $defaultProfilePic;
         $announcementTitle = !empty($comment['ann_title']) ? $comment['ann_title'] : 'Announcement';
         $dateFormatted = date('F j, Y \a\t g:i a', strtotime($comment['coms_created_at']));
         $shortContent = strlen($comment['coms_content']) > 50 ? substr($comment['coms_content'], 0, 50) . '...' : $comment['coms_content'];
@@ -187,7 +199,7 @@ function renderRecentComments($limit = 5) {
         $html .= '
         <div class="recent-comment-item ' . $visibilityClass . '">
             <div class="comment-avatar">
-                <img src="' . $profilePic . '" class="avatar photo" height="33" width="33"/>
+                <img src="' . $profilePic . '" class="avatar photo" height="33" width="33" onerror="this.src=\'' . $defaultProfilePic . '\'"/>
             </div>
             <div class="comment-details">
                 <span class="comment-author"><strong>' . htmlspecialchars($comment['coms_google_name']) . '</strong></span>
@@ -200,7 +212,7 @@ function renderRecentComments($limit = 5) {
         $count++;
     }
     
-    // If there are more than 3 comments, add the show more button
+    // If there are more than 2 comments, add the show more button
     if ($count > 2) {
         $html .= '<button type="button" class="show-more-comments recent">Show more (' . ($count - 2) . ' more)</button>';
     }

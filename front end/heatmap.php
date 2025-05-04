@@ -77,6 +77,14 @@
 
     <!-- START PRIMARY -->
     <div id="map"></div>
+
+    <div id="info-panel">
+        <div id="info-content">
+            <div><strong id="area-name"></strong></div>
+            <div id="area-details"></div>
+        </div>
+        <button id="close-btn">Close</button>
+    </div>
     <!-- END PRIMARY -->
 
     <!-- FOOTER -->
@@ -93,7 +101,7 @@
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <!-- Your custom JS -->
-<script src="js/heatmap.js?v=1"></script>
+<script src="js/heatmap.js?"></script>
 
 <script type='text/javascript' src='js/comment-reply.min.js'></script>
 <script type='text/javascript' src='js/underscore.min.js'></script>

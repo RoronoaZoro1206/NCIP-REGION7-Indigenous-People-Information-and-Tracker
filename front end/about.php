@@ -187,11 +187,15 @@
                                             </ol>
                                         </div>
                                         <div class="features-tab-content features-tab-4 ">
-                                            <p>
-                                                <a class="button" href="https://ncip.gov.ph/wp-content/uploads/2020/03/IPRA-LAW.pdf" target="_blank" rel="noopener noreferrer">DOWNLOAD FILE</a>
-                                                <iframe src="https://ncip.gov.ph/wp-content/uploads/2020/03/IPRA-LAW.pdf#toolbar=0" width="100%" height="850px">
-                                                </iframe>
-                                            </p>
+                                            <a class="button" href="docs/IPRA-LAW.pdf" target="_blank" rel="noopener noreferrer">DOWNLOAD FILE</a>
+                                            <div style="width: 100%; background-color: #1e1e1e; padding: 0; margin: 0;">
+                                                    <iframe 
+                                                    src="docs/IPRA-LAW.pdf#toolbar=0&navpanes=0" 
+                                                    width="100%" 
+                                                    height="850px" 
+                                                    style="border: none;">
+                                                    </iframe>
+                                            </div>
                                         </div>
                                         <div class="features-tab-content features-tab-5 ">
                                             <p>
@@ -415,13 +419,266 @@
                                             </div>
                                         </div>
                                         <div class="features-tab-content features-tab-7 ">
-                                            <!-- <h4>MAKE YOUR SITE LIKE THE LIVE PREVIEW IN JUST 5 MINUTES.</h4>
-                                            <p>After the purchase, in <a href="http://support.yithemes.com/viewtopic.php?f=6&amp;t=466">our support forum</a> you can download the sample data of our demo, that you can easily import in your wordpress to make your site like our live preview in just 5 minutes. After this, it's very easy and quick edit the pages and replace our content with your content!</p>
-                                            <p><a href="images/sample1.png"><img class="aligncenter size-full wp-image-1046" title="sample" src="images/sample1.png" alt="" width="300" height="268" /></a></p> -->
+                                            <div class="toggle">
+                                                <h4 class="tab-index tab-opened"><a href="#" title="Close" style="font-size: 12px;"><span class="icon-minus-sign"></span><b> NCIP CITIZEN'S CHARTER</b></a></h4>
+
+                                                <div class="content-tab opened" style="border-left: 0;">
+                                                    <a class="button" href="docs/1.-NCIP-Citizens-Charter-2024" target="_blank" rel="noopener noreferrer">DOWNLOAD FILE</a>
+                                                    <div style="width: 100%; background-color: #1e1e1e; padding: 0; margin: 0;">
+                                                        <iframe 
+                                                        src="docs/1.-NCIP-Citizens-Charter-2024.pdf#toolbar=0&navpanes=0" 
+                                                        width="100%" 
+                                                        height="775px" 
+                                                        style="border: none;">
+                                                        </iframe>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="toggle">
+                                                <h4 class="tab-index tab-closed"><a href="#" title="Close" style="font-size: 12px;"><span class="icon-plus-sign"></span><b> CERTIFICATE OF COMPLIANCE</b></a></h4>
+
+                                                <div class="content-tab closed"  style="border-left: 0;">
+                                                    <a class="button" href="docs/NCIP_CoC_03262024" target="_blank" rel="noopener noreferrer">DOWNLOAD FILE</a>
+                                                    <div style="width: 100%; background-color: #1e1e1e; padding: 0; margin: 0;">
+                                                        <iframe 
+                                                        src="docs/NCIP_CoC_03262024.pdf#toolbar=0&navpanes=0" 
+                                                        width="100%" 
+                                                        height="775px" 
+                                                        style="border: none;">
+                                                        </iframe>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="toggle">
+                                                <h4 class="tab-index tab-closed"><a href="#" title="Close" style="font-size: 12px;"><span class="icon-plus-sign"></span><b> INTERNAL AND EXTERNAL SERVICES FORMS</b></a></h4>
+
+                                                <div class="content-tab closed" style="border-left: 0;">
+                                                    <div class="short-table white">
+                                                        <table style="width: 100%" cellspacing="0" cellpadding="0">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th><b>Services Form</b></th>
+                                                                    <th><b>Form Handler</b></th>
+                                                                    <th><b>File</b></th>
+                                                                </tr>
+                                                            </thead>
+
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td class="align-left">Certificate of No Pending Case Request form</td>
+                                                                    <td>LAO</td>
+                                                                    <td><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/2F6.-CNPC-Request-form.pdf" target="_blank">Certificate of No Pending Case Request form</a></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="align-left">Form for the distribution of Communication/ Advocacy Materials</td>
+                                                                    <td>FARIPO</td>
+                                                                    <td><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/2F7.-Form-for-the-distribution-of-Communication-Advocacy-Materials.pdf" target="_blank">Form for the distribution of Communication/ Advocacy Materials</a></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="align-left">IEC Production Request form</td>
+                                                                    <td>OPPR</td>
+                                                                    <td><a href="https://ncip.gov.ph/wp-content/uploads/2024/06/2F8.-IEC-Production-Form_2.pdf" target="_blank">IEC Production Request form</a></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="align-left">Technical Assistance Request (TAR) Slip v.01</td>
+                                                                    <td>OECH</td>
+                                                                    <td><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/2F9.-Technical-Assistance-Request-Form.pdf" target="_blank">Technical Assistance Request (TAR) Slip v.01</a></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="align-left">Request Form for Processing of Request for BIR Form 2316 of Former NCIP Employees</td>
+                                                                    <td>OECH</td>
+                                                                    <td><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/2F10.-Request-Form-for-Processing-of-Request-for-BIR-Form-2316-of-Former-NCIP-Employees.pdf" target="_blank">Request Form for Processing of Request for BIR Form 2316 of Former NCIP Employees</a></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="align-left">HR Records Request Form v.01</td>
+                                                                    <td>HRMD</td>
+                                                                    <td><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/2F11.-HR-Records-Request-Form.pdf" target="_blank">HR Records Request Form v.01</a></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="align-left">Travel Arranger Form</td>
+                                                                    <td>GSD</td>
+                                                                    <td><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/2F12.-Travel-Arranger-Form.pdf" target="_blank">Travel Arranger Form</a></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="align-left">Request Form for issuance of Certification of Properties Issued</td>
+                                                                    <td>GSD</td>
+                                                                    <td><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/2F13.-Request-Form-for-issuance-of-Certification-of-Properties-Issued.pdf" target="_blank">Request Form for issuance of Certification of Properties Issued</a></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="align-left">Gate Pass Form</td>
+                                                                    <td>GSD</td>
+                                                                    <td><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/2F14.-Gate-Pass-Form.pdf" target="_blank">Gate Pass Form</a></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="align-left">Request Form for issuance of Property Borrow and Return Slip</td>
+                                                                    <td>GSD</td>
+                                                                    <td><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/2F15.-Request-Form-for-issuance-of-Property-Borrow-and-Return-Slip.pdf" target="_blank">Request Form for issuance of Property Borrow and Return Slip</a></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="align-left">Request Form for ID replacement</td>
+                                                                    <td>GSD</td>
+                                                                    <td><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/2F16.-Request-Form-for-ID-replacement.pdf" target="_blank">Request Form for ID replacement</a></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="align-left">Vehicle Request Form</td>
+                                                                    <td>GSD</td>
+                                                                    <td><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/2F17.-Vehicle-Request-Form.pdf" target="_blank">Vehicle Request Form</a></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="align-left">Request Form for the issuance of Certified True Copies/Plain Copies of Case Records</td>
+                                                                    <td>OCC</td>
+                                                                    <td><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/2F18-and-19.-Request-Form-for-CTC-and-Cert-of-Finality.pdf" target="_blank">Request Form for the issuance of Certified True Copies/Plain Copies of Case Records</a></td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="align-left">Request Form for the issuance of Certificate of Finality of Judgment</td>
+                                                                    <td>OCC</td>
+                                                                    <td><a href="https://ncip.gov.ph/wp-content/uploads/2024/03/2F18-and-19.-Request-Form-for-CTC-and-Cert-of-Finality.pdf" target="_blank">Request Form for the issuance of Certificate of Finality of Judgment</a></td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="toggle">
+                                                <h4 class="tab-index tab-closed"><a href="#" title="Close" style="font-size: 12px;"><span class="icon-plus-sign"></span><b> FEEDBACK MECHANISM</b></a></h4>
+
+                                                <div class="content-tab closed" style="border-left: 0;">
+                                                    <p>For our Clients and Partners:<br><br>Your opinions and feedback on the services availed at the National Commission on Indigenous Peoples – Central Office is very important. It helps us improve our work to offer better quality service.</p>
+
+                                                    <div class="short-table white">
+                                                        <table style="width: 100%" cellspacing="0" cellpadding="0">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>How to send feedback</td>
+                                                                    <td style="text-align: justify;">For Walk-ins: Client may answer the feedback form in the office lobby and put it in the feedback and complaints drop box.<br><br>For online: Feedback Form link can be accessed through <a href="https://forms.gle/1JuFTNJD6AaX97rL8" target="_blank">https://forms.gle/1JuFTNJD6AaX97rL8</a> or client may email at ncipfeedback@gmail.com<br><br>Clients may also call the Central Office Trunkline at (02) 8575-1200 or Hotline at 898-NCIP.</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td>How feedbacks are processed</td>
+                                                                    <td style="text-align: justify;">Every Friday, the Office of the Executive Director (OED) collects, organizes, and summarizes feedback received from drop box, website, and email.<br><br>Feedbacks are forwarded to the concerned office for action.</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="toggle">
+                                                <h4 class="tab-index tab-closed"><a href="#" title="Close" style="font-size: 12px;"><span class="icon-plus-sign"></span><b> COMPLAINT MECHANISM</b></a></h4>
+
+                                                <div class="content-tab closed" style="border-left: 0; text-align: justify;">
+                                                    <p>
+                                                        For our Clients and Partners: <br><br>
+
+                                                        Here at NCIP, we gladly welcome constructive criticism, it serves as a mechanism to keep in check that the respective tasks and functions of NCIP personnel are accordingly performed. Thus, anyone may file a complaint against any personnel who has been discourteous/unhelpful in the course of his/her transaction with the NCIP.<br><br><br>
+
+                                                        <b>How to file a complaint?</b><br><br>
+
+                                                        1. Get a copy of the Complaint Form from NCIP Guest Information Desk Officer (GIDO) or download from NCIP website<br><br>
+                                                        2. Fill out the <a href="https://ncip.gov.ph/wp-content/uploads/2024/03/2F3.-Complaint-Form.pdf" target="_blank">Complaint Form</a>. Complaint Form should contain the following:<br><br>
+                                                        a. Name of complainant (optional)<br>
+                                                        b. Contact number of complainants<br>
+                                                        c. Address or email address of complainant (if walk-in) - for purpose of sending reply by the agency<br>
+                                                        d. Name of person being complained<br>
+                                                        e. Incident or alleged violation of the Citizen’s Charter committed by the person being complained<br>
+                                                        f. Evidence, if any<br>
+                                                        g. Service availed<br>
+                                                        h. Date when service availed<br><br>
+
+                                                        3. For walk-in: Drop 1 original copy of the duly accomplished Complaints Form in any Designated Drop-boxes located at the Guest Information Desks (GIDs) at the 6th and 7th Floor of Sunnymede IT Center, 1614 Quezon Avenue, Quezon City.<br><br>
+
+                                                        If through registered mail or private courier: mail 1 original copy of the duly accomplished Complaint Form and address to NCIP GIDO. Once received by agency, Records Officer to drop at any designated drop box.<br><br>
+
+                                                        If thru email: send duly accomplished Complaint Form to ncipcccomplaints@gmail.com
+                                                        For inquiries and follow-ups, clients may call the Central Office Trunkline at (02) 8575-1200 and ask to be redirected to HRMD or email ncipcccomplaints@gmail.com<br><br>
+
+                                                        Walk-in follow ups and inquires will also be entertained by the NCIP GIDO.
+                                                        How complaints are processed
+                                                        Designated cut-off time for opening<br><br><br>
+
+                                                        <b>How complaints are processed?</b><br><br>
+
+                                                        Designated cut-off time for opening of the drop box: 3pm<br><br>
+
+                                                        ***Complaints received beyond the cut off time shall be considered as complaints for the next working day***<br>
+                                                        The designated HR Officer shall open the physical and virtual complaint box to be accompanied by the Guest Information Desk Officer (GIDO), record (with control no.) and evaluate each complaint.<br><br>
+
+                                                        After evaluation, the HRMO shall channel the said complaint to the concerned Bureau Director/Head of concerned Offices which in turn will forward to the concerned personnel.The concerned personnel shall submit his/her response, through the head of office, to the HRMD within five (5) working days from the date of receipt.<br><br>
+
+                                                        The HRMD will then forward the response to the complainant. The HRMD shall then record the actions taken regarding the complaint.<br><br>
+
+                                                        The concerned personnel shall submit his/her response, through the head of office, to the HRMD within five working days from the date of receipt. The HRMD will then forward theresponse to the complainant. The HRMD shall then record the actions taken regarding the complaint.<br>
+                                                        Should the complainant, upon receipt of the response, submit a reply thereto, the NCIP Executive Director, upon the recommendation of the NCIP CART shall determine whether the complaint should be considered closed.<br><br>
+
+                                                        If the complainant fails to submit any reply within 15 days, from the date the response was transmitted, the complaint is considered closed.<br><br>
+
+                                                        ***The claim is considered closed if there is no receipt of feedback from the complainant within 15 days from the date the response was transmitted to the complainant***
+                                                    </p>
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="features-tab-content features-tab-8 ">
-                                            <!-- <p>After the purchase, in <a href="http://support.yithemes.com/viewtopic.php?f=6&amp;t=466">our support forum</a>you can watch a lot of videotutorials that can help you to set up the theme. Also, if you need support, open a topic and ask help to our stunning developers: they will reply in max 24h.</p>
-                                            <h3><a href="images/makehappy1.png"><img class="aligncenter size-full wp-image-1045" title="makehappy" src="images/makehappy1.png" alt="" width="387" height="158" /></a></h3> -->
+                                            <div class="toggle">
+                                                <h4 class="tab-index tab-opened"><a href="#" title="Close" style="font-size: 12px;"><span class="icon-minus-sign"></span><b>PUBLIC BIDDING</b></a></h4>
+
+                                                    <div class="tabs-container">
+                                                        <ul class="tabs">
+                                                            <li><h4><a href="#tab1" title="Services" style="color: #676768; font-size: 12px"><strong>INVITATION TO BID</strong></a></h4></li>
+                                                            <li><h4><a href="#tab2" title="Customers" style="color: #676768; font-size: 12px"><strong>AWARDS</strong></a></h4></li> 
+                                                        </ul>
+                                                        <div class="border-box group">
+                                                            <div id="tab1" class="panel group">
+                                                                <ul style="padding-left: 0;">
+                                                                    <li>Procurement of Firewall and Anti-Virus Licenses | Date posted: 4/4/2025 | <a href="https://ncip.gov.ph/wp-content/uploads/2025/04/Bid-Docs_Firewall-and-Antivirus.pdf" target="_blank">Bid Documents</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2025/04/Supplemental-Bulletin-No-1-e-signed.pdf" target="_blank">Supplemental/Bid Bulletin No. 1</a></li>
+                                                                    <li>Procurement of Printing and Delivery of NCIP 2024 Annual Accomplishment Report | Date posted: 03/11/2025 | <a href="https://ncip.gov.ph/wp-content/uploads/2025/03/Bid-Docs-Printing-of-AAR_CY-2024-03.10.25.pdf" target="_blank">Bid Documents</a></li>
+                                                                    <li>Procurement of Internet Subscription of NCIP Central Office | Date posted: 11/15/2024 | <a href="https://ncip.gov.ph/wp-content/uploads/2024/11/Bid-Docs-Internet-FY-2025.pdf" target="_blank">Bid Documents</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2024/11/bid-bul-internet-2025.pdf" target="_blank">Supplemental Bid Bulletin No. 1</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2024/12/INTERNET-SUBSCRIPTION.pdf" target="_blank">Bid Bulletin No. 2</a></li>
+                                                                    <li>Procurement of Security Services for FY 2025 | Date posted: 11/15/2024 | <a href="https://ncip.gov.ph/wp-content/uploads/2024/11/Bid-Docs-Security-FY-2025.pdf" target="_blank">Bid Documents</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2024/12/SUPP-SECURITY.pdf" target="_blank">Supplemental Bid Bulletin No. 1</a></li>
+                                                                    <li>Procurement of Janitorial Services for FY 2025 | Date posted: 11/15/2024 | <a href="https://ncip.gov.ph/wp-content/uploads/2024/11/Bid-Docs-Janitorial-FY-2025.pdf" target="_blank">Bid Documents</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2024/12/SUPP-JANITORIAL.pdf" target="_blank">Supplemental Bid Bulletin No. 1</a></li>
+                                                                    <li>Procurement of Printing and Delivery of NCIP Annual Accomplishment Report (AAR) | Date posted: 09/20/2024 | <a href="https://ncip.gov.ph/wp-content/uploads/2024/09/Printing-and-Delivery-of-NCIP-AAR.pdf" target="_blank">Bid Documents</a></li>
+                                                                    <li>Procurement of Server | Date posted: 05/18/2024 | <a href="https://ncipictd-my.sharepoint.com/:b:/g/personal/oppr_ird_ncip_gov_ph/EcsSRDEAycpNrRvXFlRYhUIB6_crW81aw2yBs33FC65bQA?e=U1sFSX" target="_blank">Bid Documents</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2024/08/Supplemental-BId-Bulletin-Server.pdf" target="_blank">Supplemental Bid Bulletin No. 1</a></li>
+                                                                    <li>Procurement of Motor Vehicle | Date posted: 05/18/2024 | <a href="https://ncipictd-my.sharepoint.com/:b:/g/personal/oppr_ird_ncip_gov_ph/EQvKo_q_coZGo7mzlFivPBkB536rVVYCKg6uBs1iRnff1g?e=CmqKOW" target="_blank">Bid Documents</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2024/08/Supplemental-BId-Motor-Vehicle_08.07.24.pdf" target="_blank">Supplemental Bid Bulletin No. 1</a></li>
+                                                                    <li>Procurement of Accounting and Budget Information System | Date posted: 05/18/2024 | <a href="https://ncipictd-my.sharepoint.com/:b:/g/personal/oppr_ird_ncip_gov_ph/Eb47xzwCVSJMpWv91mJ1j3wBvaLRVySD9TsR4YJ0w_IcJA?e=MRkkhv" target="_blank">Bid Documents</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2024/08/Supplemental-BId-Bulletin-ABIS.pdf" target="_blank">Supplemental Bid Bulletin No. 1</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2024/08/TOR-and-Annex-A-ABIS.pdf" target="_blank">TOR</a></li>
+                                                                    <li>Procurement of Documents Management System and Services for the Digitization of NCIP Vital Records and Documents | Date Posted: 05/28/2024 | <a href="https://ncip.gov.ph/wp-content/uploads/2024/05/Bid-Docs_Digitization.pdf" target="_blank">Bid Documents</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2024/05/TOR-Signed.pdf" target="_blank">TOR</a></li>
+                                                                    <li>Procurement of Motor Vehicle | Date posted: 05/28/2024 | <a href="https://ncip.gov.ph/wp-content/uploads/2024/05/Bid-Docs_Motor-Vehicle.pdf" target="_blank">Bid Documents</a></li>
+                                                                    <li>Supply and Delivery of ICT Network and Multimedia Equipment, and Licenses | Date Posted: 04/30/2024 | <a href="https://ncip.gov.ph/wp-content/uploads/2024/04/Bids-Docs-for-the-Supply-and-Delivery-of-ICT-Network-and-Multimedia-Equipment-and-Licenses.pdf" target="_blank">Bid Documents</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2024/05/Supplemental-Bid-Bulletin-No.-1-supply-delivery-of-NCIP-Network-Multimedia-Equipment-and-Licenses.pdf" target="_blank">Supplemental/Bid Bulletin No. 1</a></li>
+                                                                    <li>Procurement of Multimedia Editing Software | Date Posted: 04/19/2024 | <a href="https://ncip.gov.ph/wp-content/uploads/2024/04/Bid-Docs_Procurement-of-Multimedia-Editing-Software.pdf" target="_blank">Bid Documents</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2024/05/BId-Buletin-Multi-Media_1.pdf" target="_blank">Supplemental/Bid Bulletin No. 1</a></li>
+                                                                    <li>Disposal of Used/Unserviceable Properties and Equipment | Date Posted: 03/21/2024 | <a href="https://ncip.gov.ph/wp-content/uploads/2024/03/Invitation-to-Bid.pdf" target="_blank">Invitation to Bid</a></li>
+                                                                    <li>Procurement of Security Services | Date Posted: 02/21/2024 | <a href="https://ncip.gov.ph/wp-content/uploads/2024/02/02.20.2024-Bid-Docs-for-Security-Services-pdf.pdf" target="_blank">Bid Documents</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2024/03/Supplemental-Bid_Security.pdf" target="_blank">Supplemental/Bid Bulletin No. 1</a></li>
+                                                                    <li>Supply and Delivery of ICT Equipment Support to the Establishment of Ancestral Domain Management Offices (ADMOS) | Date Posted: 02/21/2024 | <a href="https://ncip.gov.ph/wp-content/uploads/2024/02/2024.20.02-BID-DOCUMENTS-ICT-Equipment-support-to-ADMOs-with-TOR-and-Annex_1.pdf" target="_blank">Bid Documents</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2024/03/Procurement_of_ICT_Equipment_ADMOs-with-Annex.pdf" target="_blank">Supplemental/Bid Bulletin No. 1</a></li>
+                                                                    <li>Procurement of Human Resources Information System | Date Posted: 02/21/2024 | <a href="https://ncip.gov.ph/wp-content/uploads/2024/02/2024.20.02-BID-DOCUMENTS-Procurement-of-Human-Resources-Information-System-with-TOR.pdf" target="_blank">Bid Documents</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2024/03/Supplemental-Bid_HRIS-with-Annex.pdf" target="_blank">Supplemental/Bid Bulletin No. 1</a></li>
+                                                                    <li>Procurement of ICT Equipment | Date Posted: 02/21/2024 | <a href="https://ncip.gov.ph/wp-content/uploads/2024/02/2024.20.02-BID-DOCUMENTS-Procurement-of-ICT-Equipment-with-TOR-and.pdf" target="_blank">Bid Documents</a> | <a href="https://ncip.gov.ph/wp-content/uploads/2024/03/Supplemental-Bid_ICT-Equipment.pdf" target="_blank">Supplemental/Bid Bulletin No. 1</a></li>
+                                                                </ul>
+                                                            </div>
+                                                            <div id="tab2" class="panel group">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                            <div class="toggle">
+                                                <h4 class="tab-index tab-closed"><a href="#" title="Close" style="font-size: 12px;"><span class="icon-plus-sign"></span><b> ALTERNATIVE MODE OF PROCUREMENT</b></a></h4>
+
+                                                <div class="content-tab closed"  style="border-left: 0;">
+                                                    <div class="tabs-container">
+                                                        <ul class="tabs">
+                                                            <li><h4><a href="#tab3" title="Services" style="color: #676768; font-size: 12px"><strong>ADVERTISEMENT</strong></a></h4></li>
+                                                            <li><h4><a href="#tab4" title="Customers" style="color: #676768; font-size: 12px"><strong>AWARDS</strong></a></h4></li> 
+                                                        </ul>
+                                                        <div class="border-box group">
+                                                            <div id="tab3" class="panel group">
+                                                                <ul style="padding-left: 0;">
+                                                                    <li>Procurement of Office Supplies | Date Posted: 04.24.2025 | <a href="https://ncip.gov.ph/wp-content/uploads/2025/04/Procurement-of-Office-Supplies.pdf" target="_blank">RFQ</a></li>
+                                                                    <li>Procurement of Janitorial Supplies | Date Posted: 04.07.2025 | <a href="https://ncip.gov.ph/wp-content/uploads/2025/04/RFQ-Janitorial-Supplies.pdf" target="_blank">RFQ</a></li>
+                                                                    <li>Procurement of Services of Certifying Body for NCIP Central Office QMS Initial ISO 9001:2015 Certification | Date Posted: 04.04.2025 | <a href="https://ncip.gov.ph/wp-content/uploads/2025/04/RFQ-Certifying-Body_QMS.pdf" target="_blank">RFQ</a></li>
+                                                                    <li>Procurement of Office Supplies | Date Posted: 04.03.2025 | <a href="https://ncip.gov.ph/wp-content/uploads/2025/04/RFQ-Office-Supplies-Various-Offices-outside-PS-DBM.pdf" target="_blank">RFQ</a></li>
+                                                                    <li>Procurement of Multimedia Editing Software | Date Posted: 04.03.2025 | <a href="https://ncip.gov.ph/wp-content/uploads/2025/04/RFQ-Multimedia-Editing-Software.pdf" target="_blank">RFQ</a></li>
+                                                                    <li>Procurement of Secure Socket Layer (SSL) | Date Posted: 04.03.2025 | <a href="https://ncip.gov.ph/wp-content/uploads/2025/04/RFQ-SSL.pdf" target="_blank">RFQ</a></li>
+                                                                    <li>Procurement of Medical Supplies and Medicines | Date Posted: 04.03.2025 | <a href="https://ncip.gov.ph/wp-content/uploads/2025/04/RFQ-Medical-Supplies-Medicine.pdf" target="_blank">RFQ</a></li>
+                                                                </ul>
+                                                            </div>
+                                                            <div id="tab4" class="panel group">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

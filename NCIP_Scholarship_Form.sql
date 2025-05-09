@@ -156,9 +156,36 @@ CREATE TABLE ANNOUNCEMENT_VIEW (
 );
 
 INSERT INTO ANNOUNCEMENT (ANN_TITLE, ANN_CONTENT, ANN_DATE) VALUES
+-- 1
 ('Advisory', 'On April 16, 2025, the National Commission on Indigenous Peoples – Central Office and Regional Offices will implement a work-from-home...', '2025-4-14'),
+-- 2
 ('Makasaysayang araw para sa mga Eskaya!', 'Sinaksihan ni National Commission on Indigenous Peoples Chairperson Jennifer Pia Sibug-Las ang pormal na pagkakaloob ng Certificate of Recognition of...', '2025-3-28'),
-('NCIP, nakiisa sa forum para sa kababaihan mula sa ibat ibang sektor', 'Nakiisa ang National Commission on Indigenous Peoples (NCIP) sa 2025 Philippine Open Government Partnership (PH-OGP) National Women''s Month Forum na...', '2025-3-27');
+-- 3
+('NCIP, nakiisa sa forum para sa kababaihan mula sa ibat ibang sektor', 'Nakiisa ang National Commission on Indigenous Peoples (NCIP) sa 2025 Philippine Open Government Partnership (PH-OGP) National Women''s Month Forum na...', '2025-3-27'),
+-- 4
+('NCIP Dumalo sa National Women Leaders’ Summit on Halal Industry Advancement', 'Dumalo bilang panauhin at resource speaker si NCIP Chairperson Jennifer Pia Sibug-Las sa kauna-unahang National Women Leaders’ Summit on Halal...', '2025-3-25'),
+-- 5
+('Workshop on the Identification of Partnership Entry Points between the Commission on Population and Development (CPD) and the National Commission on Indigenous Peoples', 'The CPD hosted a workshop at the Sotogrande Hotel in Quezon City on March 24, 2025, inviting the NCIP to...', '2025-3-25'),
+-- 6
+('NCIP Chairperson Sibug-Las, Tagapanayam sa Women in Extractives Forum 2025', 'Nagsilbing tagapanayam si National Commission on Indigenous Peoples (NCIP) Chairperson Jennifer Pia Sibug-Las sa isang pagtitipon ng mga kababaihan sa...', '2025-3-18'),
+-- 7
+('NCIP Chairperson Jennifer Pia Sibug-Las ginawaran bilang Natatanging Lingkod Bayan sa Gawad Pilipino Awards 2025', 'Ginawaran si NCIP Chairperson Jennifer Pia Sibug-Las bilang Natatanging Lingkod Bayan sa Gawad Pilipino Awards 2025 na ginanap sa AFPCOC,...', '2025-3-17'),
+-- 8
+('Walong Katutubong Biktima ng Human Trafficking, niligtas ng NCIP, DMW, DFA, Embahada ng Pilipinas sa Kuala Lumpur, at DSWD', 'Ang National Commission on Indigenous Peoples (NCIP) ay mariing nagpapayo at nagpapaalala sa mga Katutubong Pamayanan na maging masigasig sa...', '2025-3-15'),
+-- 9
+('NCIP, Pinarangalan ng Gawad Bayanuhan sa Pamumuhunan', 'Kinilala ang National Commission on Indigenous Peoples (NCIP) at si Chairperson Jennifer Pia Sibug-Las sa Gawad Bayanihan sa Pamumuhunan Awarding...', '2025-3-13'),
+-- 10
+('NCIP Published its 3rd Volume of NCIP IndigeNews', 'reserving cultures and breaking barriers Celebrate the strength and wit of Indigenous women with us through the 3rd Volume of...', '2025-3-12'),
+-- 11
+('NCIP, OES Nagpulong Para sa Kapakanan ng mga Katutubo', 'Lunes, 10 Marso 2025, nakipagpulong ang National Commission on Indigenous Peoples (NCIP) sa Office of the Executive Secretary (OES) upang...', '2025-3-11'),
+-- 12
+('Philippines-United Nations (UN) Dialogue 2025: Driving Transitions for Impact, Scale, and Synergy', '05 March 2025 - As this year marks the 80th anniversary of the United Nations, the Philippines and the UN...', '2025-3-05'),
+-- 13
+('Kababaihang Katutubo, Bida sa Women’s Month Exhibit ng NCIP', 'Nakiisa ang National Commission on Indigenous Peoples (NCIP) sa seremonyal na pagsisimula ng National Women’s Month Celebration (NWMC) ngayong araw,...', '2025-3-05'),
+-- 14
+('Partnerships sealed to uphold Indigenous Rights and Environmental Stewardship', 'In celebration of World Wildlife Day 2025, the National Commission on Indigenous Peoples (NCIP) signed partnerships that will safeguard the...', '2025-3-03'),
+-- 15
+('NCIP CONDEMNS NON-MORO INDIGENOUS PEOPLES KILLINGS IN MAGUINDANAO DEL SUR', 'It has come to the National Commission on Indigenous Peoples’ (NCIP) knowledge that Timuay Renato Promboy, a well-known Teduray Indigenous...', '2025-2-27');
 
 CREATE TABLE CONTACT_MESSAGE (
     CONTM_ID                SERIAL          PRIMARY KEY,
@@ -211,3 +238,4 @@ SELECT * FROM SCHOOL_PREFERENCE
 SELECT * FROM SIBLING
 SELECT * FROM SIGNATURE_SCANS
 SELECT * FROM USERS
+SELECT * FROM POPULATION_TABLE

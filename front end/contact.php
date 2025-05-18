@@ -107,29 +107,47 @@ if (session_status() === PHP_SESSION_NONE) {
     <div class="slogan" style="margin-top: -20px;">
         <div class="container">
             <div class="header">
-                <h1>NATIONAL COMMISSION ON INDIGENOUS PEOPLES</h1>
+                <h1>NATIONAL COMMISSION OF ON INDIGENOUS PEOPLES REGION 6/7</h1>
                 <div class="central-office">
-                    <p class="office-title">NCIP Central Office</p>
+                    <p class="office-title">Cebu Provincial Office</p>
                 
                     <div style="display: flex; align-items: center; margin-bottom: 5px;">
                         <i class="icon-map-marker" style="color:#979797; font-size: 20px; margin-right: 10px;"></i>
-                        <span>6th and 7th Floors, Sunnymede IT Center, 1614 Quezon Avenue, South Triangle, Quezon City 1103, Philippines.</span>
+                        <span>Room 17 2/F Osmeña Building Pelaez Street, Cebu City 6000 Philippines</span>
                     </div>
                 
                     <div style="display: flex; align-items: center; margin-bottom: 5px;">
                         <i class="icon-info-sign" style="color:#979797; font-size: 20px; margin-right: 10px;"></i>
-                        <span>Tel Number: (02) 8575 – 1200</span>
+                        <span>Contact Number: (032) 254 3630 / (+63) 906 588 1698</span>
                     </div>
                 
                     <div style="display: flex; align-items: center;">
                         <i class="icon-envelope" style="color:#979797; font-size: 20px; margin-right: 10px;"></i>
-                        <span>Email Address: chairperson@ncip.gov.ph</span>
+                        <span>Email Address: region67.cebupo@ncip.gov.ph</span>
                     </div>
                 </div> 
             </div>
             <hr>
             <div class="regional-offices">
-                <h1 style="padding-bottom: 10px;">REGIONAL OFFICES</h2>
+                <h1 style="padding-bottom: 10px;">OTHER REGIONAL OFFICES</h2>
+                <div class="toggle">
+                    <h4 class="tab-index tab-closed"><a href="#" title="Close" style="font-weight: bold; font-size: 1.1 rem; color: #676768;"><span class="icon-plus-sign"></span> Click here to view other regional offices</a></h4>
+    
+                    <div class="content-tab closed" style="padding-left: 20px;">
+                <div class="toggle">
+                    <h4 class="tab-index tab-closed"><a href="#" title="Close" style="font-weight: bold; font-size: 1.1 rem; color: #676768;"><span class="icon-plus-sign"></span> NCIP Central Office</a></h4>
+    
+                    <div class="content-tab closed">
+                        <p>
+                            <i class="icon-map-marker" style="color:#979797; font-size:20px;"></i>&nbsp;&nbsp;
+                            6th and 7th Floors, Sunnymede IT Center, 1614 Quezon Avenue, South Triangle, Quezon City 1103, Philippines<br>
+                            <i class="icon-info-sign" style="color:#979797; font-size:20px;"></i>&nbsp;&nbsp;
+                            Tel Number: (02) 8575 – 1200<br>
+                            <i class="icon-envelope" style="color:#979797; font-size:20px;"></i>&nbsp;&nbsp;
+                            Email Address: chairperson@ncip.gov.ph
+                        </p>                              
+                    </div>
+                </div> 
                 <div class="toggle">
                     <h4 class="tab-index tab-closed"><a href="#" title="Close" style="font-weight: bold; font-size: 1.1 rem; color: #676768;"><span class="icon-plus-sign"></span> NCIP Cordillera Administrative Region (CAR)</a></h4>
     
@@ -312,6 +330,8 @@ if (session_status() === PHP_SESSION_NONE) {
                             <i class="icon-envelope" style="color:#979797; font-size:20px;"></i>&nbsp;&nbsp;
                             Email Address: region13@ncip.gov.ph
                         </p>                              
+                    </div>
+                </div>                             
                     </div>
                 </div>
             </div>

@@ -217,7 +217,7 @@ a:hover {
 [class*="span"] {
   float: left;
   min-height: 1px;
-  margin-left: 20px;
+  margin-left: 100px;
 }
 
 .container,
@@ -268,7 +268,7 @@ a:hover {
 }
 
 .span2 {
-  width: 140px;
+  width: 320px;
 }
 
 .span1 {

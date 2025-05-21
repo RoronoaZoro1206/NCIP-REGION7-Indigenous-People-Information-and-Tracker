@@ -52,9 +52,9 @@ if (session_status() === PHP_SESSION_NONE) {
 <!-- START WRAPPER -->
     <div id="wrapper" class="container group">
 
-    <!-- START SCROLL TO TOP BUTTON -->
+    <!-- SCROLL TO TOP BUTTON -->
     <?php include 'components/scroll-to-top.php'; ?>
-    <!-- START HEADER -->
+    <!-- HEADER -->
     <?php include 'components/header.php'; ?>
 
     <!-- START PAGE META -->
@@ -107,29 +107,47 @@ if (session_status() === PHP_SESSION_NONE) {
     <div class="slogan" style="margin-top: -20px;">
         <div class="container">
             <div class="header">
-                <h1>NATIONAL COMMISSION ON INDIGENOUS PEOPLES</h1>
+                <h1>NATIONAL COMMISSION OF ON INDIGENOUS PEOPLES REGION 6/7</h1>
                 <div class="central-office">
-                    <p class="office-title">NCIP Central Office</p>
+                    <p class="office-title">Cebu Provincial Office</p>
                 
                     <div style="display: flex; align-items: center; margin-bottom: 5px;">
                         <i class="icon-map-marker" style="color:#979797; font-size: 20px; margin-right: 10px;"></i>
-                        <span>6th and 7th Floors, Sunnymede IT Center, 1614 Quezon Avenue, South Triangle, Quezon City 1103, Philippines.</span>
+                        <span>Room 17 2/F Osmeña Building Pelaez Street, Cebu City 6000 Philippines</span>
                     </div>
                 
                     <div style="display: flex; align-items: center; margin-bottom: 5px;">
                         <i class="icon-info-sign" style="color:#979797; font-size: 20px; margin-right: 10px;"></i>
-                        <span>Tel Number: (02) 8575 – 1200</span>
+                        <span>Contact Number: (032) 254 3630 / (+63) 906 588 1698</span>
                     </div>
                 
                     <div style="display: flex; align-items: center;">
                         <i class="icon-envelope" style="color:#979797; font-size: 20px; margin-right: 10px;"></i>
-                        <span>Email Address: chairperson@ncip.gov.ph</span>
+                        <span>Email Address: region67.cebupo@ncip.gov.ph</span>
                     </div>
                 </div> 
             </div>
             <hr>
             <div class="regional-offices">
-                <h1 style="padding-bottom: 10px;">REGIONAL OFFICES</h2>
+                <h1 style="padding-bottom: 10px;">OTHER REGIONAL OFFICES</h2>
+                <div class="toggle">
+                    <h4 class="tab-index tab-closed"><a href="#" title="Close" style="font-weight: bold; font-size: 1.1 rem; color: #676768;"><span class="icon-plus-sign"></span> Click here to view other regional offices</a></h4>
+    
+                    <div class="content-tab closed" style="padding-left: 20px;">
+                <div class="toggle">
+                    <h4 class="tab-index tab-closed"><a href="#" title="Close" style="font-weight: bold; font-size: 1.1 rem; color: #676768;"><span class="icon-plus-sign"></span> NCIP Central Office</a></h4>
+    
+                    <div class="content-tab closed">
+                        <p>
+                            <i class="icon-map-marker" style="color:#979797; font-size:20px;"></i>&nbsp;&nbsp;
+                            6th and 7th Floors, Sunnymede IT Center, 1614 Quezon Avenue, South Triangle, Quezon City 1103, Philippines<br>
+                            <i class="icon-info-sign" style="color:#979797; font-size:20px;"></i>&nbsp;&nbsp;
+                            Tel Number: (02) 8575 – 1200<br>
+                            <i class="icon-envelope" style="color:#979797; font-size:20px;"></i>&nbsp;&nbsp;
+                            Email Address: chairperson@ncip.gov.ph
+                        </p>                              
+                    </div>
+                </div> 
                 <div class="toggle">
                     <h4 class="tab-index tab-closed"><a href="#" title="Close" style="font-weight: bold; font-size: 1.1 rem; color: #676768;"><span class="icon-plus-sign"></span> NCIP Cordillera Administrative Region (CAR)</a></h4>
     
@@ -313,6 +331,8 @@ if (session_status() === PHP_SESSION_NONE) {
                             Email Address: region13@ncip.gov.ph
                         </p>                              
                     </div>
+                </div>                             
+                    </div>
                 </div>
             </div>
         </div>
@@ -473,95 +493,7 @@ if (session_status() === PHP_SESSION_NONE) {
     <!-- END PRIMARY -->    
 
     <!-- START FOOTER -->
-    <div id="footer">
-        <div class="container">
-            <div class="row">
-                <div class="footer-widgets-area with-sidebar-right">
-                    <div class="widget-first widget span2 widget_text">
-                        <h3>
-                            <img src="images/ncip-logo.png" alt="NCIP Logo" class="ncip-logo">
-                            About NCIP <div class="underline2"><span></span></div>
-                        </h3>
-                        <div class="textwidget">
-                            The National Commission on Indigenous Peoples (NCIP) is dedicated to the recognition, protection, and promotion of the rights of Indigenous Cultural Communities / Indigenous Peoples (ICCs/IPs) in the Philippines. Learn more about our mission <a href="#">here</a>.
-                        </div>
-                    </div>
-    
-                    <div class="widget span2 widget_nav_menu">
-                        <h3>Quick Links <div class="underline"><span></span></div></h3>
-                        <div class="menu-widget-footer-container">
-                            <ul id="menu-widget-footer" class="menu">
-                                <li class="menu-item"><a href="program.php">Programs</a></li>
-                                <li class="menu-item"><a href="#">Services</a></li>
-                                <li class="menu-item"><a href="#">Legal Framework</a></li>
-                                <li class="menu-item"><a href="#">Reports</a></li>
-                                <li class="menu-item"><a href="contact.php">Contact</a></li>
-                            </ul>
-                        </div>
-                    </div>
-    
-                    <div class="widget-last widget span2 widget_nav_menu">
-                        <h3>Follow Us <div class="underline"><span></span></div></h3>
-                        <div class="menu-socialize-container">
-                            <ul id="menu-socialize" class="menu">
-                                <li class="menu-item"><a href="https://www.facebook.com/CebuPO" target="_blank">Facebook</a></li>
-                                <li class="menu-item"><a href="mailto:region67.cebupo@ncip.gov.ph" target="_blank">Gmail</a></li>
-                                <li class="menu-item"><a href="https://www.instagram.com/ncipcebupo/" target="_blank">Instagram</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-    
-                <div class="footer-widgets-sidebar with-sidebar-right">
-                    <div class="widget-first widget span6 yit_quick_contact">
-                        <h3>Contact NCIP <div class="underline"><span></span></div></h3>
-                        <form class="contact-form row" method="post" action="" enctype="multipart/form-data">
-                            <fieldset>
-                                <ul>
-                                    <li class="text-field with-icon span3">
-                                        <label><span class="mainlabel">Name</span></label>
-                                        <div class="input-prepend">
-                                            <span class="add-on"><img src="images/footer/author-footer.png" alt=""/></span>
-                                            <input type="text" name="yit_contact[name]" class="with-icon required" value=""/>
-                                        </div>
-                                    </li>
-    
-                                    <li class="text-field with-icon span3">
-                                        <label><span class="mainlabel">Email</span></label>
-                                        <div class="input-prepend">
-                                            <span class="add-on"><img src="images/footer/envelope-footer.png" alt=""/></span>
-                                            <input type="text" name="yit_contact[email]" class="with-icon required email-validate" value=""/>
-                                        </div>
-                                    </li>
-    
-                                    <li class="textarea-field with-icon span6">
-                                        <label><span class="mainlabel">Message</span></label>
-                                        <div class="input-prepend">
-                                            <span class="add-on"><img src="images/footer/pencil-footer.png" alt=""/></span>
-                                            <textarea name="yit_contact[message]" rows="8" cols="30" class="with-icon required"></textarea>
-                                        </div>
-                                    </li>
-    
-                                    <li class="submit-button span6">
-                                        <input type="submit" name="yit_sendemail" value="SEND" class="sendmail alignright"/>
-                                    </li>
-                                </ul>
-                            </fieldset>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="lowfooter">
-        <div class="container">
-            <div class="row">
-                <div class="center span12">
-                    <p>&copy; 2025 NCIP Cebu Connect. All rights reserved.</p>
-                </div>
-            </div>
-        </div>
-    </div>    
+    <?php include 'components/footer.php'; ?>
     <!-- END FOOTER -->
 
     <div class="wrapper-border"></div>

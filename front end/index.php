@@ -435,82 +435,77 @@
                                     <ul class="logos-slides">
 
                                         <li style="height: 70px ;">
+                                            <a href="https://cnu.edu.ph/" target="_blank" class="bwWrapper" >
+                                                <img src="images/slider/cnu.png" title="Cebu Normal University" style="max-height: 70px;" class="logo" />
+                                            </a>
+                                        </li>
+
+                                        <li style="height: 70px ;">
+                                            <a href="https://www.ctu.edu.ph/" target="_blank" class="bwWrapper" >
+                                                <img src="images/slider/ctu.png" title="Cebu Technological University" style="max-height: 70px;" class="logo" />
+                                            </a>
+                                        </li>
+
+                                        <li style="height: 70px ;">
+                                            <a href="https://usc.edu.ph/" target="_blank" class="bwWrapper" >
+                                                <img src="images/slider/usc.png" title="University of San Carlos" style="max-height: 70px;" class="logo" />
+                                            </a>
+                                        </li>
+
+                                        <li style="height: 70px ;">
                                             <a href="https://www.dilg.gov.ph/" target="_blank" class="bwWrapper" >
-                                                <img src="images/slider/dilg.png" style="max-height: 70px;" class="logo" />
+                                                <img src="images/slider/dilg.png" title="Department of the Interior and Local Government" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
 
                                         <li style="height: 70px;">
                                             <a href="https://beta.tourism.gov.ph/" target="_blank" class="bwWrapper" >
-                                                <img src="images/slider/dot.png" style="max-height: 70px;" class="logo" />
+                                                <img src="images/slider/dot.png" title="Department of Tourism" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
 
                                         <li style="height: 70px;">
                                             <a href="https://chr.gov.ph/" target="_blank" class="bwWrapper" >
-                                                <img src="images/slider/chr.png" style="max-height: 70px;" class="logo" />
-                                            </a>
-                                        </li>
-
-                                        <li style="height: 70px;">
-                                            <a href="https://www.osg.gov.ph/" target="_blank" class="bwWrapper" >
-                                                <img src="images/slider/osg.png" style="max-height: 70px;" class="logo" />
-                                            </a>
-                                        </li>
-
-                                        <li style="height: 70px;">
-                                            <a href="http://unifil.unmissions.org/" target="_blank" class="bwWrapper" >
-                                                <img src="images/slider/uniphil.png" style="max-height: 70px;" class="logo" />
+                                                <img src="images/slider/chr.png" title="Commission on Human Rights" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
 
                                         <li style="height: 70px;">
                                             <a href="https://ibp.ph/" target="_blank" class="bwWrapper" >
-                                                <img src="images/slider/ibp.png" style="max-height: 70px;" class="logo" />
+                                                <img src="images/slider/ibp.png" title="Integrated Bar of the Philippines" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
 
                                         <li style="height: 70px;">
                                             <a href="https://nda.da.gov.ph/da-nda-celebrates-28-years-of-significant-strides-in-ph-dairy-industry/" target="_blank" class="bwWrapper" >
-                                                <img src="images/slider/nda.png" style="max-height: 70px;" class="logo" />
+                                                <img src="images/slider/nda.png" title="National Diary Authority" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
 
                                         <li style="height: 70px;">
                                             <a href="https://www.undp.org/philippines" target="_blank" class="bwWrapper" >
-                                                <img src="images/slider/undp.png" style="max-height: 70px;" class="logo" />
-                                            </a>
-                                        </li>
-
-                                        <li style="height: 70px;">
-                                            <a href="https://www.peaceinsight.org/en/organisations/tuklas-katutubo-national-organisation-of-indigenous-peoples-in-the-philippines/" target="_blank" class="bwWrapper" >
-                                                <img src="images/slider/tuklas-katutubo.png" style="max-height: 70px;" class="logo" />
+                                                <img src="images/slider/undp.png" title="United Nations Development Programme" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
 
                                         <li style="height: 70px;">
                                             <a href="https://www.dswd.gov.ph/" target="_blank" class="bwWrapper" >
-                                               <img src="images/slider/dswd.png" style="max-height: 70px;" class="logo" />
-                                            </a>
-                                        </li>
-
-                                        <li style="height: 70px;">
-                                            <a href="https://www.familysearch.org/en/philippines/" target="_blank" class="bwWrapper" >
-                                                <img src="images/slider/familysearch.png" style="max-height: 70px;" class="logo" />
+                                               <img src="images/slider/dswd.png" title="Department of Social Welfare and Development" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
 
                                         <li style="height: 70px;">
                                             <a href="https://www.pids.gov.ph/" target="_blank" class="bwWrapper" >
-                                                <img src="images/slider/pids.png" style="max-height: 70px;" class="logo" />
+                                                <img src="images/slider/pids.png" title="Philippine Institute for Development Studies" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
 
                                         <li style="height: 70px;">
-                                            <a href="https://www.ayalamuseum.org/" target="_blank" class="bwWrapper" >
-                                                <img src="images/slider/ayala-museum.png" style="max-height: 70px;" class="logo" />
+                                            <a href="https://www.universityofcebu.net/" target="_blank" class="bwWrapper" >
+                                                <img src="images/slider/uc.png" title="University of Cebu" style="max-height: 70px;" class="logo" />
                                             </a>
                                         </li>
+
                                     </ul>
                                 </div>
                                 <div class="clear"></div>

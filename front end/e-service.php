@@ -3,14 +3,56 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if user is logged in
-if (!isset($_SESSION["user"])) {
+// Check if user is logged in and has appropriate role (not an admin)
+if (!isset($_SESSION["user_id"])) {
     header("Location: form-content.php?show=login");
+    exit();
+} else if (isset($_SESSION["role"]) && strtoupper($_SESSION["role"]) === 'ADMIN' && !isset($_SESSION['temporary_role'])) {
+    // Show an admin-specific option
+    ?>
+    <div class="admin-actions">
+        <div class="admin-info">
+            <h3>Admin Mode</h3>
+            <p>You are viewing this page as an administrator</p>
+        </div>
+        <div class="admin-buttons">
+            <a href="?switch_role=USER" class="btn btn-primary">
+                <i class="bi bi-person"></i> Switch to User Mode
+            </a>
+            <a href="../admin/index.php" class="btn">
+                <i class="bi bi-gear"></i> Return to Admin Panel
+            </a>
+        </div>
+    </div>
+    <?php
+}
+
+// Handle role switching if requested
+if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $_SESSION['role'] === 'ADMIN') {
+    $_SESSION['temporary_role'] = true;
+    $_SESSION['original_role'] = 'ADMIN';
+    $_SESSION['temp_role'] = 'USER';
+    // Reload page without the parameter
+    header("Location: e-service.php");
     exit();
 }
 
 // Include database connection
 require_once 'db.php';
+
+// Log user activity
+try {
+    $log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
+                 VALUES (:user_id, 'PAGE_ACCESS', :details, CURRENT_TIMESTAMP)";
+    $log_stmt = $pdo->prepare($log_query);
+    $details = "User accessed e-service page";
+    $log_stmt->bindParam(":user_id", $_SESSION["user_id"]);
+    $log_stmt->bindParam(":details", $details);
+    $log_stmt->execute();
+} catch (PDOException $e) {
+    // Just log error but continue execution
+    error_log("Failed to log user activity: " . $e->getMessage());
+}
 
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -375,7 +417,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 
                 $scholarStmt->bindParam(':name', $_POST['scholar_name'][$i]);
                 $scholarStmt->bindParam(':course', $_POST['scholar_course'][$i]);
-        $scholarYear = !empty($_POST['scholar_year'][$i]) ? $_POST['scholar_year'][$i] : null;
+                $scholarYear = !empty($_POST['scholar_year'][$i]) ? $_POST['scholar_year'][$i] : null;
                 $scholarStmt->bindParam(':year', $scholarYear);
                 $scholarStmt->bindParam(':sib_code', $sibCode);
                 
@@ -413,6 +455,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Commit the transaction
         $pdo->commit();
         
+        // Log successful submission in USER_LOGS
+        $submission_log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
+                               VALUES (:user_id, 'FORM_SUBMISSION', :details, CURRENT_TIMESTAMP)";
+        $submission_log_stmt = $pdo->prepare($submission_log_query);
+        $submission_details = "User submitted scholarship application form. Application #: " . $_POST['app_number'];
+        $submission_log_stmt->bindParam(":user_id", $_SESSION["user_id"]);
+        $submission_log_stmt->bindParam(":details", $submission_details);
+        $submission_log_stmt->execute();
+        
         // Set success message
         $_SESSION['scholarship_success'] = "Your scholarship application has been submitted successfully!";
         
@@ -423,6 +474,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } catch (PDOException $e) {
         // Rollback the transaction if something failed
         $pdo->rollBack();
+        
+        // Log the error
+        $error_log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
+                          VALUES (:user_id, 'ERROR', :details, CURRENT_TIMESTAMP)";
+        $error_log_stmt = $pdo->prepare($error_log_query);
+        $error_details = "Form submission error: " . $e->getMessage();
+        $error_log_stmt->bindParam(":user_id", $_SESSION["user_id"]);
+        $error_log_stmt->bindParam(":details", $error_details);
+        $error_log_stmt->execute();
+        
         $_SESSION['scholarship_error'] = "Error: " . $e->getMessage();
         header("Location: e-service.php?error=1");
         exit();
@@ -455,6 +516,7 @@ try {
 
 <!DOCTYPE html>
 <html lang="en-US">
+<!-- REST OF HTML REMAINS THE SAME -->
 <!-- START HEAD -->
 <head>
     <meta charset="UTF-8" />
@@ -580,32 +642,103 @@ try {
             height: 38px; 
         }
 
-.school-name-address-container {
-    display: flex;
-    gap: 10px;
-}
+        .admin-actions {
+            background: #152f49;
+            color: #fff;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            position: relative;
+            border-bottom: 3px solid #f8c301;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.school-name-address-container input {
-    flex: 1;
-}
+        .admin-info {
+            display: flex;
+            flex-direction: column;
+            margin-right: 30px;
+        }
 
-/* Make year, grade, and rank columns have consistent widths */
-.scholarship-form table th:nth-child(3), /* Year Graduated column */
-.scholarship-form table th:nth-child(4), /* Grade Average column */
-.scholarship-form table th:nth-child(5) { /* Rank column */
-    width: 120px;
-}
+        .admin-info h3 {
+            margin: 0 0 8px 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #f8c301;
+        }
 
-.scholarship-form table td:nth-child(3) input, /* Year input field */
-.scholarship-form table td:nth-child(4) input, /* Grade input field */
-.scholarship-form table td:nth-child(5) input { /* Rank input field */
-    width: 100%;
-}
+        .admin-info p {
+            margin: 0;
+            font-size: 15px;
+            color: #ffffff;
+        }
 
-/* Ensure the name/address column is wider */
-.scholarship-form table th:nth-child(2) { /* Name/Address column */
-    width: auto;
-}
+        .admin-actions .admin-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .admin-actions .btn {
+            background-color: #ffffff;
+            color: #152f49;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            font-size: 15px;
+            white-space: nowrap;
+        }
+
+        .admin-actions .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+        }
+
+        .admin-actions .btn-primary {
+            background-color: #f8c301;
+            color: #ffffff;
+        }
+
+        .admin-actions .btn-primary:hover {
+            color: #ffffff;
+        }
+        
+        .admin-actions .btn i {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        .school-name-address-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        .school-name-address-container input {
+            flex: 1;
+        }
+
+        /* Make year, grade, and rank columns have consistent widths */
+        .scholarship-form table th:nth-child(3), /* Year Graduated column */
+        .scholarship-form table th:nth-child(4), /* Grade Average column */
+        .scholarship-form table th:nth-child(5) { /* Rank column */
+            width: 120px;
+        }
+
+        .scholarship-form table td:nth-child(3) input, /* Year input field */
+        .scholarship-form table td:nth-child(4) input, /* Grade input field */
+        .scholarship-form table td:nth-child(5) input { /* Rank input field */
+            width: 100%;
+        }
+
+        /* Ensure the name/address column is wider */
+        .scholarship-form table th:nth-child(2) { /* Name/Address column */
+            width: auto;
+        }
 
         .scholarship-form .checkbox-group {
             display: flex;
@@ -717,6 +850,23 @@ try {
             .scholarship-form .form-group {
                 flex: 1 1 100%;
             }
+
+            .admin-actions {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px;
+            }
+            
+            .admin-info {
+                margin-bottom: 15px;
+                margin-right: 0;
+            }
+            
+            .admin-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+        
         }
     </style>
 

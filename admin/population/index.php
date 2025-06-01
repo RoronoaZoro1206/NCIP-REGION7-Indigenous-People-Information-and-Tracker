@@ -1,4 +1,5 @@
 <?php
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -44,17 +45,17 @@ unset($_SESSION['success_message']);
 unset($_SESSION['error_message']);
 
 try {
-    // Get unique IP groups for filter dropdown
-    $groups_query = "SELECT DISTINCT popt_ip_group FROM population_table ORDER BY popt_ip_group";
+    // Get unique IP groups for filter dropdown - EXCLUDE SOFT-DELETED RECORDS
+    $groups_query = "SELECT DISTINCT popt_ip_group FROM population_table WHERE popt_deleted_at IS NULL ORDER BY popt_ip_group";
     $groups_stmt = $pdo->query($groups_query);
     $ip_groups = $groups_stmt->fetchAll(PDO::FETCH_COLUMN);
     
-    // Build query conditions
-    $where_conditions = [];
+    // Build query conditions - ALWAYS EXCLUDE SOFT-DELETED RECORDS
+    $where_conditions = ["popt_deleted_at IS NULL"];
     $params = [];
 
     if (!empty($search)) {
-        $where_conditions[] = "(popt_name ILIKE ? OR popt_ip_group ILIKE ?)";
+        $where_conditions[] = "(popt_name ilike ? OR popt_ip_group ilike ?)";
         $params[] = "%$search%";
         $params[] = "%$search%";
     }
@@ -64,9 +65,9 @@ try {
         $params[] = $ip_group_filter;
     }
 
-    $where_clause = !empty($where_conditions) ? "WHERE " . implode(" AND ", $where_conditions) : "";
+    $where_clause = "WHERE " . implode(" AND ", $where_conditions);
     
-    // Count total records for pagination
+    // Count total records for pagination - EXCLUDE SOFT-DELETED
     $count_query = "SELECT COUNT(*) FROM population_table $where_clause";
     $count_stmt = $pdo->prepare($count_query);
     $count_stmt->execute($params);
@@ -75,7 +76,7 @@ try {
     $total_pages = ceil($total_records / $records_per_page);
     $offset = ($current_page - 1) * $records_per_page;
     
-    // Get population data with pagination - Use lowercase column names to match PostgreSQL default behavior
+    // Get population data with pagination - EXCLUDE SOFT-DELETED RECORDS
     $query = "SELECT 
                 popt_id,
                 popt_name,
@@ -86,26 +87,29 @@ try {
             FROM population_table $where_clause 
             ORDER BY popt_id ASC 
             LIMIT $records_per_page OFFSET $offset";
+            
     
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
     $populations = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-    // Get summary stats
+    // Get summary stats - EXCLUDE SOFT-DELETED RECORDS
     $stats_query = "SELECT 
                       COUNT(*) as total_locations,
                       COUNT(DISTINCT popt_ip_group) as total_ip_groups,
                       SUM(popt_population) as total_population
-                   FROM population_table";
+                   FROM population_table 
+                   WHERE popt_deleted_at IS NULL";
     $stats_stmt = $pdo->query($stats_query);
     $stats = $stats_stmt->fetch(PDO::FETCH_ASSOC);
     
-    // Get IP group distribution
+    // Get IP group distribution - EXCLUDE SOFT-DELETED RECORDS
     $distribution_query = "SELECT 
                             popt_ip_group, 
                             COUNT(*) as location_count, 
                             SUM(popt_population) as group_population 
                           FROM population_table 
+                          WHERE popt_deleted_at IS NULL
                           GROUP BY popt_ip_group 
                           ORDER BY SUM(popt_population) DESC";
     $distribution_stmt = $pdo->query($distribution_query);
@@ -127,7 +131,7 @@ try {
     <title>Population Data Management - NCIP Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <!-- Add Leaflet CSS - This was missing -->
+    <!-- Add Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
      integrity="sha384-o/2yZuJZWGJ4s/and21x29lfjZoq1CuZOGjAmwFU4lFFD+1vvUcwjN5gJwCYVxhk"
      crossorigin="anonymous">
@@ -154,9 +158,7 @@ try {
             .main-content {
                 margin-left: 0;
             }
-
         }
-
         .leaflet-popup-content {
             font-size: 14px;
             line-height: 1.5;
@@ -169,7 +171,6 @@ try {
             margin-top: 5px;
             border-radius: 4px;
         }
-
         .show-mobile {
             display: block !important;
         }
@@ -185,7 +186,7 @@ try {
         <div class="container-fluid">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                    <h1 class="h3 mb-0 text-gray-800">Population Data Management</h1>
+                    <h1 class="h3 mb-0 text-gray-800"><i class="bi bi-bar-chart-fill me-2"></i>Population Data Management</h1>
                     <p class="mb-0">Manage indigenous peoples population data across different locations</p>
                 </div>
                 <div class="btn-group" role="group">
@@ -321,14 +322,15 @@ try {
                                                             <a href="edit.php?id=<?php echo $pop['popt_id']; ?>" class="btn btn-warning" title="Edit">
                                                                 <i class="bi bi-pencil"></i>
                                                             </a>
-                                                            <button type="button" class="btn btn-danger delete-btn" 
-                                                                data-bs-toggle="modal" 
-                                                                data-bs-target="#deleteModal"
-                                                                data-id="<?php echo $pop['popt_id']; ?>"
-                                                                data-name="<?php echo htmlspecialchars($pop['popt_name']); ?>"
-                                                                title="Delete">
+                                                            <a href="delete.php?id=<?php echo $pop['popt_id']; ?>" 
+                                                                class="btn btn-danger delete-population-link" 
+                                                                title="Move to Recycle Bin"
+                                                                data-population-id="<?php echo $pop['popt_id']; ?>"
+                                                                data-population-name="<?php echo htmlspecialchars($pop['popt_name']); ?>"
+                                                                data-population-group="<?php echo htmlspecialchars($pop['popt_ip_group']); ?>"
+                                                                data-population-count="<?php echo number_format($pop['popt_population']); ?>">
                                                                 <i class="bi bi-trash"></i>
-                                                            </button>
+                                                            </a>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -414,148 +416,170 @@ try {
         </div>
     </div>
 
-    <!-- Delete Modal -->
-    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+    <!-- Delete Population Confirmation Modal -->
+    <div class="modal fade" id="deletePopulationModal" tabindex="-1" aria-labelledby="deletePopulationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="deletePopulationModalLabel">
+                        <i class="bi bi-recycle me-2"></i>Move Population Record to Recycle Bin
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Are you sure you want to delete this population data entry?</p>
-                    <p class="fw-bold" id="deleteLocationName"></p>
-                    <p class="text-danger">This action cannot be undone.</p>
+                    <div class="text-center mb-3">
+                        <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 3rem;"></i>
+                    </div>
+                    <h6 class="text-center mb-3">Are you sure you want to move this population record to the recycle bin?</h6>
+                    <div class="bg-light p-3 rounded" id="populationDetailsContainer">
+                        <!-- Population details will be populated by JavaScript -->
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            This action will move the record to the recycle bin where it can be restored later if needed.
+                        </small>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <form action="delete.php" method="post">
-                        <input type="hidden" name="id" id="deleteId">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </button>
+                    <a href="#" class="btn btn-warning" id="confirmDeletePopulationBtn">
+                        <i class="bi bi-recycle me-1"></i>Yes, Move to Recycle Bin
+                    </a>
                 </div>
             </div>
         </div>
     </div>
+
+<!-- Bootstrap & Leaflet JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+ integrity="sha384-okbbMvvx/qfQkmiQKfd5VifbKZ/W8p1qIsWvE1ROPUfHWsDcC8/BnHohF7vPg2T6"
+ crossorigin="anonymous"></script>
 
     <!-- Bootstrap & Leaflet JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
      integrity="sha384-okbbMvvx/qfQkmiQKfd5VifbKZ/W8p1qIsWvE1ROPUfHWsDcC8/BnHohF7vPg2T6"
      crossorigin="anonymous"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Wait for full DOM loading and initial render
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-dismiss alerts after 5 seconds
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(function(alert) {
         setTimeout(function() {
-            // Clear any previous map instance
-            const mapContainer = document.getElementById('map');
-            if (mapContainer) {
-                mapContainer.innerHTML = '';
-                
-                // Initialize map with simpler settings
-                var map = L.map('map', {
-                    minZoom: 5,
-                    maxZoom: 18
-                }).setView([12.8797, 121.7740], 5); // Center on Philippines
-                
-                // Force a resize/redraw after map initialization
-                map.invalidateSize(true);
-                
-                // Use a different tile provider that might render better
-                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-                    subdomains: 'abcd',
-                    maxZoom: 19
-                }).addTo(map);
-                
-                // Add markers with simplified code
-                <?php foreach ($populations as $pop): ?>
-                (function() {
-                    var lat = <?php echo json_encode((float)$pop['popt_latitude']); ?>;
-                    var lng = <?php echo json_encode((float)$pop['popt_longitude']); ?>;
-                    var population = <?php echo (int)$pop['popt_population']; ?>;
-                    
-                    // Simple color and radius calculation
-                    var color, radius;
-                    if (population <= 100) {
-                        color = '#0014FF'; radius = 10;
-                    } else if (population <= 300) {
-                        color = '#00FFFF'; radius = 16;
-                    } else if (population <= 600) {
-                        color = '#FF6666'; radius = 22;
-                    } else {
-                        color = '#C70039'; radius = 30;
-                    }
-                    
-                    if (!isNaN(lat) && !isNaN(lng)) {
-                        L.circleMarker([lat, lng], {
-                            radius: radius,
-                            fillColor: color,
-                            color: '#fff',
-                            weight: 1,
-                            opacity: 1,
-                            fillOpacity: 0.8
-                        }).addTo(map)
-                        .bindPopup(
-                            "<strong>Area:</strong> <?php echo addslashes(htmlspecialchars($pop['popt_name'])); ?><br>" +
-                            "<strong>IP Group:</strong> <?php echo addslashes(htmlspecialchars($pop['popt_ip_group'])); ?><br>" +
-                            "<strong>Population:</strong> <?php echo number_format($pop['popt_population']); ?>"
-                        );
-                    }
-                })();
-                <?php endforeach; ?>
-                
-                // Add legend
-                const legend = L.control({ position: 'bottomright' });
-                legend.onAdd = function() {
-                    const div = L.DomUtil.create('div', 'info legend');
-                    div.innerHTML = '<h6>Population Legend</h6>' +
-                        '<i style="background: #0014FF"></i> ≤ 100<br>' +
-                        '<i style="background: #00FFFF"></i> 101 - 300<br>' +
-                        '<i style="background: #FF6666"></i> 301 - 600<br>' +
-                        '<i style="background: #C70039"></i> > 600';
-                    return div;
-                };
-                legend.addTo(map);
-                
-                // Add a second resize call after everything is loaded
-                setTimeout(function() {
-                    map.invalidateSize(true);
-                }, 1000);
+            const closeButton = alert.querySelector('.btn-close');
+            if (closeButton) {
+                closeButton.click();
             }
-        }, 1000); 
-
-        // Setup delete modal
-        const deleteModal = document.getElementById('deleteModal');
-        if (deleteModal) {
-            deleteModal.addEventListener('show.bs.modal', function (event) {
-                const button = event.relatedTarget;
-                const id = button.getAttribute('data-id');
-                const name = button.getAttribute('data-name');
-                document.getElementById('deleteId').value = id;
-                document.getElementById('deleteLocationName').textContent = name;
-            });
-        }
-        
-        // Sidebar toggle for mobile
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', function() {
-                document.querySelector('.sidebar').classList.toggle('show-mobile');
-            });
-        }
-        
-        // Auto-dismiss alerts after 5 seconds
-        const alerts = document.querySelectorAll('.alert');
-        alerts.forEach(function(alert) {
-            setTimeout(function() {
-                const closeButton = alert.querySelector('.btn-close');
-                if (closeButton) {
-                    closeButton.click();
-                }
-            }, 5000);
+        }, 5000);
+    });
+    
+    // Handle delete population modal
+    const deletePopulationModal = new bootstrap.Modal(document.getElementById('deletePopulationModal'));
+    const confirmDeletePopulationBtn = document.getElementById('confirmDeletePopulationBtn');
+    const populationDetailsContainer = document.getElementById('populationDetailsContainer');
+    let currentDeleteUrl = '';
+    
+    // Add click event listeners to all delete links
+    document.querySelectorAll('.delete-population-link').forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent immediate navigation
+            e.stopPropagation(); // Stop event bubbling
+            
+            console.log('Delete link clicked, preventing default navigation'); // Debug
+            
+            // Get population data from data attributes
+            const populationId = this.getAttribute('data-population-id');
+            const populationName = this.getAttribute('data-population-name');
+            const populationGroup = this.getAttribute('data-population-group');
+            const populationCount = this.getAttribute('data-population-count');
+            const deleteUrl = this.getAttribute('href');
+            
+            console.log('Population data:', { populationId, populationName, populationGroup, populationCount, deleteUrl }); // Debug
+            
+            // Store the URL for later use
+            currentDeleteUrl = deleteUrl;
+            
+            // Populate population details in modal
+            populationDetailsContainer.innerHTML = `
+                <strong>Population Record Details:</strong><br>
+                <i class="bi bi-tag-fill me-1"></i> <strong>Name:</strong> ${populationName}<br>
+                <i class="bi bi-people-fill me-1"></i> <strong>IP Group:</strong> ${populationGroup}<br>
+                <i class="bi bi-hash me-1"></i> <strong>Population:</strong> ${populationCount}<br>
+                <i class="bi bi-key-fill me-1"></i> <strong>ID:</strong> #${populationId}
+            `;
+            
+            // Update the confirm button href
+            confirmDeletePopulationBtn.setAttribute('href', deleteUrl);
+            
+            console.log('About to show modal'); // Debug
+            
+            // Show the modal
+            deletePopulationModal.show();
+            
+            // Return false to ensure no navigation
+            return false;
         });
     });
+    
+    // Handle confirm delete button click
+    confirmDeletePopulationBtn.addEventListener('click', function(e) {
+        e.preventDefault(); // Prevent the anchor's default behavior
+        
+        console.log('Confirm button clicked'); // Debug
+        
+        // Show loading state
+        const originalText = this.innerHTML;
+        this.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Moving to Recycle Bin...';
+        this.classList.add('disabled');
+        
+        // Close modal first
+        deletePopulationModal.hide();
+        
+        // Navigate to delete URL after modal is hidden
+        setTimeout(() => {
+            console.log('Navigating to:', currentDeleteUrl); // Debug
+            window.location.href = currentDeleteUrl;
+        }, 300); // Reduced delay to make it feel faster
+    });
+    
+    // Reset button state when modal is hidden
+    document.getElementById('deletePopulationModal').addEventListener('hidden.bs.modal', function() {
+        confirmDeletePopulationBtn.innerHTML = '<i class="bi bi-recycle me-1"></i>Yes, Move to Recycle Bin';
+        confirmDeletePopulationBtn.classList.remove('disabled');
+    });
+    
+    // Add smooth modal animations
+    const modal = document.getElementById('deletePopulationModal');
+    if (modal) {
+        modal.addEventListener('show.bs.modal', function () {
+            console.log('Modal is showing'); // Debug
+            const modalDialog = this.querySelector('.modal-dialog');
+            if (modalDialog) {
+                modalDialog.style.transform = 'scale(0.8)';
+                modalDialog.style.opacity = '0';
+                setTimeout(() => {
+                    modalDialog.style.transition = 'all 0.3s ease';
+                    modalDialog.style.transform = 'scale(1)';
+                    modalDialog.style.opacity = '1';
+                }, 10);
+            }
+        });
+        
+        modal.addEventListener('shown.bs.modal', function () {
+            console.log('Modal is now visible'); // Debug
+        });
+    }
+    
+    // Additional check - ensure no other click handlers are interfering
+    document.querySelectorAll('.delete-population-link').forEach(function(link) {
+        // Remove any existing onclick attributes that might interfere
+        link.removeAttribute('onclick');
+    });
+});
 </script>
 </body>
 </html>

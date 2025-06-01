@@ -5,16 +5,23 @@ if (session_status() === PHP_SESSION_NONE) {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
     
-    $username = $_POST["username"];
-    $email = $_POST["email"];
-    $password = $_POST["password"];
-    $confirm_password = $_POST["confirm_password"];
+    $username = $_POST["username"] ?? null;
+    $email = $_POST["email"] ?? null;
+    $password = $_POST["password"] ?? null;
+    $confirm_password = $_POST["confirm_password"] ?? null;
     $timezone = $_POST["timezone"] ?? 'UTC';
-    $is_admin_register = isset($_POST["admin_register"]) && $_POST["admin_register"] === "true";
     
-    // Default role is USER unless specifically registering as admin
-    $role = $is_admin_register ? 'ADMIN' : 'USER';
+    // Validate required fields
+    if (!$username || !$email || !$password || !$confirm_password) {
+        $_SESSION["error_message"] = "All fields are required.";
+        header("Location: form-content.php?show=register&error=1");
+        exit();
+    }
+    
+    // Front end ONLY creates USER role - never ADMIN
+    $role = 'USER';
    
+    // Handle timezone and created timestamp
     try {
         $dt = new DateTime("now", new DateTimeZone($timezone));
         $user_created = $dt->format('Y-m-d H:i:sP'); 
@@ -22,86 +29,91 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         $user_created = date('Y-m-d H:i:sP');
     }
 
+    // Get client IP address for logging
+    $client_ip = $_SERVER['HTTP_CLIENT_IP'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
+
     try {
         require_once 'db.php';
         require_once 'user-models.php';
         require_once 'validator.php';
 
-        // Use appropriate validator based on registration type
-        if ($is_admin_register) {
-            $verification_code = $_POST["verification_code"] ?? '';
-            $validator = new AdminRegisterValidator($username, $email, $password, $confirm_password, $verification_code, $pdo);
-            // AdminRegisterValidator will return "ADMIN" or errors
-            $validated_role = $validator->validate_data();
-            
-            // If errors were returned instead of a role, handle them
-            if (is_array($validated_role)) {
-                $_SESSION['errors'] = $validated_role;
-                $_SESSION['old'] = $_POST;
-                header("Location: ../admin/register.php?error=1");
-                exit();
-            }
-            
-            $role = $validated_role; // Will be "ADMIN" if validation passed
-        } else {
-            // For regular users
-            $validator = new RegisterValidator($username, $email, $password, $confirm_password, $pdo, $role);
-            $validated_role = $validator->validate_data();
-            // If validation successful, validated_role will contain the role
-            $role = $validated_role;
-        }
+        // Only use RegisterValidator for USER registration
+        $validator = new RegisterValidator($username, $email, $password, $confirm_password, $pdo, $role);
+        $validated_role = $validator->validate_data();
 
-        // Create user with the validated role
-        create_user($pdo, $username, $email, $password, $timezone, $user_created, $role);
+        // Create user with USER role only
+        $user_id = create_user($pdo, $username, $email, $password, $timezone, $user_created, 'USER');
 
-        // Log the registration
-        $log_query = "INSERT INTO USER_LOGS (LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
-                     VALUES ('REGISTRATION', :details, CURRENT_TIMESTAMP)";
+        // Log the successful USER registration
+        $log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP, LOG_IP_ADDRESS) 
+                     VALUES (:user_id, 'REGISTRATION', :details, CURRENT_TIMESTAMP, :ip_address)";
         $log_stmt = $pdo->prepare($log_query);
-        $details = "New " . $role . " account created: " . $username;
+        $details = "New USER account created successfully | Username: " . $username . " | Email: " . $email . " | Timezone: " . $timezone;
+        $log_stmt->bindParam(":user_id", $user_id);
         $log_stmt->bindParam(":details", $details);
+        $log_stmt->bindParam(":ip_address", $client_ip);
         $log_stmt->execute();
 
-        $_SESSION["signup_success"] = "Signup successful. Please proceed to login";
+        // Clear any previous error messages
+        unset($_SESSION["error_message"]);
+        unset($_SESSION['errors']);
+        unset($_SESSION['old']);
         
-        // Redirect to appropriate login page based on role
-        if ($role === 'ADMIN') {
-            header("Location: ../admin/login.php?success=1");
-        } else {
-            header("Location: form-content.php?show=login&success=1");
-        }
+        $_SESSION["signup_success"] = "Registration successful! Your account has been created. Please proceed to login.";
+        
+        // Always redirect to user login - never admin
+        header("Location: form-content.php?show=login&success=1");
         exit();
         
     } catch (Exception $ve) {
+        // Handle validation exceptions
+        error_log("User registration validation error: " . $ve->getMessage() . " | Username: " . $username . " | Email: " . $email . " | IP: " . $client_ip);
+        
+        // Log failed registration attempt
+        try {
+            if (isset($pdo)) {
+                $error_log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP, LOG_IP_ADDRESS) 
+                                   VALUES (NULL, 'REGISTRATION_FAILED', :details, CURRENT_TIMESTAMP, :ip_address)";
+                $error_log_stmt = $pdo->prepare($error_log_query);
+                $error_details = "User registration failed for username: " . $username . " | Email: " . $email . " | Error: " . $ve->getMessage();
+                $error_log_stmt->bindParam(":details", $error_details);
+                $error_log_stmt->bindParam(":ip_address", $client_ip);
+                $error_log_stmt->execute();
+            }
+        } catch (Exception $log_error) {
+            error_log("Failed to log registration failure: " . $log_error->getMessage());
+        }
+        
         $_SESSION['errors'] = [$ve->getMessage()];
         $_SESSION['old'] = $_POST;
         
-        if ($is_admin_register) {
-            header("Location: ../admin/register.php?error=1");
-        } else {
-            header("Location: form-content.php?show=register&error=1");
-        }
+        header("Location: form-content.php?show=register&error=1");
         exit();
         
     } catch (PDOException $e) {
-        // Log database error
-        error_log("Registration error: " . $e->getMessage());
-        $_SESSION["error_message"] = "An error occurred during registration. Please try again.";
+        // Handle database errors
+        error_log("User registration PDO error: " . $e->getMessage() . " | Username: " . $username . " | Email: " . $email . " | IP: " . $client_ip);
         
-        if ($is_admin_register) {
-            header("Location: ../admin/register.php?error=1");
-        } else {
-            header("Location: form-content.php?show=register&error=1");
-        }
+        $_SESSION["error_message"] = "An error occurred during registration. Please try again later.";
+        $_SESSION['old'] = $_POST;
+        
+        header("Location: form-content.php?show=register&error=1");
+        exit();
+        
+    } catch (Exception $e) {
+        // Handle any other unexpected errors
+        error_log("Unexpected user registration error: " . $e->getMessage() . " | Username: " . $username . " | Email: " . $email . " | IP: " . $client_ip);
+        
+        $_SESSION["error_message"] = "An unexpected error occurred. Please contact support if the problem persists.";
+        $_SESSION['old'] = $_POST;
+        
+        header("Location: form-content.php?show=register&error=1");
         exit();
     }
 
 } else {
-    // If not POST request, redirect to appropriate registration page
-    if (isset($_GET["admin"])) {
-        header("Location: ../admin/register.php");
-    } else {
-        header("Location: form-content.php?show=register");
-    }
+    // If not POST request, redirect to user registration only
+    header("Location: form-content.php?show=register");
     exit();
 }
+?>

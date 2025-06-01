@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 
 // Check if already logged in
@@ -44,63 +45,64 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $pdo !== null) {
     $password = $_POST["password"];
     
     try {
-        // Include validator
+        // Include validator and models
         require_once "includes/admin-validator.php";
         require_once "includes/admin-models.php";
         
-        // Get user directly from database
-        $user = get_admin_by_username($pdo, $username);
+        // Use validator to check credentials
+        $validator = new AdminLoginValidator($username, $password, $pdo);
+        $validation_errors = $validator->validate_data();
         
-        if (!$user) {
-            $errors["invalid_credentials"] = "Invalid username or password";
+        if (!empty($validation_errors)) {
+            $errors = array_merge($errors, $validation_errors);
         } else {
-            // Find password field regardless of case
-            $pwd_field = null;
-            $role_field = null;
-            $user_id_field = null;
-            $username_field = null;
+            // Get user data (only active accounts)
+            $user = $validator->get_user_data();
             
-            foreach ($user as $key => $value) {
-                if (strtoupper($key) === 'USER_PWD') $pwd_field = $key;
-                if (strtoupper($key) === 'USER_ROLE') $role_field = $key;
-                if (strtoupper($key) === 'USER_ID') $user_id_field = $key;
-                if (strtoupper($key) === 'USER_USERNAME') $username_field = $key;
-            }
-            
-            // Verify password
-            if ($pwd_field && password_verify($password, $user[$pwd_field])) {
-                // Check role
-                if ($role_field && strtoupper($user[$role_field]) === 'ADMIN') {
-                    // Login successful
-                    $_SESSION["user_id"] = $user[$user_id_field];
-                    $_SESSION["username"] = $user[$username_field];
-                    $_SESSION["role"] = $user[$role_field];
-                    
-                    // Log the successful login
-                    $user_ip = getUserIP();
-
-                    $log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP, LOG_IP_ADDRESS) 
-                                VALUES (:user_id, 'LOGIN', 'Admin login successful', CURRENT_TIMESTAMP, :ip)";
-                    $log_stmt = $pdo->prepare($log_query);
-                    $log_stmt->bindParam(":user_id", $user[$user_id_field]);
-                    $log_stmt->bindParam(":ip", $user_ip);
-                    $log_stmt->execute();
-                    
-                    header("Location: index.php");
-                    exit();
-                } else {
-                    $errors["not_admin"] = "You do not have administrator privileges";
+            if ($user) {
+                // Find required fields
+                $user_id_field = null;
+                $username_field = null;
+                $role_field = null;
+                
+                foreach ($user as $key => $value) {
+                    if (strtoupper($key) === 'USER_ID') $user_id_field = $key;
+                    if (strtoupper($key) === 'USER_USERNAME') $username_field = $key;
+                    if (strtoupper($key) === 'USER_ROLE') $role_field = $key;
                 }
-            } else {
-                $errors["invalid_credentials"] = "Invalid username or password";
+                
+                // Login successful
+                $_SESSION["user_id"] = $user[$user_id_field];
+                $_SESSION["username"] = $user[$username_field];
+                $_SESSION["role"] = $user[$role_field];
+                
+                // Log the successful login
+                $user_ip = getUserIP();
+                $log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP, LOG_IP_ADDRESS) 
+                            VALUES (:user_id, 'LOGIN', 'Admin login successful', CURRENT_TIMESTAMP, :ip)";
+                $log_stmt = $pdo->prepare($log_query);
+                $log_stmt->bindParam(":user_id", $user[$user_id_field]);
+                $log_stmt->bindParam(":ip", $user_ip);
+                $log_stmt->execute();
+                
+                header("Location: index.php");
+                exit();
             }
         }
         
-        // Log failed login attempt
-        if (isset($errors["invalid_credentials"])) {
-            $log_query = "INSERT INTO USER_LOGS (LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
-                         VALUES ('LOGIN_ATTEMPT', 'Failed login attempt for username: " . $username . "', CURRENT_TIMESTAMP)";
-            $pdo->exec($log_query);
+        // Log failed login attempt with more detail
+        if (!empty($errors)) {
+            $user_ip = getUserIP();
+            $error_type = isset($errors["account_deleted"]) ? 'LOGIN_ATTEMPT_DELETED' : 'LOGIN_ATTEMPT_FAILED';
+            $error_detail = isset($errors["account_deleted"]) ? 'Login attempt on deleted account: ' . $username : 'Failed login attempt for username: ' . $username;
+            
+            $log_query = "INSERT INTO USER_LOGS (LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP, LOG_IP_ADDRESS) 
+                         VALUES (:log_type, :log_details, CURRENT_TIMESTAMP, :ip)";
+            $log_stmt = $pdo->prepare($log_query);
+            $log_stmt->bindParam(":log_type", $error_type);
+            $log_stmt->bindParam(":log_details", $error_detail);
+            $log_stmt->bindParam(":ip", $user_ip);
+            $log_stmt->execute();
         }
         
         // Display first error
@@ -205,6 +207,19 @@ $errors_json = json_encode($errors);
             font-weight: 500;
             color: #dc3545;
         }
+        .deleted-account-alert {
+            background-color: #f8d7da;
+            border-color: #f5c2c7;
+            color: #842029;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid;
+        }
+        .deleted-account-alert .alert-icon {
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
     </style>
 </head>
 <body>
@@ -217,8 +232,17 @@ $errors_json = json_encode($errors);
                 NCIP Admin Login
             </div>
             <div class="card-body">
-                <?php if($login_error): ?>
-                <div class="alert alert-danger"><?php echo $login_error; ?></div>
+                <?php if($login_error && isset($errors["account_deleted"])): ?>
+                <div class="deleted-account-alert">
+                    <i class="bi bi-exclamation-triangle-fill alert-icon"></i>
+                    <strong>Account Deleted:</strong><br>
+                    <?php echo $login_error; ?>
+                </div>
+                <?php elseif($login_error): ?>
+                <div class="alert alert-danger">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <?php echo $login_error; ?>
+                </div>
                 <?php endif; ?>
                 
                 <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" id="loginForm">
@@ -226,7 +250,9 @@ $errors_json = json_encode($errors);
                         <label for="username" class="form-label">Username</label>
                         <div class="input-group">
                             <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-                            <input type="text" class="form-control" id="username" name="username" required autocomplete="off">
+                            <input type="text" class="form-control" id="username" name="username" 
+                                   value="<?php echo isset($_POST['username']) ? htmlspecialchars($_POST['username']) : ''; ?>"
+                                   required autocomplete="off">
                         </div>
                     </div>
                     <div class="mb-3">
@@ -282,6 +308,8 @@ $errors_json = json_encode($errors);
                 if (field === 'invalid_credentials') fieldName = 'Login';
                 if (field === 'password_match_error') fieldName = 'Password Match';
                 if (field === 'not_admin') fieldName = 'Access';
+                if (field === 'account_deleted') fieldName = 'Account Status';
+                if (field === 'username_deleted') fieldName = 'Username';
                 
                 errorItem.innerHTML = `<span class="error-field">${fieldName}:</span> ${message}`;
                 errorList.appendChild(errorItem);
@@ -290,7 +318,7 @@ $errors_json = json_encode($errors);
             // Show toast
             const toast = new bootstrap.Toast(document.getElementById('errorToast'), {
                 autohide: true,
-                delay: 5000
+                delay: 8000 // Longer delay for deleted account messages
             });
             toast.show();
         }
@@ -321,8 +349,6 @@ $errors_json = json_encode($errors);
             showErrorToast(<?php echo $errors_json; ?>);
         });
         <?php endif; ?>
-
-        
     </script>
 </body>
 </html>

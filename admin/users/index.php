@@ -45,34 +45,57 @@ try {
     $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
     $offset = ($page - 1) * $records_per_page;
 
-    // Get total records for pagination
-    $stmt = $pdo->query("SELECT COUNT(*) as total FROM USERS");
-    $total_data = $stmt->fetch(PDO::FETCH_ASSOC);
-    $total_records = $total_data['total'];
-    $total_pages = ceil($total_records / $records_per_page);
 
-    // Handle search query if present
-    $search = isset($_GET['search']) ? $_GET['search'] : '';
-    $search_condition = '';
-    $params = [];
-    
-    if (!empty($search)) {
-        $search_condition = " WHERE USER_USERNAME ILIKE :search OR USER_EMAIL ILIKE :search OR USER_ROLE ILIKE :search";
-        $params[':search'] = "%$search%";
-    }
+// Handle search query if present
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+$search_condition = '';
+$params = [];
 
-    // Get users with pagination and search
-    $sql = "SELECT * FROM USERS $search_condition ORDER BY USER_ID ASC LIMIT :limit OFFSET :offset";
-    $stmt = $pdo->prepare($sql);
-    
-    if (!empty($search)) {
-        $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
-    }
-    
-    $stmt->bindValue(':limit', $records_per_page, PDO::PARAM_INT);
-    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-    $stmt->execute();
-    $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// Updated to exclude soft-deleted users
+if (!empty($search)) {
+    $search_condition = " WHERE USER_DELETED_AT IS NULL AND (LOWER(USER_USERNAME) LIKE LOWER(:search) OR LOWER(USER_EMAIL) LIKE LOWER(:search) OR LOWER(USER_ROLE) LIKE LOWER(:search))";
+    $params[':search'] = "%$search%";
+} else {
+    $search_condition = " WHERE USER_DELETED_AT IS NULL";
+}
+
+// Get total records for pagination (exclude soft-deleted users)
+$count_query = "SELECT COUNT(*) as total FROM USERS WHERE USER_DELETED_AT IS NULL";
+if (!empty($search)) {
+    $count_query .= " AND (LOWER(USER_USERNAME) LIKE LOWER(:search) OR LOWER(USER_EMAIL) LIKE LOWER(:search))";
+}
+
+$count_stmt = $pdo->prepare($count_query);
+if (!empty($search)) {
+    $count_stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
+}
+$count_stmt->execute();
+$total_data = $count_stmt->fetch(PDO::FETCH_ASSOC);
+$total_records = $total_data['total'];
+$total_pages = ceil($total_records / $records_per_page);
+
+
+// Get users with pagination and search (exclude soft-deleted users)
+$query = "SELECT USER_ID, USER_USERNAME, USER_EMAIL, USER_ROLE, USER_CREATED, USER_TIMEZONE, USER_PROFILE_PICTURE 
+          FROM USERS 
+          WHERE USER_DELETED_AT IS NULL";
+
+if (!empty($search)) {
+    $query .= " AND (LOWER(USER_USERNAME) LIKE LOWER(:search) OR LOWER(USER_EMAIL) LIKE LOWER(:search))";
+}
+
+$query .= " ORDER BY USER_CREATED DESC LIMIT :limit OFFSET :offset";
+
+$stmt = $pdo->prepare($query);
+
+if (!empty($search)) {
+    $stmt->bindValue(':search', "%$search%", PDO::PARAM_STR);
+}
+
+$stmt->bindValue(':limit', $records_per_page, PDO::PARAM_INT);
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt->execute();
+$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     $db_error = "Database error: " . $e->getMessage();
 }
@@ -210,13 +233,24 @@ if (isset($_SESSION['message'])) {
         </nav>
 
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h2">Manage Users</h1>
+            <h1 class="h2"><i class="bi bi-people me-2"></i>User Management</h1>
             <?php if ($is_admin): ?>
             <a href="add.php" class="btn btn-primary">
                 <i class="bi bi-person-plus"></i> Add New User
             </a>
             <?php endif; ?>
         </div>
+
+        <!-- Success Message Display -->
+        <?php if (isset($_SESSION['success_message'])): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <?php echo $_SESSION['success_message']; ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <?php 
+        unset($_SESSION['success_message']); 
+        endif; ?>
 
         <?php if (isset($db_error)): ?>
         <div class="alert alert-danger">
@@ -322,19 +356,21 @@ if (isset($_SESSION['message'])) {
                                             <a href="edit.php?id=<?= $user['user_id'] ?>" class="btn btn-sm btn-info" title="Edit">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
-                                            <?php if ($user['user_id'] != $_SESSION['user_id']): ?>
-                                            <button type="button"
-                                                class="btn btn-sm btn-danger delete-user-btn"
+                                                <?php if ($user['user_id'] != $_SESSION['user_id']): ?>
+                                                <a href="delete.php?id=<?= $user['user_id'] ?>&action=soft_delete" 
+                                                class="btn btn-sm btn-danger delete-user-link" 
+                                                title="Delete"
                                                 data-user-id="<?= $user['user_id'] ?>"
                                                 data-user-name="<?= htmlspecialchars($user['user_username']) ?>"
-                                                title="Delete">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                            <?php else: ?>
-                                            <button class="btn btn-sm btn-danger" disabled title="Cannot delete yourself">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                            <?php endif; ?>
+                                                data-user-email="<?= htmlspecialchars($user['user_email']) ?>"
+                                                data-user-role="<?= htmlspecialchars($user['user_role']) ?>">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+                                                <?php else: ?>
+                                                <button class="btn btn-sm btn-danger" disabled title="Cannot delete yourself">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                                <?php endif; ?>
                                         </div>
                                     </td>
                                 </tr>
@@ -373,34 +409,41 @@ if (isset($_SESSION['message'])) {
         <?php endif; ?>
     </div>
 
-    <!-- Modern Delete Confirmation Modal -->
+    <!-- Delete User Confirmation Modal -->
     <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <form id="deleteUserForm" method="post">
-            <div class="modal-header border-0">
-              <div class="icon-box mx-auto">
-                <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 2.5rem;"></i>
-              </div>
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="deleteUserModalLabel">
+                        <i class="bi bi-recycle me-2"></i>Move User to Recycle Bin
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 3rem;"></i>
+                    </div>
+                    <h6 class="text-center mb-3">Are you sure you want to move this user to the recycle bin?</h6>
+                    <div class="bg-light p-3 rounded" id="userDetailsContainer">
+                        <!-- User details will be populated by JavaScript -->
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            This action will move the user to the recycle bin where they can be restored later if needed.
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </button>
+                    <a href="#" class="btn btn-warning" id="confirmDeleteBtn">
+                        <i class="bi bi-recycle me-1"></i>Yes, Move to Recycle Bin
+                    </a>
+                </div>
             </div>
-            <div class="modal-body text-center">
-              <h4 class="mb-2">Are you sure?</h4>
-              <p class="mb-4">
-                Do you really want to delete user <strong id="modalUserName"></strong>?<br>
-                This process cannot be undone.
-              </p>
-            </div>
-            <div class="modal-footer justify-content-center border-0">
-              <button type="submit" class="btn btn-danger">
-                <i class="bi bi-trash"></i> Delete
-              </button>
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                <i class="bi bi-x"></i> Cancel
-              </button>
-            </div>
-          </form>
         </div>
-      </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
@@ -413,25 +456,114 @@ if (isset($_SESSION['message'])) {
                 sidebars[i].remove();
             }
         }
+        
         // Initialize Bootstrap tooltips for email display
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
         tooltipTriggerList.forEach(function(tooltipTriggerEl) {
             new bootstrap.Tooltip(tooltipTriggerEl);
         });
-
-        // Modern modal delete
-        let deleteUserModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
-        let deleteUserForm = document.getElementById('deleteUserForm');
-        let modalUserName = document.getElementById('modalUserName');
-        let userIdToDelete = null;
-
-        document.querySelectorAll('.delete-user-btn').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                userIdToDelete = btn.getAttribute('data-user-id');
-                modalUserName.textContent = btn.getAttribute('data-user-name');
-                deleteUserForm.action = 'delete.php?id=' + encodeURIComponent(userIdToDelete);
+        
+        // Handle delete user modal - FIXED VERSION
+        const deleteUserModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const userDetailsContainer = document.getElementById('userDetailsContainer');
+        let currentDeleteUrl = '';
+        
+        // Add click event listeners to all delete links - PROPERLY PREVENT DEFAULT
+        document.querySelectorAll('.delete-user-link').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                e.preventDefault(); // Prevent immediate navigation
+                e.stopPropagation(); // Stop event bubbling
+                
+                console.log('Delete link clicked, preventing default navigation'); // Debug
+                
+                // Get user data from data attributes
+                const userId = this.getAttribute('data-user-id');
+                const userName = this.getAttribute('data-user-name');
+                const userEmail = this.getAttribute('data-user-email');
+                const userRole = this.getAttribute('data-user-role');
+                const deleteUrl = this.getAttribute('href');
+                
+                console.log('User data:', { userId, userName, userEmail, userRole, deleteUrl }); // Debug
+                
+                // Store the URL for later use
+                currentDeleteUrl = deleteUrl;
+                
+                // Populate user details in modal
+                userDetailsContainer.innerHTML = `
+                    <strong>User Details:</strong><br>
+                    <i class="bi bi-person-badge-fill me-1"></i> <strong>Username:</strong> ${userName}<br>
+                    <i class="bi bi-envelope-fill me-1"></i> <strong>Email:</strong> ${userEmail}<br>
+                    <i class="bi bi-shield-fill me-1"></i> <strong>Role:</strong> ${userRole}<br>
+                    <i class="bi bi-hash me-1"></i> <strong>ID:</strong> #${userId}
+                `;
+                
+                // Update the confirm button href
+                confirmDeleteBtn.setAttribute('href', deleteUrl);
+                
+                console.log('About to show modal'); // Debug
+                
+                // Show the modal
                 deleteUserModal.show();
+                
+                // Return false to ensure no navigation
+                return false;
             });
+        });
+        
+        // Handle confirm delete button click
+        confirmDeleteBtn.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent the anchor's default behavior
+            
+            console.log('Confirm button clicked'); // Debug
+            
+            // Show loading state
+            const originalText = this.innerHTML;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Moving to Recycle Bin...';
+            this.classList.add('disabled');
+            
+            // Close modal first
+            deleteUserModal.hide();
+            
+            // Navigate to delete URL after modal is hidden
+            setTimeout(() => {
+                console.log('Navigating to:', currentDeleteUrl); // Debug
+                window.location.href = currentDeleteUrl;
+            }, 300); // Reduced delay to make it feel faster
+        });
+        
+        // Reset button state when modal is hidden
+        document.getElementById('deleteUserModal').addEventListener('hidden.bs.modal', function() {
+            confirmDeleteBtn.innerHTML = '<i class="bi bi-recycle me-1"></i>Yes, Move to Recycle Bin';
+            confirmDeleteBtn.classList.remove('disabled');
+        });
+        
+        // Add smooth modal animations
+        const modal = document.getElementById('deleteUserModal');
+        if (modal) {
+            modal.addEventListener('show.bs.modal', function () {
+                console.log('Modal is showing'); // Debug
+                const modalDialog = this.querySelector('.modal-dialog');
+                if (modalDialog) {
+                    modalDialog.style.transform = 'scale(0.8)';
+                    modalDialog.style.opacity = '0';
+                    setTimeout(() => {
+                        modalDialog.style.transition = 'all 0.3s ease';
+                        modalDialog.style.transform = 'scale(1)';
+                        modalDialog.style.opacity = '1';
+                    }, 10);
+                }
+            });
+            
+            modal.addEventListener('shown.bs.modal', function () {
+                console.log('Modal is now visible'); // Debug
+            });
+        }
+        
+        // Additional check - ensure no other click handlers are interfering
+        document.querySelectorAll('.delete-user-link').forEach(function(link) {
+            // Remove any existing onclick attributes that might interfere
+            link.removeAttribute('onclick');
         });
     });
     </script>

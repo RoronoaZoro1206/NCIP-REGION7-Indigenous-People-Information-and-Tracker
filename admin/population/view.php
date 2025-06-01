@@ -336,9 +336,14 @@ try {
                                 <a href="edit.php?id=<?php echo $population_id; ?>" class="btn btn-warning">
                                     <i class="bi bi-pencil"></i> Edit Information
                                 </a>
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                <a href="delete.php?id=<?php echo $population_id; ?>&action=soft_delete" 
+                                class="btn btn-danger delete-population-btn" 
+                                data-population-id="<?php echo $population_id; ?>"
+                                data-population-name="<?php echo htmlspecialchars($population['popt_name']); ?>"
+                                data-population-group="<?php echo htmlspecialchars($population['popt_ip_group']); ?>"
+                                data-population-count="<?php echo number_format($population['popt_population']); ?>">
                                     <i class="bi bi-trash"></i> Delete Record
-                                </button>
+                                </a>
                                 <a href="index.php?ip_group=<?php echo urlencode($population['popt_ip_group']); ?>" class="btn btn-primary">
                                     <i class="bi bi-filter"></i> View All <?php echo htmlspecialchars($population['popt_ip_group']); ?>
                                 </a>
@@ -355,129 +360,248 @@ try {
 
     <!-- Delete Confirmation Modal -->
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteModalLabel">Confirm Deletion</h5>
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="deleteModalLabel">
+                        <i class="bi bi-recycle me-2"></i>Move Population Record to Recycle Bin
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p>Are you sure you want to delete the following population data entry?</p>
-                    <p class="fw-bold"><?php echo htmlspecialchars($population['popt_name']); ?></p>
-                    <p>This will permanently remove the record of <?php echo number_format($population['popt_population']); ?> 
-                    <?php echo htmlspecialchars($population['popt_ip_group']); ?> indigenous people from the system.</p>
-                    <div class="alert alert-danger">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                        This action cannot be undone.
+                    <div class="text-center mb-3">
+                        <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 3rem;"></i>
+                    </div>
+                    <h6 class="text-center mb-3">Are you sure you want to move this population record to the recycle bin?</h6>
+                    <div class="bg-light p-3 rounded" id="populationDetailsContainer">
+                        <!-- Population details will be populated by JavaScript -->
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            This action will move the record to the recycle bin where it can be restored later if needed.
+                        </small>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <form action="delete.php" method="post">
-                        <input type="hidden" name="id" value="<?php echo $population_id; ?>">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger">Delete Permanently</button>
-                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </button>
+                    <a href="#" class="btn btn-warning" id="confirmDeleteBtn">
+                        <i class="bi bi-recycle me-1"></i>Yes, Move to Recycle Bin
+                    </a>
                 </div>
             </div>
         </div>
     </div>
 
+
     <!-- Bootstrap & Leaflet JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
-    <script>
-    // Destroy previous map instance if exists (fixes shattered map)
-    let map;
-    function createMap() {
-        // Remove previous map instance if exists
-        if (map) {
-            map.remove();
-            map = null;
-        }
-        var lat = <?php echo floatval($population['popt_latitude']); ?>;
-        var lng = <?php echo floatval($population['popt_longitude']); ?>;
-        var pop = <?php echo intval($population['popt_population']); ?>;
-
-        map = L.map('map').setView([lat, lng], 13);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
-
-        // Define colors for different population sizes
-        var color = '#C70039', radius = 30;
-        if (pop <= 100) { color = '#0014FF'; radius = 15; }
-        else if (pop <= 300) { color = '#00FFFF'; radius = 20; }
-        else if (pop <= 600) { color = '#FF6666'; radius = 25; }
-
-        // Add legend
-        var legend = L.control({position: 'bottomright'});
-        legend.onAdd = function(map) {
-            var div = L.DomUtil.create('div', 'legend');
-            div.innerHTML = '<h6>Population Legend</h6>' +
-                '<i style="background:#0014FF"></i> ≤ 100<br>' +
-                '<i style="background:#00FFFF"></i> 101 - 300<br>' +
-                '<i style="background:#FF6666"></i> 301 - 600<br>' +
-                '<i style="background:#C70039"></i> > 600<br>' +
-                '<i style="background:#6c757d"></i> Nearby Location';
-            return div;
-        };
-        legend.addTo(map);
-
-        var mainMarker = L.circleMarker([lat, lng], {
-            color: '#fff',
-            fillColor: color,
-            fillOpacity: 0.8,
-            weight: 2,
-            radius: radius
-        }).addTo(map);
-
-        mainMarker.bindPopup(
-            "<strong><?php echo addslashes(htmlspecialchars($population['popt_name'])); ?></strong><br>" +
-            "IP Group: <?php echo addslashes(htmlspecialchars($population['popt_ip_group'])); ?><br>" +
-            "Population: <?php echo number_format($population['popt_population']); ?>"
-        ).openPopup();
-
-        <?php foreach ($nearby_locations as $location): ?>
-            var nearbyPop = <?php echo intval($location['popt_population']); ?>;
-            var nearbyLat = <?php echo floatval($location['popt_latitude']); ?>;
-            var nearbyLng = <?php echo floatval($location['popt_longitude']); ?>;
-            var nearbyColor = '#6c757d';
-            if (nearbyPop <= 100) { nearbyColor = '#0014FF'; }
-            else if (nearbyPop <= 300) { nearbyColor = '#00FFFF'; }
-            else if (nearbyPop <= 600) { nearbyColor = '#FF6666'; }
-            else { nearbyColor = '#C70039'; }
-            L.circleMarker([nearbyLat, nearbyLng], {
-                color: '#fff',
-                fillColor: nearbyColor,
-                fillOpacity: 0.6,
-                weight: 1,
-                radius: 10
-            }).addTo(map).bindPopup(
-                "<strong><?php echo addslashes(htmlspecialchars($location['popt_name'])); ?></strong><br>" +
-                "Population: <?php echo number_format($location['popt_population']); ?><br>" +
-                "<a href='view.php?id=<?php echo $location['popt_id']; ?>'>View Details</a>"
-            );
-        <?php endforeach; ?>
-
-        // Force map to redraw
-        setTimeout(function() { map.invalidateSize(true); }, 100);
-        setTimeout(function() { map.invalidateSize(true); }, 500);
+<script>
+// Destroy previous map instance if exists (fixes shattered map)
+let map;
+function createMap() {
+    // Remove previous map instance if exists
+    if (map) {
+        map.remove();
+        map = null;
     }
+    var lat = <?php echo floatval($population['popt_latitude']); ?>;
+    var lng = <?php echo floatval($population['popt_longitude']); ?>;
+    var pop = <?php echo intval($population['popt_population']); ?>;
 
-    // Always re-create the map on page load
-    window.addEventListener('load', createMap);
+    map = L.map('map').setView([lat, lng], 13);
 
-    // Mobile sidebar toggle
-    document.addEventListener('DOMContentLoaded', function() {
-        const sidebarToggle = document.getElementById('sidebarToggle');
-        if (sidebarToggle) {
-            sidebarToggle.addEventListener('click', function() {
-                document.querySelector('.sidebar').classList.toggle('show-mobile');
-                setTimeout(function() { if (map) map.invalidateSize(true); }, 300);
-            });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Define colors for different population sizes
+    var color = '#C70039', radius = 30;
+    if (pop <= 100) { color = '#0014FF'; radius = 15; }
+    else if (pop <= 300) { color = '#00FFFF'; radius = 20; }
+    else if (pop <= 600) { color = '#FF6666'; radius = 25; }
+
+    // Add legend
+    var legend = L.control({position: 'bottomright'});
+    legend.onAdd = function(map) {
+        var div = L.DomUtil.create('div', 'legend');
+        div.innerHTML = '<h6>Population Legend</h6>' +
+            '<i style="background:#0014FF"></i> ≤ 100<br>' +
+            '<i style="background:#00FFFF"></i> 101 - 300<br>' +
+            '<i style="background:#FF6666"></i> 301 - 600<br>' +
+            '<i style="background:#C70039"></i> > 600<br>' +
+            '<i style="background:#6c757d"></i> Nearby Location';
+        return div;
+    };
+    legend.addTo(map);
+
+    var mainMarker = L.circleMarker([lat, lng], {
+        color: '#fff',
+        fillColor: color,
+        fillOpacity: 0.8,
+        weight: 2,
+        radius: radius
+    }).addTo(map);
+
+    mainMarker.bindPopup(
+        "<strong><?php echo addslashes(htmlspecialchars($population['popt_name'])); ?></strong><br>" +
+        "IP Group: <?php echo addslashes(htmlspecialchars($population['popt_ip_group'])); ?><br>" +
+        "Population: <?php echo number_format($population['popt_population']); ?>"
+    ).openPopup();
+
+    <?php foreach ($nearby_locations as $location): ?>
+        var nearbyPop = <?php echo intval($location['popt_population']); ?>;
+        var nearbyLat = <?php echo floatval($location['popt_latitude']); ?>;
+        var nearbyLng = <?php echo floatval($location['popt_longitude']); ?>;
+        var nearbyColor = '#6c757d';
+        if (nearbyPop <= 100) { nearbyColor = '#0014FF'; }
+        else if (nearbyPop <= 300) { nearbyColor = '#00FFFF'; }
+        else if (nearbyPop <= 600) { nearbyColor = '#FF6666'; }
+        else { nearbyColor = '#C70039'; }
+        L.circleMarker([nearbyLat, nearbyLng], {
+            color: '#fff',
+            fillColor: nearbyColor,
+            fillOpacity: 0.6,
+            weight: 1,
+            radius: 10
+        }).addTo(map).bindPopup(
+            "<strong><?php echo addslashes(htmlspecialchars($location['popt_name'])); ?></strong><br>" +
+            "Population: <?php echo number_format($location['popt_population']); ?><br>" +
+            "<a href='view.php?id=<?php echo $location['popt_id']; ?>'>View Details</a>"
+        );
+    <?php endforeach; ?>
+
+    // Force map to redraw
+    setTimeout(function() { map.invalidateSize(true); }, 100);
+    setTimeout(function() { map.invalidateSize(true); }, 500);
+}
+
+// Always re-create the map on page load
+window.addEventListener('load', createMap);
+
+// Handle delete population modal and other functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle delete population modal
+    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    const populationDetailsContainer = document.getElementById('populationDetailsContainer');
+    let currentDeleteUrl = '';
+    
+    // Add click event listener to delete button
+    const deleteBtn = document.querySelector('.delete-population-btn');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent immediate navigation
+            e.stopPropagation(); // Stop event bubbling
+            
+            console.log('Delete button clicked, preventing default navigation'); // Debug
+            
+            // Get population data from data attributes
+            const populationId = this.getAttribute('data-population-id');
+            const populationName = this.getAttribute('data-population-name');
+            const populationGroup = this.getAttribute('data-population-group');
+            const populationCount = this.getAttribute('data-population-count');
+            const deleteUrl = this.getAttribute('href');
+            
+            console.log('Population data:', { populationId, populationName, populationGroup, populationCount, deleteUrl }); // Debug
+            
+            // Store the URL for later use
+            currentDeleteUrl = deleteUrl;
+            
+            // Populate population details in modal
+            populationDetailsContainer.innerHTML = `
+                <strong>Population Record Details:</strong><br>
+                <i class="bi bi-tag-fill me-1"></i> <strong>Name:</strong> ${populationName}<br>
+                <i class="bi bi-people-fill me-1"></i> <strong>IP Group:</strong> ${populationGroup}<br>
+                <i class="bi bi-hash me-1"></i> <strong>Population:</strong> ${populationCount}<br>
+                <i class="bi bi-key-fill me-1"></i> <strong>ID:</strong> #${populationId}
+            `;
+            
+            // Update the confirm button href
+            confirmDeleteBtn.setAttribute('href', deleteUrl);
+            
+            console.log('About to show modal'); // Debug
+            
+            // Show the modal
+            deleteModal.show();
+            
+            // Return false to ensure no navigation
+            return false;
+        });
+    }
+    
+    // Handle confirm delete button click
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent the anchor's default behavior
+            
+            console.log('Confirm button clicked'); // Debug
+            
+            // Show loading state
+            const originalText = this.innerHTML;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Moving to Recycle Bin...';
+            this.classList.add('disabled');
+            
+            // Close modal first
+            deleteModal.hide();
+            
+            // Navigate to delete URL after modal is hidden
+            setTimeout(() => {
+                console.log('Navigating to:', currentDeleteUrl); // Debug
+                window.location.href = currentDeleteUrl;
+            }, 300); // Reduced delay to make it feel faster
+        });
+    }
+    
+    // Reset button state when modal is hidden
+    document.getElementById('deleteModal').addEventListener('hidden.bs.modal', function() {
+        if (confirmDeleteBtn) {
+            confirmDeleteBtn.innerHTML = '<i class="bi bi-recycle me-1"></i>Yes, Move to Recycle Bin';
+            confirmDeleteBtn.classList.remove('disabled');
         }
     });
-    </script>
+    
+    // Add smooth modal animations
+    const modal = document.getElementById('deleteModal');
+    if (modal) {
+        modal.addEventListener('show.bs.modal', function () {
+            console.log('Modal is showing'); // Debug
+            const modalDialog = this.querySelector('.modal-dialog');
+            if (modalDialog) {
+                modalDialog.style.transform = 'scale(0.8)';
+                modalDialog.style.opacity = '0';
+                setTimeout(() => {
+                    modalDialog.style.transition = 'all 0.3s ease';
+                    modalDialog.style.transform = 'scale(1)';
+                    modalDialog.style.opacity = '1';
+                }, 10);
+            }
+        });
+        
+        modal.addEventListener('shown.bs.modal', function () {
+            console.log('Modal is now visible'); // Debug
+        });
+    }
+    
+    // Mobile sidebar toggle
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', function() {
+            document.querySelector('.sidebar').classList.toggle('show-mobile');
+            setTimeout(function() { if (map) map.invalidateSize(true); }, 300);
+        });
+    }
+    
+    // Additional check - ensure no other click handlers are interfering
+    const deleteLinks = document.querySelectorAll('.delete-population-btn');
+    deleteLinks.forEach(function(link) {
+        // Remove any existing onclick attributes that might interfere
+        link.removeAttribute('onclick');
+    });
+});
+</script>
 </body>
 </html>

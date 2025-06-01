@@ -295,7 +295,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 
                                 <div class="mb-3">
                                     <label for="ip_group" class="form-label">IP Group <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="ip_group" name="ip_group" list="ipGroupsList" required
+                                    <input type="text" class="form-control" id="ip_group" name="ip_group" list="ipGroupsList" required autocomplete="off"
                                             value="<?php echo htmlspecialchars($population['popt_ip_group']); ?>">
                                     <datalist id="ipGroupsList">
                                         <?php foreach ($existing_ip_groups as $group): ?>

@@ -17,7 +17,6 @@
     <!-- For iPad -->
     <link rel="apple-touch-icon" sizes="180x180" href="images/ncip-logo.png">
 
-
     <link rel='stylesheet' id='thickbox-css'  href='js/thickbox/thickbox.css' type='text/css' media='all' />
     <link rel='stylesheet' id='google-fonts-css'  href='http://fonts.googleapis.com/css?family=Playfair+Display%7COpen+Sans+Condensed%3A300%7COpen+Sans%7CShadows+Into+Light%7CMuli%7CDroid+Sans%7CArbutus+Slab%7CAbel&#038;ver=3.5.1' type='text/css' media='all' />
     <link rel='stylesheet' id='responsive-css'  href='css/responsive.css' type='text/css' media='all' />
@@ -38,20 +37,73 @@
         #map {
             height: 100vh;
             width: 100%;
+            position: relative;
         }
-        .info.legend {
-            background: white;
-            padding: 10px;
+        
+        #data-display-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
             border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            line-height: 18px;
-            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        #selected-data-table {
+            width: 60%;
+            max-width: 900px;
+            min-width: 700px;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        #selected-data-table th,
+        #selected-data-table td {
+            padding: 12px 20px;
+            text-align: left;
+            border-bottom: 2px solid #e9ecef;
+            width: 50%;
+        }
+        
+        #selected-data-table th {
+            background-color: #476a90;
+            color: white;
+            font-weight: 600;
+        }
+        
+        #selected-data-table tr:hover {
+            background-color: #f1f3f4;
+        }
+
+        #selected-data-table tbody tr:not(:last-child) td {
+            border-bottom: 1px solid #dee2e6;
+
+        }
+
+        #selected-data-table th:first-child,
+        #selected-data-table td:first-child {
+            border-right: 2px solid #e9ecef;
+            text-align: center;
+        }
+        
+        #selected-data-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .no-data-message {
+            text-align: center;
+            padding: 30px;
+            color: #6c757d;
+            font-style: italic;
         }
     </style>   
 
     <script type='text/javascript' src='js/jquery/jquery.js'></script>
-
-
 </head>
 <!-- END HEAD -->
 <!-- START BODY -->
@@ -71,12 +123,21 @@
     <!-- SLOGAN -->
     <div class="slogan">
         <h2>IP Location Tracker</h2>
-
         <h3>discover about their locations and populations.</h3>
     </div>
 
     <!-- START PRIMARY -->
     <div id="map"></div>
+
+    <!-- Data Display Section -->
+    <div id="data-display-section">
+        <h3 style="margin-bottom: 15px; color: #333;">Selected Location Details</h3>
+        <div id="table-container">
+            <div class="no-data-message">
+                Click on any location marker on the map to view detailed information here.
+            </div>
+        </div>
+    </div>
 
     <div id="info-panel">
         <div id="info-content">
@@ -101,7 +162,7 @@
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <!-- Your custom JS -->
-<script src="js/heatmap.js?"></script>
+<script src="js/heatmap.js?v=<?php echo time(); ?>"></script>
 
 <script type='text/javascript' src='js/comment-reply.min.js'></script>
 <script type='text/javascript' src='js/underscore.min.js'></script>

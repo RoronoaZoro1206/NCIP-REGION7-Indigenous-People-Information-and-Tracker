@@ -232,14 +232,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="name" class="form-label">Location Name <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="name" name="name" required 
+                                    <input type="text" class="form-control" id="name" name="name" required autocomplete="off" 
                                            value="<?php echo isset($_POST['name']) ? htmlspecialchars($_POST['name']) : ''; ?>">
                                     <div class="form-text">Enter the complete name of the location (e.g., "Sitio Naba Alaska, Brgy. Mambaling, Cebu City")</div>
                                 </div>
                                 
                                 <div class="mb-3">
                                     <label for="ip_group" class="form-label">IP Group <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" id="ip_group" name="ip_group" list="ipGroupsList" required
+                                    <input type="text" class="form-control" id="ip_group" name="ip_group" list="ipGroupsList" required 
                                            value="<?php echo isset($_POST['ip_group']) ? htmlspecialchars($_POST['ip_group']) : ''; ?>">
                                     <datalist id="ipGroupsList">
                                         <?php foreach ($existing_ip_groups as $group): ?>

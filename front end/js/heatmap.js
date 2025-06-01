@@ -1,3 +1,4 @@
+
 // Initialize map
 var map = L.map('map', {
     maxBounds: [
@@ -14,7 +15,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// Helper functions - this will help with changing/blinding the colors based on the given population data.
+// Helper functions
 function hexToRgb(hex) {
     hex = hex.replace('#', '');
     return [
@@ -32,6 +33,43 @@ function interpolateColor(color1, color2, factor) {
         result.push(Math.round(color1[i] + factor * (color2[i] - color1[i])));
     }
     return result;
+}
+
+// Function to display selected data in table
+function displaySelectedData(item) {
+    const tableContainer = document.getElementById('table-container');
+    tableContainer.innerHTML = `
+        <table id="selected-data-table">
+            <thead>
+                <tr>
+                    <th>Property</th>
+                    <th>Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Area</strong></td>
+                    <td>${item.name}</td>
+                </tr>
+                <tr>
+                    <td><strong>IP Group</strong></td>
+                    <td>${item.ip_group}</td>
+                </tr>
+                <tr>
+                    <td><strong>Population</strong></td>
+                    <td>${item.population.toLocaleString()}</td>
+                </tr>
+                <tr>
+                    <td><strong>Latitude</strong></td>
+                    <td>${item.lat.toFixed(6)}</td>
+                </tr>
+                <tr>
+                    <td><strong>Longitude</strong></td>
+                    <td>${item.lng.toFixed(6)}</td>
+                </tr>
+            </tbody>
+        </table>
+    `;
 }
 
 // Inject CSS for animation and panels
@@ -72,26 +110,28 @@ style.innerHTML = `
     padding: 12px;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    max-height: 90vh;
+    max-height: calc(70vh - 40px);
     overflow-y: auto;
-    font-size: 14px;
+    font-size: 12px;
     z-index: 999;
-    width: 250px;
+    width: 220px;
 }
 #ip-summary-panel h4 {
     margin-top: 0;
     margin-bottom: 10px;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: bold;
 }
 .ip-summary-item {
-    margin-bottom: 12px;
+    margin-bottom: 8px;
+    font-size: 11px;
 }
 .ip-summary-total {
-    margin-top: 15px;
+    margin-top: 10px;
     border-top: 1px solid #ccc;
-    padding-top: 10px;
+    padding-top: 8px;
     font-weight: bold;
+    font-size: 11px;
 }
 .leaflet-control.legend {
     background: white;
@@ -102,14 +142,28 @@ style.innerHTML = `
     border-radius: 6px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
+#info-panel {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    z-index: 1000;
+    max-width: 400px;
+}
 `;
 document.head.appendChild(style);
 
 // Create IP summary panel
+const mapContainer = document.getElementById('map');
 const ipPanel = document.createElement('div');
 ipPanel.id = 'ip-summary-panel';
 ipPanel.innerHTML = `<h4>IP Group Summary</h4><div id="ip-summary-content">Loading...</div>`;
-document.body.appendChild(ipPanel);
+mapContainer.appendChild(ipPanel);
 
 // Fetch and display population data
 fetch('./get_population_data.php')
@@ -147,7 +201,7 @@ fetch('./get_population_data.php')
                 color = '#888888'; // Default for over 1,000
             }
 
-            // Set icon radius based on new population scale
+            // Set icon radius based on population scale
             let radius = 10;
             if (pop > 600) radius = 30;
             else if (pop > 300) radius = 22;
@@ -182,15 +236,14 @@ fetch('./get_population_data.php')
                     }
                 )
                 .on('click', () => {
-                    document.getElementById('area-name').innerHTML = `<strong>Area:</strong> <span style="font-weight: normal">${item.name}</span>`;
-                    document.getElementById('area-details').innerHTML = `
-                        <strong>IP Group:</strong> <span style="font-weight: normal">${item.ip_group}</span><br>
-                        <strong>Population:</strong> <span style="font-weight: normal">${item.population.toLocaleString()}</span><br>
-                        <strong>Coordinates:</strong><br>
-                        <span style="margin-left: 20px; display: block;"><strong>Latitude:</strong> <span style="font-weight: normal">${item.lat.toFixed(4)}</span></span>
-                        <span style="margin-left: 20px; display: block;"><strong>Longitude:</strong> <span style="font-weight: normal">${item.lng.toFixed(4)}</span></span>
-                    `;
-                    document.getElementById('info-panel').style.display = 'flex';
+                    // Display data in table below map
+                    displaySelectedData(item);
+                    
+                    // Scroll to the data section
+                    document.getElementById('data-display-section').scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
                 });
 
             // Update IP group stats
@@ -210,19 +263,19 @@ fetch('./get_population_data.php')
                     <div class="ip-summary-item">
                         <strong>${group}</strong><br>
                         Areas: ${stats.count}<br>
-                        Total Population: ${stats.totalPop.toLocaleString()}
+                        Population: ${stats.totalPop.toLocaleString()}
                     </div>
                 `;
             }).join('');
 
-                // Reads All Total Population of IP Groups    
-                document.getElementById('ip-summary-content').innerHTML = `
-                    ${summaryHtml}
-                    <div class="ip-summary-total">
-                        All Total Population of IP Group: ${allTotalPop.toLocaleString()}
-                    </div>
-                `;
-            });
+        // Update summary panel
+        document.getElementById('ip-summary-content').innerHTML = `
+            ${summaryHtml}
+            <div class="ip-summary-total">
+                Total Population: ${allTotalPop.toLocaleString()}
+            </div>
+        `;
+    });
 
 // Legend Control
 function addLegend(map) {
@@ -244,7 +297,7 @@ function addLegend(map) {
                 <div style="margin-bottom: 6px;">
                     <div style="
                         display: inline-block;
-                        width: 100px;
+                        width: 80px;
                         height: 12px;
                         background: ${r.color};
                         margin-right: 6px;
@@ -255,7 +308,6 @@ function addLegend(map) {
             `;
         });
 
-        div.style.marginBottom = '143px';
         return div;
     };
 

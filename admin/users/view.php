@@ -267,11 +267,12 @@ try {
                             </a>
                             
                             <?php if ($user['user_id'] != $_SESSION['user_id']): ?>
-                            <a href="delete.php?id=<?= $user['user_id'] ?>" 
-                               class="btn btn-danger delete-user" 
-                               data-user-id="<?= $user['user_id'] ?>"
-                               data-user-name="<?= htmlspecialchars($user['user_username']) ?>"
-                               onclick="return confirm('Are you sure you want to delete user <?= htmlspecialchars($user['user_username']) ?>?')">
+                            <a href="delete.php?id=<?= $user['user_id'] ?>&action=soft_delete" 
+                            class="btn btn-danger delete-user-btn" 
+                            data-user-id="<?= $user['user_id'] ?>"
+                            data-user-name="<?= htmlspecialchars($user['user_username']) ?>"
+                            data-user-email="<?= htmlspecialchars($user['user_email']) ?>"
+                            data-user-role="<?= htmlspecialchars($user['user_role'] ?? 'USER') ?>">
                                 <i class="bi bi-trash"></i> Delete User
                             </a>
                             <?php else: ?>
@@ -286,6 +287,156 @@ try {
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Delete User Confirmation Modal -->
+    <div class="modal fade" id="deleteUserModal" tabindex="-1" aria-labelledby="deleteUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="deleteUserModalLabel">
+                        <i class="bi bi-recycle me-2"></i>Move User to Recycle Bin
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 3rem;"></i>
+                    </div>
+                    <h6 class="text-center mb-3">Are you sure you want to move this user to the recycle bin?</h6>
+                    <div class="bg-light p-3 rounded" id="userDetailsContainer">
+                        <!-- User details will be populated by JavaScript -->
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            This action will move the user to the recycle bin where they can be restored later if needed.
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </button>
+                    <a href="#" class="btn btn-warning" id="confirmDeleteBtn">
+                        <i class="bi bi-recycle me-1"></i>Yes, Move to Recycle Bin
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle delete user modal
+    const deleteUserModal = new bootstrap.Modal(document.getElementById('deleteUserModal'));
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+    const userDetailsContainer = document.getElementById('userDetailsContainer');
+    let currentDeleteUrl = '';
+    
+    // Add click event listener to delete button
+    const deleteBtn = document.querySelector('.delete-user-btn');
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent immediate navigation
+            e.stopPropagation(); // Stop event bubbling
+            
+            console.log('Delete button clicked, preventing default navigation'); // Debug
+            
+            // Get user data from data attributes
+            const userId = this.getAttribute('data-user-id');
+            const userName = this.getAttribute('data-user-name');
+            const userEmail = this.getAttribute('data-user-email');
+            const userRole = this.getAttribute('data-user-role');
+            const deleteUrl = this.getAttribute('href');
+            
+            console.log('User data:', { userId, userName, userEmail, userRole, deleteUrl }); // Debug
+            
+            // Store the URL for later use
+            currentDeleteUrl = deleteUrl;
+            
+            // Populate user details in modal
+            userDetailsContainer.innerHTML = `
+                <strong>User Details:</strong><br>
+                <i class="bi bi-person-badge-fill me-1"></i> <strong>Username:</strong> ${userName}<br>
+                <i class="bi bi-envelope-fill me-1"></i> <strong>Email:</strong> ${userEmail}<br>
+                <i class="bi bi-shield-fill me-1"></i> <strong>Role:</strong> ${userRole}<br>
+                <i class="bi bi-hash me-1"></i> <strong>ID:</strong> #${userId}
+            `;
+            
+            // Update the confirm button href
+            confirmDeleteBtn.setAttribute('href', deleteUrl);
+            
+            console.log('About to show modal'); // Debug
+            
+            // Show the modal
+            deleteUserModal.show();
+            
+            // Return false to ensure no navigation
+            return false;
+        });
+    }
+    
+    // Handle confirm delete button click
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent the anchor's default behavior
+            
+            console.log('Confirm button clicked'); // Debug
+            
+            // Show loading state
+            const originalText = this.innerHTML;
+            this.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span>Moving to Recycle Bin...';
+            this.classList.add('disabled');
+            
+            // Close modal first
+            deleteUserModal.hide();
+            
+            // Navigate to delete URL after modal is hidden
+            setTimeout(() => {
+                console.log('Navigating to:', currentDeleteUrl); // Debug
+                window.location.href = currentDeleteUrl;
+            }, 300); // Reduced delay to make it feel faster
+        });
+    }
+    
+    // Reset button state when modal is hidden
+    document.getElementById('deleteUserModal').addEventListener('hidden.bs.modal', function() {
+        if (confirmDeleteBtn) {
+            confirmDeleteBtn.innerHTML = '<i class="bi bi-recycle me-1"></i>Yes, Move to Recycle Bin';
+            confirmDeleteBtn.classList.remove('disabled');
+        }
+    });
+    
+    // Add smooth modal animations
+    const modal = document.getElementById('deleteUserModal');
+    if (modal) {
+        modal.addEventListener('show.bs.modal', function () {
+            console.log('Modal is showing'); // Debug
+            const modalDialog = this.querySelector('.modal-dialog');
+            if (modalDialog) {
+                modalDialog.style.transform = 'scale(0.8)';
+                modalDialog.style.opacity = '0';
+                setTimeout(() => {
+                    modalDialog.style.transition = 'all 0.3s ease';
+                    modalDialog.style.transform = 'scale(1)';
+                    modalDialog.style.opacity = '1';
+                }, 10);
+            }
+        });
+        
+        modal.addEventListener('shown.bs.modal', function () {
+            console.log('Modal is now visible'); // Debug
+        });
+    }
+    
+    // Additional check - ensure no other click handlers are interfering
+    const deleteLinks = document.querySelectorAll('.delete-user-btn');
+    deleteLinks.forEach(function(link) {
+        // Remove any existing onclick attributes that might interfere
+        link.removeAttribute('onclick');
+    });
+});
+</script>
 </body>
 </html>

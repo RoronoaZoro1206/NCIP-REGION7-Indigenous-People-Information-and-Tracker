@@ -1,4 +1,5 @@
 <?php
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -7,6 +8,14 @@ include "../config/database.php";
 
 // Check if user is logged in
 if (!isset($_SESSION["user_id"])) {
+    header("Location: ../login.php");
+    exit();
+}
+
+// Check admin role - handle different session key possibilities
+$user_role = $_SESSION["role"] ?? $_SESSION["user_role"] ?? null;
+if (!$user_role || strtoupper($user_role) !== 'ADMIN') {
+    $_SESSION['error_message'] = "Access denied. Admin privileges required.";
     header("Location: ../login.php");
     exit();
 }
@@ -27,46 +36,122 @@ try {
     error_log("Failed to fetch user data: " . $e->getMessage());
 }
 
+/**
+ * Ensure the contact_message table has soft delete columns
+ */
+function ensureContactSoftDeleteColumns($pdo) {
+    try {
+        // Check if soft delete columns exist, if not, add them
+        $columns_to_add = [
+            'contm_deleted_at' => 'TIMESTAMP NULL',
+            'contm_deleted_by' => 'INTEGER'
+        ];
+        
+        foreach ($columns_to_add as $column => $definition) {
+            // Check if column exists
+            $stmt = $pdo->prepare("SELECT column_name FROM information_schema.columns 
+                                  WHERE table_name = 'contact_message' AND column_name = :column_name");
+            $stmt->execute([':column_name' => $column]);
+            
+            if (!$stmt->fetch()) {
+                // Column doesn't exist, add it
+                $pdo->exec("ALTER TABLE contact_message ADD COLUMN {$column} {$definition}");
+                error_log("Added column {$column} to contact_message");
+            }
+        }
+        
+        // Create index on deleted_at column for better performance
+        $pdo->exec("CREATE INDEX IF NOT EXISTS idx_contact_message_deleted_at ON contact_message(contm_deleted_at)");
+        
+    } catch (PDOException $e) {
+        error_log("Error ensuring soft delete columns for contact_message: " . $e->getMessage());
+        // Don't throw - this is not critical for basic functionality
+    }
+}
+
+// Ensure soft delete columns exist
+ensureContactSoftDeleteColumns($pdo);
+
+// Initialize status_counts with default values EARLY to prevent undefined index errors
+$status_counts = [
+    'all' => 0,
+    'unread' => 0,
+    'read' => 0,
+    'replied' => 0,
+    'archived' => 0
+];
+
 // Handle status filter
 $status_filter = isset($_GET['status']) ? $_GET['status'] : '';
-$status_condition = "";
-if (!empty($status_filter)) {
-    $status_condition = "AND c.contm_status = :status_filter";
-}
 
 // Handle search query
 $search = isset($_GET['search']) ? $_GET['search'] : '';
-$search_condition = "";
+
+// Get status counts for filters - EXCLUDE SOFT DELETED MESSAGES (PostgreSQL compatible)
+try {
+    // PostgreSQL-compatible soft delete check - FIXED
+    $count_status_query = "SELECT contm_status, COUNT(*) as count
+                          FROM contact_message
+                          WHERE contm_deleted_at IS NULL
+                          GROUP BY contm_status";
+    $count_status_stmt = $pdo->query($count_status_query);
+    
+    $total_inbox_messages = 0; // All except archived
+    
+    while ($row = $count_status_stmt->fetch(PDO::FETCH_ASSOC)) {
+        $status = strtolower(trim($row['contm_status']));
+        $count = (int)$row['count'];
+        
+        // Set individual status counts
+        if (isset($status_counts[$status])) {
+            $status_counts[$status] = $count;
+        }
+        
+        // Add to inbox count (everything except archived)
+        if ($status !== 'archived') {
+            $total_inbox_messages += $count;
+        }
+    }
+    
+    // Set the "all" count to show inbox messages (excluding archived)
+    $status_counts['all'] = $total_inbox_messages;
+    
+} catch (PDOException $e) {
+    error_log("Error fetching status counts: " . $e->getMessage());
+    // Keep default values - already initialized above
+}
+
+// Build query conditions - FIXED FOR PostgreSQL
+$conditions = ["contm_deleted_at IS NULL"]; // PostgreSQL-compatible - REMOVED EMPTY STRING CHECK
+$params = [];
+
+// Add status filter condition
+if (!empty($status_filter)) {
+    $conditions[] = "contm_status = :status_filter";
+    $params[':status_filter'] = $status_filter;
+} else {
+    // Don't show archived messages in main view unless specifically filtering for them
+    $conditions[] = "contm_status != 'Archived'";
+}
+
+// Add search condition
 if (!empty($search)) {
-    $search_condition = "AND (c.contm_name LIKE :search_term OR c.contm_email LIKE :search_term OR 
-                        c.contm_message LIKE :search_term)";
+    $conditions[] = "(contm_name ILIKE :search_term OR contm_email ILIKE :search_term OR contm_message ILIKE :search_term)";
+    $params[':search_term'] = '%' . $search . '%';
 }
 
 // Count total messages for pagination
 try {
-    $count_query = "SELECT COUNT(*) as total 
-                   FROM contact_message c
-                   WHERE 1=1 ";
+    $count_query = "SELECT COUNT(*) as total FROM contact_message WHERE " . implode(' AND ', $conditions);
+    $count_stmt = $pdo->prepare($count_query);
     
-    if (!empty($status_condition) || !empty($search_condition)) {
-        $count_stmt = $pdo->prepare($count_query . $status_condition . $search_condition);
-        
-        if (!empty($status_filter)) {
-            $count_stmt->bindValue(':status_filter', $status_filter);
-        }
-        
-        if (!empty($search)) {
-            $search_param = '%' . $search . '%';
-            $count_stmt->bindValue(':search_term', $search_param);
-        }
-        
-        $count_stmt->execute();
-    } else {
-        $count_stmt = $pdo->query($count_query);
+    foreach ($params as $key => $value) {
+        $count_stmt->bindValue($key, $value);
     }
     
+    $count_stmt->execute();
     $row = $count_stmt->fetch(PDO::FETCH_ASSOC);
-    $total_records = $row['total'];
+    $total_records = (int)$row['total'];
     
 } catch (PDOException $e) {
     error_log("Error counting messages: " . $e->getMessage());
@@ -82,85 +167,63 @@ $offset = ($page - 1) * $records_per_page;
 // Get all contact messages
 $messages = [];
 try {
-    // PostgreSQL uses LIMIT x OFFSET y instead of LIMIT y, x
-    $query = "SELECT * FROM contact_message c
-              WHERE 1=1 ";
-    
-    if ($status_filter !== 'Archived') {
-        $query .= " AND c.contm_status != 'Archived' ";
-    }
-    
-    // Add the rest of your conditions
-    $query .= $status_condition . " " . $search_condition . "
-              ORDER BY c.contm_submission_date DESC
+    $query = "SELECT * FROM contact_message WHERE " . implode(' AND ', $conditions) . "
+              ORDER BY contm_submission_date DESC
               LIMIT :limit OFFSET :offset";
     
     $stmt = $pdo->prepare($query);
+    
+    // Bind all parameters
+    foreach ($params as $key => $value) {
+        $stmt->bindValue($key, $value);
+    }
+    
+    // Bind pagination parameters
     $stmt->bindValue(':limit', (int)$records_per_page, PDO::PARAM_INT);
     $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
-    
-    if (!empty($status_filter)) {
-        $stmt->bindValue(':status_filter', $status_filter);
-    }
-    
-    if (!empty($search)) {
-        $search_param = '%' . $search . '%';
-        $stmt->bindValue(':search_term', $search_param);
-    }
     
     $stmt->execute();
     $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
 } catch (PDOException $e) {
     error_log("Error fetching messages: " . $e->getMessage());
-    $_SESSION['error_message'] = "Error retrieving messages: Database error";
+    $_SESSION['error_message'] = "Error retrieving messages: " . $e->getMessage();
 }
 
-// Get status counts for filters
-try {
-    // This should calculate "all" excluding archived
-    $count_query_inbox = "SELECT COUNT(*) as total 
-                       FROM contact_message 
-                       WHERE contm_status != 'Archived'";
-    $count_stmt_inbox = $pdo->query($count_query_inbox);
-    $inbox_count = $count_stmt_inbox->fetchColumn();
-    
-    // Set the correct counts
-    $status_counts = [
-        'all' => $inbox_count, 
-        'unread' => 0,
-        'read' => 0,
-        'replied' => 0,
-        'archived' => 0
-    ];
-    
-    // Get detailed counts by status
-    $count_status_query = "SELECT contm_status, COUNT(*) as count
-                          FROM contact_message
-                          GROUP BY contm_status";
-    $count_status_stmt = $pdo->query($count_status_query);
-    while ($row = $count_status_stmt->fetch(PDO::FETCH_ASSOC)) {
-        $status = strtolower($row['contm_status']);
-        $status_counts[$status] = $row['count'];
-    }
-} catch (PDOException $e) {
-    error_log("Error fetching status counts: " . $e->getMessage());
-}
-
-// Handle delete request (fallback for non-JS)
+// Handle delete request (fallback for non-JS) - UPDATE TO USE SOFT DELETE
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_message'])) {
     $message_id = $_POST['message_id'];
     
     try {
-        $delete_stmt = $pdo->prepare("DELETE FROM contact_message WHERE contm_id = :message_id");
-        $delete_stmt->bindParam(":message_id", $message_id, PDO::PARAM_INT);
-        $delete_stmt->execute();
+        // Use soft delete instead of permanent delete - PostgreSQL compatible
+        $soft_delete_stmt = $pdo->prepare("UPDATE contact_message 
+                                          SET contm_deleted_at = CURRENT_TIMESTAMP, contm_deleted_by = ? 
+                                          WHERE contm_id = ?");
+        $result = $soft_delete_stmt->execute([$_SESSION["user_id"], $message_id]);
         
-        $_SESSION['success_message'] = "Message deleted successfully!";
+        if ($result && $soft_delete_stmt->rowCount() > 0) {
+            // Log the soft deletion activity
+            try {
+                $log_query = "INSERT INTO user_logs (user_id, log_type, log_details, log_timestamp) 
+                             VALUES (:user_id, 'SOFT_DELETE_CONTACT_MESSAGE', :details, CURRENT_TIMESTAMP)";
+                $log_stmt = $pdo->prepare($log_query);
+                $details = "Moved contact message to recycle bin (ID: {$message_id})";
+                $log_stmt->bindParam(":user_id", $_SESSION["user_id"]);
+                $log_stmt->bindParam(":details", $details);
+                $log_stmt->execute();
+            } catch (Exception $log_error) {
+                error_log("Failed to log soft deletion activity: " . $log_error->getMessage());
+            }
+            
+            $_SESSION['success_message'] = "Message moved to recycle bin successfully!";
+        } else {
+            $_SESSION['error_message'] = "Failed to move message to recycle bin.";
+        }
+        
         header("Location: index.php");
         exit();
     } catch (PDOException $e) {
-        $_SESSION['error_message'] = "Error deleting message: " . $e->getMessage();
+        $_SESSION['error_message'] = "Error moving message to recycle bin: " . $e->getMessage();
     }
 }
 
@@ -175,6 +238,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
         $update_stmt->bindParam(":message_id", $message_id, PDO::PARAM_INT);
         $update_stmt->execute();
         
+        // Log the status update activity
+        try {
+            $log_query = "INSERT INTO user_logs (user_id, log_type, log_details, log_timestamp) 
+                         VALUES (:user_id, 'UPDATE_CONTACT_STATUS', :details, CURRENT_TIMESTAMP)";
+            $log_stmt = $pdo->prepare($log_query);
+            $details = "Updated contact message status to {$new_status} (ID: {$message_id})";
+            $log_stmt->bindParam(":user_id", $_SESSION["user_id"]);
+            $log_stmt->bindParam(":details", $details);
+            $log_stmt->execute();
+        } catch (Exception $log_error) {
+            error_log("Failed to log status update activity: " . $log_error->getMessage());
+        }
+        
         $_SESSION['success_message'] = "Status updated successfully!";
         header("Location: index.php" . (empty($_GET) ? "" : "?" . http_build_query($_GET)));
         exit();
@@ -183,38 +259,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
     }
 }
 
-// Handle reply to message (fallback for non-JS)
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message'])) {
-    $message_id = $_POST['message_id'];
-    $reply_content = $_POST['reply_content'];
-    $recipient_email = $_POST['recipient_email'];
-    $subject = $_POST['subject'] ?? 'Re: Your message to NCIP';
-    
-    // Send email (you may need to configure mail settings)
-    $headers = "From: admin@ncip.gov.ph\r\n";
-    $headers .= "Reply-To: admin@ncip.gov.ph\r\n";
-    $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-    
-    $email_sent = mail($recipient_email, $subject, $reply_content, $headers);
-    
-    if ($email_sent) {
-        // Update message status to replied
-        try {
-            $update_stmt = $pdo->prepare("UPDATE contact_message SET contm_status = 'Replied', contm_reply = :reply_content, contm_reply_date = CURRENT_TIMESTAMP WHERE contm_id = :message_id");
-            $update_stmt->bindParam(":reply_content", $reply_content, PDO::PARAM_STR);
-            $update_stmt->bindParam(":message_id", $message_id, PDO::PARAM_INT);
-            $update_stmt->execute();
-            
-            $_SESSION['success_message'] = "Reply sent successfully!";
-        } catch (PDOException $e) {
-            $_SESSION['error_message'] = "Error updating message: " . $e->getMessage();
-        }
-    } else {
-        $_SESSION['error_message'] = "Error sending email reply. Please check your mail configuration.";
+// Helper function to safely format dates for PostgreSQL
+function safe_date_format($date_string, $format = 'M d, Y') {
+    if (empty($date_string) || $date_string === null) {
+        return 'Unknown';
     }
     
-    header("Location: index.php" . (empty($_GET) ? "" : "?" . http_build_query($_GET)));
-    exit();
+    try {
+        $date = new DateTime($date_string);
+        return $date->format($format);
+    } catch (Exception $e) {
+        return 'Invalid date';
+    }
+}
+
+// Helper function to safely format time for PostgreSQL
+function safe_time_format($date_string, $format = 'g:i A') {
+    if (empty($date_string) || $date_string === null) {
+        return 'Unknown';
+    }
+    
+    try {
+        $date = new DateTime($date_string);
+        return $date->format($format);
+    } catch (Exception $e) {
+        return 'Invalid time';
+    }
 }
 ?>
 
@@ -234,7 +304,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message'])) {
             margin-left: 250px;
             padding: 20px;
         }
-
         .card-dashboard {
             border: none;
             border-radius: 10px;
@@ -253,7 +322,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message'])) {
             .main-content {
                 margin-left: 0;
             }
-
+        }
+        .btn-group .btn {
+            margin-right: 2px;
         }
     </style>
 </head>
@@ -265,14 +336,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message'])) {
     <div class="main-content">
         <div class="container-fluid">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1>Contact Messages</h1>
-                <div>
-                    <a href="archived_messages.php" class="btn btn-secondary me-2">
-                        <i class="bi bi-archive"></i> Archived Messages 
-                        <span class="badge bg-light text-dark"><?php echo $status_counts['archived']; ?></span>
+                <h1><i class="bi bi-envelope me-2"></i>Contact Messages</h1>
+                <div class="btn-group">
+                    <a href="archived_messages.php" class="btn btn-secondary">
+                        <i class="bi bi-archive me-1"></i>Archived Messages 
+                        <span class="badge bg-light text-dark"><?php echo isset($status_counts['archived']) ? $status_counts['archived'] : 0; ?></span>
                     </a>
                     <a href="export.php" class="btn btn-success">
-                        <i class="bi bi-file-earmark-excel"></i> Export to Excel
+                        <i class="bi bi-file-earmark-excel me-1"></i>Export to Excel
                     </a>
                 </div>
             </div>
@@ -281,6 +352,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message'])) {
             <div id="alert-container">
                 <?php if (isset($_SESSION['success_message'])): ?>
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>
                         <?php echo $_SESSION['success_message']; ?>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
@@ -289,10 +361,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message'])) {
 
                 <?php if (isset($_SESSION['error_message'])): ?>
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
                         <?php echo $_SESSION['error_message']; ?>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                     <?php unset($_SESSION['error_message']); ?>
+                <?php endif; ?>
+                
+                <?php if (isset($_GET['moved']) && $_GET['moved'] === 'true'): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <i class="bi bi-recycle me-2"></i>
+                        Message moved to recycle bin successfully.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
                 <?php endif; ?>
             </div>
             
@@ -300,37 +381,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message'])) {
                 <div class="card-body">
                     <div class="row mb-3">
                         <!-- Status filter buttons -->
-                        <div class="col-md-6">
+                        <div class="col-md-8">
                             <div class="btn-group" role="group">
                                 <a href="index.php" class="btn btn-outline-secondary <?php echo empty($status_filter) ? 'active' : ''; ?>">
-                                    All <span class="badge bg-secondary"><?php echo $status_counts['all']; ?></span>
+                                    All <span class="badge bg-secondary"><?php echo isset($status_counts['all']) ? $status_counts['all'] : 0; ?></span>
                                 </a>
                                 <a href="index.php?status=Unread<?php echo !empty($search) ? '&search='.$search : ''; ?>" 
                                    class="btn btn-outline-danger <?php echo $status_filter === 'Unread' ? 'active' : ''; ?>">
-                                    Unread <span class="badge bg-danger"><?php echo $status_counts['unread']; ?></span>
+                                    Unread <span class="badge bg-danger"><?php echo isset($status_counts['unread']) ? $status_counts['unread'] : 0; ?></span>
                                 </a>
                                 <a href="index.php?status=Read<?php echo !empty($search) ? '&search='.$search : ''; ?>" 
                                    class="btn btn-outline-primary <?php echo $status_filter === 'Read' ? 'active' : ''; ?>">
-                                    Read <span class="badge bg-primary"><?php echo $status_counts['read']; ?></span>
+                                    Read <span class="badge bg-primary"><?php echo isset($status_counts['read']) ? $status_counts['read'] : 0; ?></span>
                                 </a>
                                 <a href="index.php?status=Replied<?php echo !empty($search) ? '&search='.$search : ''; ?>" 
                                    class="btn btn-outline-success <?php echo $status_filter === 'Replied' ? 'active' : ''; ?>">
-                                    Replied <span class="badge bg-success"><?php echo $status_counts['replied']; ?></span>
+                                    Replied <span class="badge bg-success"><?php echo isset($status_counts['replied']) ? $status_counts['replied'] : 0; ?></span>
                                 </a>
                             </div>
                         </div>
 
                         <!-- Search box -->
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <form class="d-flex">
                                 <?php if (!empty($status_filter)): ?>
-                                    <input type="hidden" name="status" value="<?php echo $status_filter; ?>">
+                                    <input type="hidden" name="status" value="<?php echo htmlspecialchars($status_filter); ?>">
                                 <?php endif; ?>
                                 <input class="form-control me-2" type="search" name="search" autocomplete="off" placeholder="Search by name, email, or content" 
                                        value="<?php echo htmlspecialchars($search); ?>">
-                                <button class="btn btn-outline-primary" type="submit">Search</button>
+                                <button class="btn btn-outline-primary" type="submit">
+                                    <i class="bi bi-search"></i>
+                                </button>
                                 <?php if (!empty($search)): ?>
-                                    <a href="<?php echo empty($status_filter) ? 'index.php' : "index.php?status=$status_filter"; ?>" class="btn btn-outline-secondary ms-2">Clear</a>
+                                    <a href="<?php echo empty($status_filter) ? 'index.php' : "index.php?status=".urlencode($status_filter); ?>" class="btn btn-outline-secondary ms-2">
+                                        <i class="bi bi-x-circle"></i>
+                                    </a>
                                 <?php endif; ?>
                             </form>
                         </div>
@@ -340,30 +425,56 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message'])) {
                         <table class="table table-hover">
                             <thead class="table-light">
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Sender</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
+                                    <th style="width: 80px;">ID</th>
+                                    <th style="width: 150px;">Sender</th>
+                                    <th style="width: 200px;">Email</th>
+                                    <th style="width: 120px;">Phone</th>
                                     <th>Message</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
+                                    <th style="width: 150px;">Date</th>
+                                    <th style="width: 100px;">Status</th>
+                                    <th style="width: 200px;" class="text-center">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php if (count($messages) > 0): ?>
                                     <?php foreach ($messages as $msg): ?>
                                     <tr id="msg-row-<?php echo $msg['contm_id']; ?>" class="<?php echo $msg['contm_status'] === 'Unread' ? 'table-active' : ''; ?>">
-                                        <td><?php echo $msg['contm_id']; ?></td>
-                                        <td><?php echo htmlspecialchars($msg['contm_name']); ?></td>
-                                        <td><?php echo htmlspecialchars($msg['contm_email']); ?></td>
-                                        <td><?php echo htmlspecialchars($msg['contm_phone'] ?? 'N/A'); ?></td>
+                                        <td>
+                                            <span class="badge bg-secondary">#<?php echo $msg['contm_id']; ?></span>
+                                        </td>
+                                        <td>
+                                            <strong><?php echo htmlspecialchars($msg['contm_name']); ?></strong>
+                                        </td>
+                                        <td>
+                                            <a href="mailto:<?php echo htmlspecialchars($msg['contm_email']); ?>" class="text-decoration-none">
+                                                <i class="bi bi-envelope me-1"></i>
+                                                <?php echo htmlspecialchars($msg['contm_email']); ?>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <?php if (!empty($msg['contm_phone'])): ?>
+                                                <a href="tel:<?php echo htmlspecialchars($msg['contm_phone']); ?>" class="text-decoration-none">
+                                                    <i class="bi bi-telephone me-1"></i>
+                                                    <?php echo htmlspecialchars($msg['contm_phone']); ?>
+                                                </a>
+                                            <?php else: ?>
+                                                <span class="text-muted">N/A</span>
+                                            <?php endif; ?>
+                                        </td>
                                         <td>
                                             <div class="message-preview">
                                                 <?php echo htmlspecialchars($msg['contm_message']); ?>
                                             </div>
                                         </td>
-                                        <td><?php echo date('M d, Y g:i A', strtotime($msg['contm_submission_date'])); ?></td>
+                                        <td>
+                                            <small class="text-muted">
+                                                <i class="bi bi-calendar3 me-1"></i>
+                                                <?php echo safe_date_format($msg['contm_submission_date']); ?>
+                                                <br>
+                                                <i class="bi bi-clock me-1"></i>
+                                                <?php echo safe_time_format($msg['contm_submission_date']); ?>
+                                            </small>
+                                        </td>
                                         <td>
                                             <?php 
                                             $badge_class = '';
@@ -386,96 +497,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message'])) {
                                             }
                                             ?>
                                             <span id="status-badge-<?php echo $msg['contm_id']; ?>" class="badge <?php echo $badge_class; ?>">
-                                                <?php echo $msg['contm_status']; ?>
+                                                <?php echo htmlspecialchars($msg['contm_status']); ?>
                                             </span>
                                         </td>
-                                        <td class="table-actions">
-                                            <div class="btn-group">
-                                                <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewModal<?php echo $msg['contm_id']; ?>">
+                                        <td class="text-center">
+                                            <div class="btn-group" role="group">
+                                                <a href="view.php?id=<?php echo $msg['contm_id']; ?>" 
+                                                   class="btn btn-sm btn-outline-info" 
+                                                   title="View Message">
                                                     <i class="bi bi-eye"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#replyModal<?php echo $msg['contm_id']; ?>">
+                                                </a>
+                                                <button type="button" 
+                                                        class="btn btn-sm btn-outline-success" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#replyModal<?php echo $msg['contm_id']; ?>"
+                                                        title="Reply">
                                                     <i class="bi bi-reply"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#statusModal<?php echo $msg['contm_id']; ?>">
+                                                <button type="button" 
+                                                        class="btn btn-sm btn-outline-primary" 
+                                                        data-bs-toggle="modal" 
+                                                        data-bs-target="#statusModal<?php echo $msg['contm_id']; ?>"
+                                                        title="Change Status">
                                                     <i class="bi bi-check2-circle"></i>
                                                 </button>
-                                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal<?php echo $msg['contm_id']; ?>">
+                                                <button type="button" 
+                                                        class="btn btn-sm btn-outline-danger delete-message-btn" 
+                                                        data-message-id="<?php echo $msg['contm_id']; ?>"
+                                                        data-message-name="<?php echo htmlspecialchars($msg['contm_name']); ?>"
+                                                        data-message-email="<?php echo htmlspecialchars($msg['contm_email']); ?>"
+                                                        title="Move to Recycle Bin">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
                                             </div>
                                             
-                                            <!-- View Message Modal -->
-                                            <div class="modal fade" id="viewModal<?php echo $msg['contm_id']; ?>" tabindex="-1" aria-labelledby="viewModalLabel<?php echo $msg['contm_id']; ?>" aria-hidden="true">
-                                                <div class="modal-dialog modal-lg">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="viewModalLabel<?php echo $msg['contm_id']; ?>">
-                                                                Message from <?php echo htmlspecialchars($msg['contm_name']); ?>
-                                                            </h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="mb-3">
-                                                                <p><strong>From:</strong> <?php echo htmlspecialchars($msg['contm_name']); ?> (<?php echo htmlspecialchars($msg['contm_email']); ?>)</p>
-                                                                <p><strong>Phone:</strong> <?php echo htmlspecialchars($msg['contm_phone'] ?? 'N/A'); ?></p>
-                                                                <p><strong>Date:</strong> <?php echo date('M d, Y g:i A', strtotime($msg['contm_submission_date'])); ?></p>
-                                                                <hr>
-                                                                <div>
-                                                                    <?php echo nl2br(htmlspecialchars($msg['contm_message'])); ?>
-                                                                </div>
-                                                                
-                                                                <?php if (!empty($msg['contm_reply']) && $msg['contm_status'] === 'Replied'): ?>
-                                                                <hr>
-                                                                <h6>Your Reply (<?php echo date('M d, Y g:i A', strtotime($msg['contm_reply_date'])); ?>):</h6>
-                                                                <div>
-                                                                    <?php echo nl2br(htmlspecialchars($msg['contm_reply'])); ?>
-                                                                </div>
-                                                                <?php endif; ?>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                            <button type="button" class="btn btn-success" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#replyModal<?php echo $msg['contm_id']; ?>">
-                                                                Reply
-                                                            </button>
-                                                            <?php if ($msg['contm_status'] === 'Unread'): ?>
-                                                            <form action="ajax/update_status.php" method="post" class="update-status-form d-inline">
-                                                                <input type="hidden" name="message_id" value="<?php echo $msg['contm_id']; ?>">
-                                                                <input type="hidden" name="new_status" value="Read">
-                                                                <button type="submit" class="btn btn-primary">Mark as Read</button>
-                                                            </form>
-                                                            <?php endif; ?>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            
-
                                             <!-- Reply Modal -->
                                             <div class="modal fade" id="replyModal<?php echo $msg['contm_id']; ?>" tabindex="-1" aria-labelledby="replyModalLabel<?php echo $msg['contm_id']; ?>" aria-hidden="true">
                                                 <div class="modal-dialog modal-lg">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
                                                             <h5 class="modal-title" id="replyModalLabel<?php echo $msg['contm_id']; ?>">
-                                                                Reply to: <?php echo htmlspecialchars($msg['contm_name']); ?>
+                                                                <i class="bi bi-reply me-2"></i>Reply to: <?php echo htmlspecialchars($msg['contm_name']); ?>
                                                             </h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
                                                             <div class="mb-3">
-                                                                <label class="form-label">From:</label>
+                                                                <label class="form-label"><strong>From:</strong></label>
                                                                 <p><?php echo htmlspecialchars($msg['contm_name']); ?> (<?php echo htmlspecialchars($msg['contm_email']); ?>)</p>
                                                             </div>
                                                             <div class="mb-3">
-                                                                <label class="form-label">Message:</label>
+                                                                <label class="form-label"><strong>Original Message:</strong></label>
                                                                 <div class="card card-body bg-light mb-3">
                                                                     <?php echo nl2br(htmlspecialchars($msg['contm_message'])); ?>
                                                                 </div>
                                                             </div>
                                                             <div class="d-flex justify-content-center mt-4">
                                                                 <a href="mailto:<?php echo htmlspecialchars($msg['contm_email']); ?>" class="btn btn-primary">
-                                                                    <i class="bi bi-reply-fill"></i> Reply via Email
+                                                                    <i class="bi bi-reply-fill me-1"></i>Reply via Email
                                                                 </a>
                                                             </div>
                                                         </div>
@@ -491,13 +570,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message'])) {
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" id="statusModalLabel<?php echo $msg['contm_id']; ?>">Change Message Status</h5>
+                                                            <h5 class="modal-title" id="statusModalLabel<?php echo $msg['contm_id']; ?>">
+                                                                <i class="bi bi-check2-circle me-2"></i>Change Message Status
+                                                            </h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
-                                                        <form action="index.php" method="post" class="update-status-form">
+                                                        <form class="update-status-form">
                                                             <div class="modal-body">
                                                                 <input type="hidden" name="message_id" value="<?php echo $msg['contm_id']; ?>">
-                                                                <input type="hidden" name="update_status" value="1">
                                                                 <div class="mb-3">
                                                                     <label for="new_status<?php echo $msg['contm_id']; ?>" class="form-label">New Status</label>
                                                                     <select class="form-select" id="new_status<?php echo $msg['contm_id']; ?>" name="new_status" required>
@@ -517,36 +597,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message'])) {
                                                     </div>
                                                 </div>
                                             </div>
-                                            
-                                            <!-- Delete Confirmation Modal -->
-                                            <div class="modal fade" id="deleteModal<?php echo $msg['contm_id']; ?>" tabindex="-1" aria-labelledby="deleteModalLabel<?php echo $msg['contm_id']; ?>" aria-hidden="true">
-                                                <div class="modal-dialog">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="deleteModalLabel<?php echo $msg['contm_id']; ?>">Confirm Deletion</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <p>Are you sure you want to delete this message from <strong><?php echo htmlspecialchars($msg['contm_name']); ?></strong>?</p>
-                                                            <p class="text-danger"><strong>Warning:</strong> This action cannot be undone.</p>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                            <form action="index.php" method="post" class="delete-msg-form">
-                                                                <input type="hidden" name="message_id" value="<?php echo $msg['contm_id']; ?>">
-                                                                <input type="hidden" name="delete_message" value="1">
-                                                                <button type="submit" class="btn btn-danger">Delete</button>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
                                         </td>
                                     </tr>
                                     <?php endforeach; ?>
                                 <?php else: ?>
                                     <tr>
-                                        <td colspan="8" class="text-center">No messages found</td>
+                                        <td colspan="8" class="text-center p-5">
+                                            <i class="bi bi-inbox display-1 text-secondary"></i>
+                                            <h4 class="mt-3 text-muted">No messages found</h4>
+                                            <?php if (!empty($search)): ?>
+                                                <p class="mb-3">No messages match your search criteria.</p>
+                                                <a href="index.php" class="btn btn-outline-primary">
+                                                    <i class="bi bi-arrow-clockwise me-1"></i>Clear Search
+                                                </a>
+                                            <?php else: ?>
+                                                <p class="mb-3">No contact messages available.</p>
+                                            <?php endif; ?>
+                                        </td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>
@@ -558,15 +625,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message'])) {
                     <nav aria-label="Page navigation" class="mt-4">
                         <ul class="pagination justify-content-center">
                             <li class="page-item <?php echo ($page <= 1) ? 'disabled' : ''; ?>">
-                                <a class="page-link" href="<?php echo ($page <= 1) ? '#' : '?page='.($page-1).(empty($status_filter) ? '' : '&status='.$status_filter).(empty($search) ? '' : '&search='.$search); ?>">Previous</a>
+                                <a class="page-link" href="<?php echo ($page <= 1) ? '#' : '?page='.($page-1).(empty($status_filter) ? '' : '&status='.urlencode($status_filter)).(empty($search) ? '' : '&search='.urlencode($search)); ?>">
+                                    <span aria-hidden="true">&laquo;</span> Previous
+                                </a>
                             </li>
-                            <?php for($i = 1; $i <= $total_pages; $i++): ?>
-                            <li class="page-item <?php echo ($page == $i) ? 'active' : ''; ?>">
-                                <a class="page-link" href="?page=<?php echo $i; ?><?php echo empty($status_filter) ? '' : '&status='.$status_filter; ?><?php echo empty($search) ? '' : '&search='.$search; ?>"><?php echo $i; ?></a>
-                            </li>
+                            
+                            <?php
+                            $start_page = max(1, $page - 2);
+                            $end_page = min($total_pages, $start_page + 4);
+                            if ($end_page - $start_page < 4 && $start_page > 1) {
+                                $start_page = max(1, $end_page - 4);
+                            }
+                            
+                            for($i = $start_page; $i <= $end_page; $i++): 
+                            ?>
+                                <li class="page-item <?php echo ($page == $i) ? 'active' : ''; ?>">
+                                    <a class="page-link" href="?page=<?php echo $i; ?><?php echo empty($status_filter) ? '' : '&status='.urlencode($status_filter); ?><?php echo empty($search) ? '' : '&search='.urlencode($search); ?>">
+                                        <?php echo $i; ?>
+                                    </a>
+                                </li>
                             <?php endfor; ?>
+                            
                             <li class="page-item <?php echo ($page >= $total_pages) ? 'disabled' : ''; ?>">
-                                <a class="page-link" href="<?php echo ($page >= $total_pages) ? '#' : '?page='.($page+1).(empty($status_filter) ? '' : '&status='.$status_filter).(empty($search) ? '' : '&search='.$search); ?>">Next</a>
+                                <a class="page-link" href="<?php echo ($page >= $total_pages) ? '#' : '?page='.($page+1).(empty($status_filter) ? '' : '&status='.urlencode($status_filter)).(empty($search) ? '' : '&search='.urlencode($search)); ?>">
+                                    Next <span aria-hidden="true">&raquo;</span>
+                                </a>
                             </li>
                         </ul>
                     </nav>
@@ -576,17 +659,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message'])) {
         </div>
     </div>
     
+    <!-- Global Delete Message Confirmation Modal (Similar to view.php) -->
+    <div class="modal fade" id="deleteMessageModal" tabindex="-1" aria-labelledby="deleteMessageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="deleteMessageModalLabel">
+                        <i class="bi bi-recycle me-2"></i>Move Message to Recycle Bin
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-3">
+                        <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 3rem;"></i>
+                    </div>
+                    <h6 class="text-center mb-3">Are you sure you want to move this message to the recycle bin?</h6>
+                    <div class="bg-light p-3 rounded" id="messageDetailsContainer">
+                        <!-- Message details will be populated by JavaScript -->
+                    </div>
+                    <div class="mt-3">
+                        <small class="text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            This action will move the message to the recycle bin where it can be restored later if needed.
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-1"></i>Cancel
+                    </button>
+                    <a href="#" class="btn btn-warning" id="confirmDeleteBtn">
+                        <i class="bi bi-recycle me-1"></i>Yes, Move to Recycle Bin
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Toggle sidebar on mobile
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            if (sidebarToggle) {
-                sidebarToggle.addEventListener('click', function() {
-                    document.querySelector('.sidebar').classList.toggle('show-mobile');
-                });
-            }
-            
             // Auto-dismiss alerts after 5 seconds
             const alerts = document.querySelectorAll('.alert');
             alerts.forEach(function(alert) {
@@ -598,34 +710,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message'])) {
                 }, 5000);
             });
 
-            // Mark as read when viewing a message
-            const viewModals = document.querySelectorAll('[id^="viewModal"]');
-            viewModals.forEach(modal => {
-                modal.addEventListener('shown.bs.modal', function() {
-                    const messageId = this.id.replace('viewModal', '');
-                    const rowElement = document.querySelector(`#msg-row-${messageId}`);
-                    const statusBadge = document.querySelector(`#status-badge-${messageId}`);
-                    
-                    if (statusBadge && statusBadge.textContent === 'Unread') {
-                        fetch('ajax/update_status.php', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded',
-                            },
-                            body: `message_id=${messageId}&new_status=Read`
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                statusBadge.textContent = 'Read';
-                                statusBadge.className = 'badge bg-primary';
-                                rowElement.classList.remove('table-active');
-                            }
-                        });
-                    }
-                });
-            });
-
             // AJAX for status updates
             document.querySelectorAll('.update-status-form').forEach(form => {
                 form.addEventListener('submit', function(e) {
@@ -633,6 +717,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message'])) {
                     const formData = new FormData(this);
                     const messageId = formData.get('message_id');
                     const newStatus = formData.get('new_status');
+                    
+                    // Show loading state
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Updating...';
+                    submitBtn.disabled = true;
                     
                     fetch('ajax/update_status.php', {
                         method: 'POST',
@@ -645,7 +735,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message'])) {
                     .then(data => {
                         if (data.success) {
                             // Update the status badge
-                            document.querySelector(`#status-badge-${messageId}`).textContent = newStatus;
+                            const statusBadge = document.querySelector(`#status-badge-${messageId}`);
+                            statusBadge.textContent = newStatus;
                             
                             // Update badge class
                             let badgeClass = 'bg-secondary';
@@ -655,109 +746,127 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message'])) {
                                 case 'Replied': badgeClass = 'bg-success'; break;
                                 case 'Archived': badgeClass = 'bg-dark'; break;
                             }
-                            document.querySelector(`#status-badge-${messageId}`).className = `badge ${badgeClass}`;
+                            statusBadge.className = `badge ${badgeClass}`;
                             
                             // Update row highlighting
+                            const row = document.querySelector(`#msg-row-${messageId}`);
                             if (newStatus === 'Unread') {
-                                document.querySelector(`#msg-row-${messageId}`).classList.add('table-active');
+                                row.classList.add('table-active');
                             } else {
-                                document.querySelector(`#msg-row-${messageId}`).classList.remove('table-active');
+                                row.classList.remove('table-active');
                             }
                             
                             // Close the modal
-                            bootstrap.Modal.getInstance(document.querySelector(`#statusModal${messageId}`)).hide();
+                            const modal = bootstrap.Modal.getInstance(document.querySelector(`#statusModal${messageId}`));
+                            modal.hide();
                             
                             // Show success message
-                            showAlert('success', data.message);
+                            showAlert('success', data.message, 'bi-check-circle-fill');
                         } else {
-                            showAlert('danger', data.message);
+                            showAlert('danger', 'Error: ' + data.message, 'bi-exclamation-triangle-fill');
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        showAlert('danger', 'An error occurred while processing your request.');
+                        showAlert('danger', 'An error occurred while updating status', 'bi-exclamation-triangle-fill');
+                    })
+                    .finally(() => {
+                        // Reset button state
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
                     });
                 });
             });
             
-            // AJAX for message deletion
-            document.querySelectorAll('.delete-msg-form').forEach(form => {
-                form.addEventListener('submit', function(e) {
+            // Handle delete message modal (Similar to view.php)
+            const deleteMessageModal = new bootstrap.Modal(document.getElementById('deleteMessageModal'));
+            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+            const messageDetailsContainer = document.getElementById('messageDetailsContainer');
+            let currentDeleteUrl = '';
+            
+            // Add click event listener to all delete buttons
+            document.querySelectorAll('.delete-message-btn').forEach(function(btn) {
+                btn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    const formData = new FormData(this);
-                    const messageId = formData.get('message_id');
+                    e.stopPropagation();
                     
-                    fetch('ajax/delete_message.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Remove the row from the table
-                            document.querySelector(`#msg-row-${messageId}`).remove();
-                            
-                            // Close the modal
-                            bootstrap.Modal.getInstance(document.querySelector(`#deleteModal${messageId}`)).hide();
-                            
-                            // Show success message
-                            showAlert('success', data.message);
-                            
-                            // Update counts (you might want to reload the page or update counts via AJAX)
-                            setTimeout(() => location.reload(), 2000);
-                        } else {
-                            showAlert('danger', data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showAlert('danger', 'An error occurred while processing your request.');
-                    });
+                    // Get message data from data attributes
+                    const messageId = this.getAttribute('data-message-id');
+                    const messageName = this.getAttribute('data-message-name');
+                    const messageEmail = this.getAttribute('data-message-email');
+                    
+                    // Build delete URL
+                    currentDeleteUrl = `delete.php?id=${messageId}&action=soft_delete`;
+                    
+                    // Populate message details in modal
+                    messageDetailsContainer.innerHTML = `
+                        <strong>Message Details:</strong><br>
+                        <i class="bi bi-person-fill me-1"></i> <strong>From:</strong> ${messageName}<br>
+                        <i class="bi bi-envelope-fill me-1"></i> <strong>Email:</strong> ${messageEmail}<br>
+                        <i class="bi bi-hash me-1"></i> <strong>ID:</strong> #${messageId}
+                    `;
+                    
+                    // Update the confirm button href
+                    confirmDeleteBtn.setAttribute('href', currentDeleteUrl);
+                    
+                    // Show the modal
+                    deleteMessageModal.show();
+                    
+                    return false;
                 });
             });
             
-            // AJAX for reply form
-            document.querySelectorAll('.reply-form').forEach(form => {
-                form.addEventListener('submit', function(e) {
+            // Handle confirm delete button click
+            if (confirmDeleteBtn) {
+                confirmDeleteBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    const formData = new FormData(this);
-                    const messageId = formData.get('message_id');
                     
-                    fetch('ajax/reply_message.php', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Update status to REPLIED
-                            document.querySelector(`#status-badge-${messageId}`).textContent = 'Replied';
-                            document.querySelector(`#status-badge-${messageId}`).className = 'badge bg-success';
-                            
-                            // Close the modal
-                            bootstrap.Modal.getInstance(document.querySelector(`#replyModal${messageId}`)).hide();
-                            
-                            // Show success message
-                            showAlert('success', data.message);
-                            
-                            // Reload page after a delay to update the reply content display
-                            setTimeout(() => location.reload(), 2000);
-                        } else {
-                            showAlert('danger', data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showAlert('danger', 'An error occurred while sending your reply.');
-                    });
+                    // Show loading state
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Moving to Recycle Bin...';
+                    this.classList.add('disabled');
+                    
+                    // Close modal first
+                    deleteMessageModal.hide();
+                    
+                    // Navigate to delete URL after modal is hidden
+                    setTimeout(() => {
+                        window.location.href = currentDeleteUrl;
+                    }, 300);
                 });
+            }
+            
+            // Reset button state when modal is hidden
+            document.getElementById('deleteMessageModal').addEventListener('hidden.bs.modal', function() {
+                if (confirmDeleteBtn) {
+                    confirmDeleteBtn.innerHTML = '<i class="bi bi-recycle me-1"></i>Yes, Move to Recycle Bin';
+                    confirmDeleteBtn.classList.remove('disabled');
+                }
             });
+            
+            // Add smooth modal animations
+            const modal = document.getElementById('deleteMessageModal');
+            if (modal) {
+                modal.addEventListener('show.bs.modal', function () {
+                    const modalDialog = this.querySelector('.modal-dialog');
+                    if (modalDialog) {
+                        modalDialog.style.transform = 'scale(0.8)';
+                        modalDialog.style.opacity = '0';
+                        setTimeout(() => {
+                            modalDialog.style.transition = 'all 0.3s ease';
+                            modalDialog.style.transform = 'scale(1)';
+                            modalDialog.style.opacity = '1';
+                        }, 10);
+                    }
+                });
+            }
             
             // Helper function to show alerts
-            function showAlert(type, message) {
+            function showAlert(type, message, icon = '') {
                 const alertDiv = document.createElement('div');
                 alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
                 alertDiv.innerHTML = `
+                    <i class="bi ${icon} me-2"></i>
                     ${message}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 `;
@@ -768,7 +877,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['reply_message'])) {
                 // Auto dismiss after 5 seconds
                 setTimeout(() => {
                     const closeButton = alertDiv.querySelector('.btn-close');
-                    if (closeButton) {
+                    if (closeButton && alertDiv.parentNode) {
                         closeButton.click();
                     }
                 }, 5000);

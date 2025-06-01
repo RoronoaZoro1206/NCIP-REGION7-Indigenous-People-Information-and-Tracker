@@ -142,6 +142,9 @@ $current_file = str_replace('\\', '/', $_SERVER['PHP_SELF']);
             <li><a href="<?php echo $base_path; ?>index.php" class="<?php echo (basename($_SERVER['PHP_SELF']) === 'index.php' && strpos($current_file, '/admin/index.php') !== false) ? 'active' : ''; ?>">
                 <i class="bi bi-speedometer2"></i> Dashboard</a>
             </li>
+            <li><a href="<?php echo $base_path; ?>../front end/index.php" class="<?php echo (basename($_SERVER['PHP_SELF']) === '../front end/index.php' && strpos($current_file, '../front end/index.php') !== false) ? 'active' : ''; ?>">
+                <i class="bi bi-house-fill"></i> Home</a>
+            </li>
             <li>
                 <a href="<?php echo $base_path; ?>scholarships/index.php" class="<?php echo (strpos($current_file, '/admin/scholarships/') !== false) ? 'active' : ''; ?>">
                     <i class="bi bi-mortarboard-fill"></i> Scholarship Applications
@@ -158,9 +161,6 @@ $current_file = str_replace('\\', '/', $_SERVER['PHP_SELF']);
                     <?php endif; ?>
                 </a>
             </li>
-            <li><a href="<?php echo $base_path; ?>announcements/index.php" class="<?php echo (strpos($current_file, '/admin/announcements/') !== false) ? 'active' : ''; ?>">
-                <i class="bi bi-megaphone"></i> Announcements</a>
-            </li>
             <li><a href="<?php echo $base_path; ?>population/index.php" class="<?php echo (strpos($current_file, '/admin/population/') !== false) ? 'active' : ''; ?>">
                 <i class="bi bi-people"></i> Population Data</a>
             </li>
@@ -168,6 +168,12 @@ $current_file = str_replace('\\', '/', $_SERVER['PHP_SELF']);
                 <a href="<?php echo $base_path; ?>users/index.php" class="<?php echo (strpos($current_file, '/users/') !== false) ? 'active' : ''; ?>" id="usersMenuLink">
                     <i class="bi bi-person-gear"></i> Users
                 </a>
+            </li>
+            <li>
+                <a href="<?php echo $base_path; ?>recycle-bin/index.php" class="<?php echo (strpos($current_file, '/admin/recycle-bin/') !== false) ? 'active' : ''; ?>" id="usersMenuLink">
+                    <i class="bi bi-trash me-2"></i> Recycle Bin
+                </a>
+            </a>
             </li>
             <li><a href="<?php echo $base_path; ?>logout.php">
                 <i class="bi bi-box-arrow-right"></i> Logout</a>

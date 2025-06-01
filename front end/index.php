@@ -287,7 +287,7 @@
                                     <div class="post type-post status-publish format-video category-design span6 sticky">
                                         <div class="row">
                                             <div class="thumbnail span3">
-                                                <img width="263" height="243" src="images/3-263x243.jpg" class="attachment-section_blog wp-post-image" alt="NCIP Cultural Event" />
+                                                <img width="263" height="293" src="images/3-263x243.jpg" class="attachment-section_blog wp-post-image" alt="NCIP Cultural Event" />
                                                 <div class="date span1">
                                                     <p>
                                                         <span class="month">Mar</span>
@@ -298,7 +298,7 @@
                             
                                             <div class="the-content span3">
                                                 <h4>
-                                                    <a href="#" title="NCIP Hosts Cultural Empowerment Summit">
+                                                    <a href="http://mirror.pia.gov.ph/news/2022/11/18/ncip-hosts-national-summit-for-welfare-of-ips-iccs" target="_blank" title="NCIP Hosts Cultural Empowerment Summit">
                                                         NCIP Hosts Cultural Empowerment Summit
                                                     </a>
                                                 </h4>
@@ -312,7 +312,7 @@
                                                 </p>
                             
                                                 <p>
-                                                    <a href="#" class="more-link">|| read the article</a>
+                                                    <a href="http://mirror.pia.gov.ph/news/2022/11/18/ncip-hosts-national-summit-for-welfare-of-ips-iccs" target="_blank" class="more-link">|| read the article</a>
                                                 </p>
                                             </div>
                                         </div>
@@ -334,11 +334,11 @@
                                                     </a>
                                                 </h4>
                                                 <p class="author">by <strong>NCIP Region VII</strong></p>
-                                                <p class="comments">
+                                                <!-- <p class="comments">
                                                     <a href="#respond" title="Comment on NCIP Livelihood Programs">
                                                         <strong>Comments:</strong> 3
                                                     </a>
-                                                </p>
+                                                </p> -->
                                             </div>
                                         </div>
                                     </div>
@@ -359,11 +359,11 @@
                                                     </a>
                                                 </h4>
                                                 <p class="author">by <strong>NCIP Media Team</strong></p>
-                                                <p class="comments">
+                                                <!-- <p class="comments">
                                                     <a href="#respond" title="Comment on Voices of the Cordillera">
                                                         <strong>Comments:</strong> 2
                                                     </a>
-                                                </p>
+                                                </p> -->
                                             </div>
                                         </div>
                                     </div>
@@ -384,11 +384,11 @@
                                                     </a>
                                                 </h4>
                                                 <p class="author">by <strong>NCIP Quote Archive</strong></p>
-                                                <p class="comments">
+                                                <!-- <p class="comments">
                                                     <a href="#respond" title="Comment on Tribal Elder Quote">
                                                         <strong>Comments:</strong> 0
                                                     </a>
-                                                </p>
+                                                </p> -->
                                             </div>
                                         </div>
                                     </div>
@@ -409,11 +409,11 @@
                                                     </a>
                                                 </h4>
                                                 <p class="author">by <strong>NCIP Documentation Team</strong></p>
-                                                <p class="comments">
+                                                <!-- <p class="comments">
                                                     <a href="#comments" title="Comment on Indigenous Day Celebration">
                                                         <strong>Comments:</strong> 5
                                                     </a>
-                                                </p>
+                                                </p> -->
                                             </div>
                                         </div>
                                     </div>
@@ -426,7 +426,7 @@
 
                         <div class="clear"></div>
 
-                        <div class="margin-bottom">
+                        <div class="margin-bottom" id="partnerships">
                             <div class="logos-slider wrapper">
                                 <h2>
                                     Our <span class="title-highlight">partners</span>

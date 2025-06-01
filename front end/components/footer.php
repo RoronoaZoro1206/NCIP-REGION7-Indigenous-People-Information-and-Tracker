@@ -17,11 +17,11 @@
                         <h3>Indigenous Advocacy <div class="underline"><span></span></div></h3>
                         <div class="menu-widget-footer-container">
                             <ul id="menu-widget-footer-2" class="menu">
-                                <li class="menu-item"><a href="#">Who Are Indigenous Peoples?</a></li>
-                                <li class="menu-item"><a href="#">Rights Protection</a></li>
-                                <li class="menu-item"><a href="#">Cultural Preservation</a></li>
-                                <li class="menu-item"><a href="#">Community Engagement</a></li>
-                                <li class="menu-item"><a href="#">Success Stories</a></li>
+                                <li class="menu-item"><a href="about.php">Who Are Indigenous Peoples?</a></li>
+                                <li class="menu-item"><a href="about.php">Rights Protection</a></li>
+                                <li class="menu-item"><a href="program.php.#culture">Cultural Preservation</a></li>
+                                <li class="menu-item"><a href="announcement.php">Community Engagement</a></li>
+                                <li class="menu-item"><a href="announcement.php">Success Stories</a></li>
                             </ul>
                         </div>
                     </div>
@@ -30,11 +30,11 @@
                         <h3>NCIP Initiatives <div class="underline"><span></span></div></h3>
                         <div class="menu-widget-footer-container">
                             <ul id="menu-widget-footer-3" class="menu">
-                                <li class="menu-item"><a href="#">IP Rights</a></li>
-                                <li class="menu-item"><a href="#">Ancestral Domains</a></li>
-                                <li class="menu-item"><a href="#">Development Projects</a></li>
-                                <li class="menu-item"><a href="#">Education Programs</a></li>
-                                <li class="menu-item"><a href="#">Partnerships</a></li>
+                                <li class="menu-item"><a href="program.php.#rights">IP Rights</a></li>
+                                <li class="menu-item"><a href="program.php.#ancestral">Ancestral Domains</a></li>
+                                <li class="menu-item"><a href="program.php.#development">Development Projects</a></li>
+                                <li class="menu-item"><a href="program.php.#education">Education Programs</a></li>
+                                <li class="menu-item"><a href="index.php.#partnerships">Partnerships</a></li>
                             </ul>
                         </div>
                     </div>

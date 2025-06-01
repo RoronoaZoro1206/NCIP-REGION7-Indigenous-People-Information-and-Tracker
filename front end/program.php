@@ -377,7 +377,7 @@
 
                                                     <p>
                                                         <a href="program-detail.php?service=rights">
-                                                            IP Rights Advocacy and Monitoring of Treaty...
+                                                            IP Rights Advocacy and Monitoring of Treaty
                                                         </a>
                                                     </p>
                                                 </div>

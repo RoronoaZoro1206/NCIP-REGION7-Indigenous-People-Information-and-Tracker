@@ -32,6 +32,8 @@
     <link rel='stylesheet' id='custom-css'  href='css/custom.css' type='text/css' media='all' />
     <link rel='stylesheet' id='featurestab-css'  href='css/featurestab.css' type='text/css' media='all' />
     <link rel='stylesheet' id='fontawesome-css'  href='css/font-awesome.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='usquare-css' href='sliders/usquare/css/frontend/usquare_style.css' type='text/css' media='all' />
+    <link rel='stylesheet' id='rotating-css' href='css/usquare.css' type='text/css' media='all' />
 
     <style type="text/css">
         body { background-color: #ffffff; background-image: url('images/bg-pattern.png'); background-repeat: repeat; background-position: top left; background-attachment: scroll; }
@@ -762,7 +764,7 @@
     
     <!-- START SLOGAN -->
     <div class="slogan" style="margin-bottom: 20px;">
-        <h2>CHAIRPERSON &amp; COMMISSIONERS</h2>
+        <h2>CHAIRPERSON</h2>
     </div>
     <!-- END SLOGAN  -->
 
@@ -849,6 +851,48 @@
                                     </div>
                                 </div>
 
+                            </div>
+
+                        <script>
+                            jQuery(document).ready(function ($) {
+                                $('.accordion-title').click(function () {
+                                    if (!$(this).hasClass('active')) {
+                                        $('.accordion-title').removeClass('active').find(':first-child').addClass('plus').text("+").removeClass('minus');
+                                        $('.accordion-item').slideUp();
+
+                                        $(this).toggleClass('active')
+                                                .find(':first-child').removeClass('plus').addClass('minus').text("-").parent().next().slideToggle();
+                                    }
+                                }).filter(':first').click();
+                            });
+                        </script>
+
+                        </div>
+                    </div>
+                    <!-- END CONTENT -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END PRIMARY -->
+    
+    <!-- START SLOGAN -->
+    <div class="slogan" style="margin-bottom: 20px;">
+        <h2>COMMISSIONERS</h2>
+    </div>
+    <!-- END SLOGAN  -->
+
+    <!-- START PRIMARY -->
+    <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; width: 100%;"> 
+        <div id="primary" style="width: 100%; max-width: 960px;">
+            <div class="container group">
+                <div class="row">
+                    <!-- START CONTENT -->
+                    <div id="content-page" class="span9 content group">
+                        <div class="page type-page status-publish group">
+
+                            <div class="accordion-container">
+                                
                                 <div class="accordion-wrapper row">
                                     <div class="accordion-title span9">
                                         <div class="plus">+</div>
@@ -1235,7 +1279,7 @@
 
     <!-- START SLOGAN -->
     <div class="slogan" style="margin-bottom: 20px; margin-top: -30px;">
-        <h2>EXECUTIVE DIRECTOR &amp; BUREUA DIRECTORS</h2>
+        <h2>REGION 6/7 REGIONAL DIRECTOR</h2>
     </div>
     <!-- END SLOGAN  -->  
      
@@ -1249,1059 +1293,6 @@
                         <div class="page type-page status-publish group">
 
                             <div class="accordion-container">
-
-                                <div class="accordion-wrapper row">
-                                    <div class="accordion-title span9">
-                                        <div class="plus">+</div>
-                                        <h4>Mervyn H. Espadero</h4>
-                                    </div>
-                                    <div class="accordion-item span9">
-                                        <div class="row">
-                                            <div class="span2">
-                                                <div class="accordion-item-thumb">
-                                                    <img src="images/pages/Mervyn H. Espadero.jpg" alt="Mervyn H. Espadero"/>
-                                                </div>
-                                            </div>
-                                            <!-- end span3 -->
-                                            <div class="span7">
-                                                <div class="accordion-item-content">
-                                                    <p style="line-height: 1.8;">
-                                                        <i class="fas fa-map-marker-alt" style="color: #d9534f; margin-right: 8px;"></i>
-                                                        6th and 7th flr. Sunnymede IT Center, 1614 Quezon Avenue, Brgy. South Triangle, Quezon City<br>
-                                                    
-                                                        <i class="fas fa-phone" style="color: #5cb85c; margin-right: 8px;"></i>
-                                                        (02) 8575-1200<br>
-                                                    
-                                                        <i class="fas fa-envelope" style="color: #0275d8; margin-right: 8px;"></i>
-                                                        <a href="mailto:oed@ncip.gov.ph" style="color: #0275d8; text-decoration: none;">
-                                                            oed@ncip.gov.ph
-                                                        </a>
-                                                    </p>
-
-                                                    <div class="meta">
-                                                        <p>
-                                                            <img class="icon" src="images/icons/role.png" alt="role_icon"/>
-                                                            Role: Executive Director
-                                                        </p>
-
-                                                        <div>
-                                                            <div class="social_title">
-                                                                <p>
-                                                                    <img class="icon" src="images/icons/social-meta.png" alt="social_icon"/>
-                                                                    Get in touch:
-                                                                </p>
-                                                            </div>
-                                                            <div class="fade-socials-small facebook-small">
-                                                                <a href="#" class="fade-socials-small facebook-small" title="Facebook" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small rss-small">
-                                                                <a href="#" class="fade-socials-small rss-small" title="Rss" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small twitter-small">
-                                                                <a href="#" class="fade-socials-small twitter-small" title="Twitter" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small google-small">
-                                                                <a href="#" class="fade-socials-small google-small" title="Google" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small linkedin-small">
-                                                                <a href="#" class="fade-socials-small linkedin-small" title="Linkedin" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="socials-default  default">
-                                                                <a href="#" class="socials-default default "></a>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="accordion-wrapper row">
-                                    <div class="accordion-title span9">
-                                        <div class="plus">+</div>
-                                        <h4>Atty. Arthur K. Herman</h4>
-                                    </div>
-                                    <div class="accordion-item span9">
-                                        <div class="row">
-                                            <div class="span2">
-                                                <div class="accordion-item-thumb">
-                                                    <img src="images/pages/Atty. Arthur K. Herman.jpg" alt="Atty. Arthur K. Herman"/>
-                                                </div>
-                                            </div>
-                                            <!-- end span3 -->
-                                            <div class="span7">
-                                                <div class="accordion-item-content">
-                                                    <p style="line-height: 1.8;">
-                                                        <i class="fas fa-building" style="color: #6c757d; margin-right: 8px;"></i>
-                                                        Ancestral Domains Office (ADO)<br>
-
-                                                        <i class="fas fa-map-marker-alt" style="color: #d9534f; margin-right: 8px;"></i>
-                                                        6th and 7th flr. Sunnymede IT Center, 1614 Quezon Avenue, Brgy. South Triangle, Quezon City<br>
-                                                    
-                                                        <i class="fas fa-phone" style="color: #5cb85c; margin-right: 8px;"></i>
-                                                        (02) 8575-1200<br>
-                                                    
-                                                        <i class="fas fa-envelope" style="color: #0275d8; margin-right: 8px;"></i>
-                                                        <a href="mailto:ado@ncip.gov.ph" style="color: #0275d8; text-decoration: none;">
-                                                            ado@ncip.gov.ph
-                                                        </a>
-                                                    </p>
-                                                    
-
-                                                    <div class="meta">
-                                                        <p>
-                                                            <img class="icon" src="images/icons/role.png" alt="role_icon"/>
-                                                            Role: Director IV
-                                                        </p>
-
-                                                        <div>
-                                                            <div class="social_title">
-                                                                <p>
-                                                                    <img class="icon" src="images/icons/social-meta.png" alt="social_icon"/>
-                                                                    Get in touch:
-                                                                </p>
-                                                            </div>
-                                                            <div class="fade-socials-small facebook-small">
-                                                                <a href="#" class="fade-socials-small facebook-small" title="Facebook" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small rss-small">
-                                                                <a href="#" class="fade-socials-small rss-small" title="Rss" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small twitter-small">
-                                                                <a href="#" class="fade-socials-small twitter-small" title="Twitter" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small google-small">
-                                                                <a href="#" class="fade-socials-small google-small" title="Google" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small linkedin-small">
-                                                                <a href="#" class="fade-socials-small linkedin-small" title="Linkedin" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="socials-default  default">
-                                                                <a href="#" class="socials-default default "></a>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="accordion-wrapper row">
-                                    <div class="accordion-title span9">
-                                        <div class="plus">+</div>
-                                        <h4>Atty. Harriet N. Abyadang</h4>
-                                    </div>
-                                    <div class="accordion-item span9">
-                                        <div class="row">
-                                            <div class="span2">
-                                                <div class="accordion-item-thumb">
-                                                    <img src="images/pages/Atty. Harriet N. Abyadang.jpg" alt="Atty. Harriet N. Abyadang"/>
-                                                </div>
-                                            </div>
-                                            <!-- end span3 -->
-                                            <div class="span7">
-                                                <div class="accordion-item-content">
-                                                    <p style="line-height: 1.8;">
-                                                        <i class="fas fa-building" style="color: #6c757d; margin-right: 8px;"></i>
-                                                        Office on Policy, Planning, and Research (OPPR)<br>
-
-                                                        <i class="fas fa-map-marker-alt" style="color: #d9534f; margin-right: 8px;"></i>
-                                                        6th and 7th flr. Sunnymede IT Center, 1614 Quezon Avenue, Brgy. South Triangle, Quezon City<br>
-                                                    
-                                                        <i class="fas fa-phone" style="color: #5cb85c; margin-right: 8px;"></i>
-                                                        (072) 609-09-94<br>
-                                                    
-                                                        <i class="fas fa-envelope" style="color: #0275d8; margin-right: 8px;"></i>
-                                                        <a href="mailto:oppr@ncip.gov.ph" style="color: #0275d8; text-decoration: none;">
-                                                            oppr@ncip.gov.ph
-                                                        </a>
-                                                    </p>
-                                                    
-
-                                                    <div class="meta">
-                                                        <p>
-                                                            <img class="icon" src="images/icons/role.png" alt="role_icon"/>
-                                                            Role: Director IV
-                                                        </p>
-
-                                                        <div>
-                                                            <div class="social_title">
-                                                                <p>
-                                                                    <img class="icon" src="images/icons/social-meta.png" alt="social_icon"/>
-                                                                    Get in touch:
-                                                                </p>
-                                                            </div>
-                                                            <div class="fade-socials-small facebook-small">
-                                                                <a href="#" class="fade-socials-small facebook-small" title="Facebook" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small rss-small">
-                                                                <a href="#" class="fade-socials-small rss-small" title="Rss" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small twitter-small">
-                                                                <a href="#" class="fade-socials-small twitter-small" title="Twitter" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small google-small">
-                                                                <a href="#" class="fade-socials-small google-small" title="Google" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small linkedin-small">
-                                                                <a href="#" class="fade-socials-small linkedin-small" title="Linkedin" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="socials-default  default">
-                                                                <a href="#" class="socials-default default "></a>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="accordion-wrapper row">
-                                    <div class="accordion-title span9">
-                                        <div class="plus">+</div>
-                                        <h4>Atty. Catherine B. Gayagay-Apaling</h4>
-                                    </div>
-                                    <div class="accordion-item span9">
-                                        <div class="row">
-                                            <div class="span2">
-                                                <div class="accordion-item-thumb">
-                                                    <img src="images/pages/Atty. Catherine B. Gayagay-Apaling.jpg" alt="Atty. Catherine B. Gayagay-Apaling"/>
-                                                </div>
-                                            </div>
-                                            <!-- end span3 -->
-                                            <div class="span7">
-                                                <div class="accordion-item-content">
-                                                    <p style="line-height: 1.8;">
-                                                        <i class="fas fa-building" style="color: #6c757d; margin-right: 8px;"></i>
-                                                        Office on Empowerment and Human Rights (OEHR)<br>
-
-                                                        <i class="fas fa-map-marker-alt" style="color: #d9534f; margin-right: 8px;"></i>
-                                                        6th and 7th flr. Sunnymede IT Center, 1614 Quezon Avenue, Brgy. South Triangle, Quezon City<br>
-                                                    
-                                                        <i class="fas fa-phone" style="color: #5cb85c; margin-right: 8px;"></i>
-                                                        (02) 8575-1200<br>
-                                                    
-                                                        <i class="fas fa-envelope" style="color: #0275d8; margin-right: 8px;"></i>
-                                                        <a href="mailto:oehr@ncip.gov.ph" style="color: #0275d8; text-decoration: none;">
-                                                            oehr@ncip.gov.ph
-                                                        </a>
-                                                    </p>
-                                                    
-
-                                                    <div class="meta">
-                                                        <p>
-                                                            <img class="icon" src="images/icons/role.png" alt="role_icon"/>
-                                                            Role: Director IV
-                                                        </p>
-
-                                                        <div>
-                                                            <div class="social_title">
-                                                                <p>
-                                                                    <img class="icon" src="images/icons/social-meta.png" alt="social_icon"/>
-                                                                    Get in touch:
-                                                                </p>
-                                                            </div>
-                                                            <div class="fade-socials-small facebook-small">
-                                                                <a href="#" class="fade-socials-small facebook-small" title="Facebook" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small rss-small">
-                                                                <a href="#" class="fade-socials-small rss-small" title="Rss" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small twitter-small">
-                                                                <a href="#" class="fade-socials-small twitter-small" title="Twitter" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small google-small">
-                                                                <a href="#" class="fade-socials-small google-small" title="Google" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small linkedin-small">
-                                                                <a href="#" class="fade-socials-small linkedin-small" title="Linkedin" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="socials-default  default">
-                                                                <a href="#" class="socials-default default "></a>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="accordion-wrapper row">
-                                    <div class="accordion-title span9">
-                                        <div class="plus">+</div>
-                                        <h4>Reynaldo A. Dingal</h4>
-                                    </div>
-                                    <div class="accordion-item span9">
-                                        <div class="row">
-                                            <div class="span2">
-                                                <div class="accordion-item-thumb">
-                                                    <img src="images/pages/Reynaldo A. Dingal.jpg" alt="Reynaldo A. Dingal"/>
-                                                </div>
-                                            </div>
-                                            <!-- end span3 -->
-                                            <div class="span7">
-                                                <div class="accordion-item-content">
-                                                    <p style="line-height: 1.8;">
-                                                        <i class="fas fa-building" style="color: #6c757d; margin-right: 8px;"></i>
-                                                        Office on Socio-Economic Services and Special Concerns (OSESSC)<br>
-
-                                                        <i class="fas fa-map-marker-alt" style="color: #d9534f; margin-right: 8px;"></i>
-                                                        6th and 7th flr. Sunnymede IT Center, 1614 Quezon Avenue, Brgy. South Triangle, Quezon City<br>
-                                                    
-                                                        <i class="fas fa-phone" style="color: #5cb85c; margin-right: 8px;"></i>
-                                                        (02) 8575-1200<br>
-                                                    
-                                                        <i class="fas fa-envelope" style="color: #0275d8; margin-right: 8px;"></i>
-                                                        <a href="mailto:osessc@ncip.gov.ph" style="color: #0275d8; text-decoration: none;">
-                                                            osessc@ncip.gov.ph
-                                                        </a>
-                                                    </p>
-                                                    
-
-                                                    <div class="meta">
-                                                        <p>
-                                                            <img class="icon" src="images/icons/role.png" alt="role_icon"/>
-                                                            Role: Director IV
-                                                        </p>
-
-                                                        <div>
-                                                            <div class="social_title">
-                                                                <p>
-                                                                    <img class="icon" src="images/icons/social-meta.png" alt="social_icon"/>
-                                                                    Get in touch:
-                                                                </p>
-                                                            </div>
-                                                            <div class="fade-socials-small facebook-small">
-                                                                <a href="#" class="fade-socials-small facebook-small" title="Facebook" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small rss-small">
-                                                                <a href="#" class="fade-socials-small rss-small" title="Rss" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small twitter-small">
-                                                                <a href="#" class="fade-socials-small twitter-small" title="Twitter" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small google-small">
-                                                                <a href="#" class="fade-socials-small google-small" title="Google" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small linkedin-small">
-                                                                <a href="#" class="fade-socials-small linkedin-small" title="Linkedin" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="socials-default  default">
-                                                                <a href="#" class="socials-default default "></a>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="accordion-wrapper row">
-                                    <div class="accordion-title span9">
-                                        <div class="plus">+</div>
-                                        <h4>Atty. Brain S. Masweng</h4>
-                                    </div>
-                                    <div class="accordion-item span9">
-                                        <div class="row">
-                                            <div class="span2">
-                                                <div class="accordion-item-thumb">
-                                                    <img src="images/pages/Atty. Brain S. Masweng.jpg" alt="Atty. Brain S. Masweng"/>
-                                                </div>
-                                            </div>
-                                            <!-- end span3 -->
-                                            <div class="span7">
-                                                <div class="accordion-item-content">
-                                                    <p style="line-height: 1.8;">
-                                                        <i class="fas fa-building" style="color: #6c757d; margin-right: 8px;"></i>
-                                                        Legal Affairs Office (LAO)<br>
-
-                                                        <i class="fas fa-map-marker-alt" style="color: #d9534f; margin-right: 8px;"></i>
-                                                        6th and 7th flr. Sunnymede IT Center, 1614 Quezon Avenue, Brgy. South Triangle, Quezon City<br>
-                                                    
-                                                        <i class="fas fa-phone" style="color: #5cb85c; margin-right: 8px;"></i>
-                                                        (02) 8575-1200<br>
-                                                    
-                                                        <i class="fas fa-envelope" style="color: #0275d8; margin-right: 8px;"></i>
-                                                        <a href="mailto:lao@ncip.gov.ph" style="color: #0275d8; text-decoration: none;">
-                                                            lao@ncip.gov.ph
-                                                        </a>
-                                                    </p>
-                                                    
-
-                                                    <div class="meta">
-                                                        <p>
-                                                            <img class="icon" src="images/icons/role.png" alt="role_icon"/>
-                                                            Role: Officer-in-Charge
-                                                        </p>
-
-                                                        <div>
-                                                            <div class="social_title">
-                                                                <p>
-                                                                    <img class="icon" src="images/icons/social-meta.png" alt="social_icon"/>
-                                                                    Get in touch:
-                                                                </p>
-                                                            </div>
-                                                            <div class="fade-socials-small facebook-small">
-                                                                <a href="#" class="fade-socials-small facebook-small" title="Facebook" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small rss-small">
-                                                                <a href="#" class="fade-socials-small rss-small" title="Rss" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small twitter-small">
-                                                                <a href="#" class="fade-socials-small twitter-small" title="Twitter" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small google-small">
-                                                                <a href="#" class="fade-socials-small google-small" title="Google" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small linkedin-small">
-                                                                <a href="#" class="fade-socials-small linkedin-small" title="Linkedin" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="socials-default  default">
-                                                                <a href="#" class="socials-default default "></a>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="accordion-wrapper row">
-                                    <div class="accordion-title span9">
-                                        <div class="plus">+</div>
-                                        <h4>Dr. Carlos P. Buasen</h4>
-                                    </div>
-                                    <div class="accordion-item span9">
-                                        <div class="row">
-                                            <div class="span2">
-                                                <div class="accordion-item-thumb">
-                                                    <img src="images/pages/Dr. Carlos P. Buasen.jpg" alt="Dr. Carlos P. Buasen"/>
-                                                </div>
-                                            </div>
-                                            <!-- end span3 -->
-                                            <div class="span7">
-                                                <div class="accordion-item-content">
-                                                    <p style="line-height: 1.8;">
-                                                        <i class="fas fa-building" style="color: #6c757d; margin-right: 8px;"></i>
-                                                        Office On Education, Culture, and Health (OECH)<br>
-
-                                                        <i class="fas fa-map-marker-alt" style="color: #d9534f; margin-right: 8px;"></i>
-                                                        6th and 7th flr. Sunnymede IT Center, 1614 Quezon Avenue, Brgy. South Triangle, Quezon City<br>
-                                                    
-                                                        <i class="fas fa-phone" style="color: #5cb85c; margin-right: 8px;"></i>
-                                                        (02) 8575-1200<br>
-                                                    
-                                                        <i class="fas fa-envelope" style="color: #0275d8; margin-right: 8px;"></i>
-                                                        <a href="mailto:oech@ncip.gov.ph" style="color: #0275d8; text-decoration: none;">
-                                                            oech@ncip.gov.ph
-                                                        </a>
-                                                    </p>
-                                                    
-
-                                                    <div class="meta">
-                                                        <p>
-                                                            <img class="icon" src="images/icons/role.png" alt="role_icon"/>
-                                                            Role: Director IV
-                                                        </p>
-
-                                                        <div>
-                                                            <div class="social_title">
-                                                                <p>
-                                                                    <img class="icon" src="images/icons/social-meta.png" alt="social_icon"/>
-                                                                    Get in touch:
-                                                                </p>
-                                                            </div>
-                                                            <div class="fade-socials-small facebook-small">
-                                                                <a href="#" class="fade-socials-small facebook-small" title="Facebook" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small rss-small">
-                                                                <a href="#" class="fade-socials-small rss-small" title="Rss" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small twitter-small">
-                                                                <a href="#" class="fade-socials-small twitter-small" title="Twitter" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small google-small">
-                                                                <a href="#" class="fade-socials-small google-small" title="Google" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small linkedin-small">
-                                                                <a href="#" class="fade-socials-small linkedin-small" title="Linkedin" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="socials-default  default">
-                                                                <a href="#" class="socials-default default "></a>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="accordion-wrapper row">
-                                    <div class="accordion-title span9">
-                                        <div class="plus">+</div>
-                                        <h4>Dahlialyn D. Dait-cawed</h4>
-                                    </div>
-                                    <div class="accordion-item span9">
-                                        <div class="row">
-                                            <div class="span2">
-                                                <div class="accordion-item-thumb">
-                                                    <img src="images/pages/Dahlialyn D. Dait-cawed.jpg" alt="Dahlialyn D. Dait-cawed"/>
-                                                </div>
-                                            </div>
-                                            <!-- end span3 -->
-                                            <div class="span7">
-                                                <div class="accordion-item-content">
-                                                    <p style="line-height: 1.8;">
-                                                        <i class="fas fa-building" style="color: #6c757d; margin-right: 8px;"></i>
-                                                        Foreign Assisted Programs and International Relations Office (FAPIRO)<br>
-
-                                                        <i class="fas fa-map-marker-alt" style="color: #d9534f; margin-right: 8px;"></i>
-                                                        6th and 7th flr. Sunnymede IT Center, 1614 Quezon Avenue, Brgy. South Triangle, Quezon City<br>
-                                                    
-                                                        <i class="fas fa-phone" style="color: #5cb85c; margin-right: 8px;"></i>
-                                                        (02) 8575-1200<br>
-                                                    
-                                                        <i class="fas fa-envelope" style="color: #0275d8; margin-right: 8px;"></i>
-                                                        <a href="mailto:fapiro@ncip.gov.ph" style="color: #0275d8; text-decoration: none;">
-                                                            fapiro@ncip.gov.ph
-                                                        </a>
-                                                    </p>
-                                                    
-
-                                                    <div class="meta">
-                                                        <p>
-                                                            <img class="icon" src="images/icons/role.png" alt="role_icon"/>
-                                                            Role: Director IV
-                                                        </p>
-
-                                                        <div>
-                                                            <div class="social_title">
-                                                                <p>
-                                                                    <img class="icon" src="images/icons/social-meta.png" alt="social_icon"/>
-                                                                    Get in touch:
-                                                                </p>
-                                                            </div>
-                                                            <div class="fade-socials-small facebook-small">
-                                                                <a href="#" class="fade-socials-small facebook-small" title="Facebook" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small rss-small">
-                                                                <a href="#" class="fade-socials-small rss-small" title="Rss" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small twitter-small">
-                                                                <a href="#" class="fade-socials-small twitter-small" title="Twitter" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small google-small">
-                                                                <a href="#" class="fade-socials-small google-small" title="Google" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small linkedin-small">
-                                                                <a href="#" class="fade-socials-small linkedin-small" title="Linkedin" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="socials-default  default">
-                                                                <a href="#" class="socials-default default "></a>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        <script>
-                            jQuery(document).ready(function ($) {
-                                $('.accordion-title').click(function () {
-                                    if (!$(this).hasClass('active')) {
-                                        $('.accordion-title').removeClass('active').find(':first-child').addClass('plus').text("+").removeClass('minus');
-                                        $('.accordion-item').slideUp();
-
-                                        $(this).toggleClass('active')
-                                                .find(':first-child').removeClass('plus').addClass('minus').text("-").parent().next().slideToggle();
-                                    }
-                                }).filter(':first').click();
-                            });
-                        </script>
-
-                        </div>
-                    </div>
-                    <!-- END CONTENT -->
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- END PRIMARY -->
-
-    <!-- START SLOGAN -->
-    <div class="slogan" style="margin-bottom: 20px; margin-top: -30px;">
-        <h2>REGIONAL DIRECTORS</h2>
-    </div>
-    <!-- END SLOGAN  -->  
-     
-    <!-- START PRIMARY -->
-    <div style="display: flex; justify-content: center; align-items: center; flex-direction: column; width: 100%;"> 
-        <div id="primary" style="width: 100%; max-width: 960px;">
-            <div class="container group">
-                <div class="row">
-                    <!-- START CONTENT -->
-                    <div id="content-page" class="span9 content group">
-                        <div class="page type-page status-publish group">
-
-                            <div class="accordion-container">
-
-                                <div class="accordion-wrapper row">
-                                    <div class="accordion-title span9">
-                                        <div class="plus">+</div>
-                                        <h4>Atty. Roland P. Calde</h4>
-                                    </div>
-                                    <div class="accordion-item span9">
-                                        <div class="row">
-                                            <div class="span2">
-                                                <div class="accordion-item-thumb">
-                                                    <img src="images/pages/Atty. Roland P. Calde.jpg" alt="Atty. Roland P. Calde"/>
-                                                </div>
-                                            </div>
-                                            <!-- end span3 -->
-                                            <div class="span7">
-                                                <div class="accordion-item-content">
-                                                    <p style="line-height: 1.8;">
-                                                        <i class="fas fa-map" style="color: #6c757d; margin-right: 8px;"></i>
-                                                        Cordillera Administrative Region (CAR)<br>
-
-                                                        <i class="fas fa-map-marker-alt" style="color: #d9534f; margin-right: 8px;"></i>
-                                                        3rd Floor, Lyman Ogilby Centrum, 358 Magsaysay Ave. Baguio City<br>
-                                                    
-                                                        <i class="fas fa-phone" style="color: #5cb85c; margin-right: 8px;"></i>
-                                                        (02) 875 1200 Local 1400<br>
-                                                    
-                                                        <i class="fas fa-envelope" style="color: #0275d8; margin-right: 8px;"></i>
-                                                        <a href="mailto:car@ncip.gov.ph" style="color: #0275d8; text-decoration: none;">
-                                                            car@ncip.gov.ph
-                                                        </a>
-                                                    </p>
-
-                                                    <div class="meta">
-                                                        <p>
-                                                            <img class="icon" src="images/icons/role.png" alt="role_icon"/>
-                                                            Role: Director IV
-                                                        </p>
-
-                                                        <div>
-                                                            <div class="social_title">
-                                                                <p>
-                                                                    <img class="icon" src="images/icons/social-meta.png" alt="social_icon"/>
-                                                                    Get in touch:
-                                                                </p>
-                                                            </div>
-                                                            <div class="fade-socials-small facebook-small">
-                                                                <a href="#" class="fade-socials-small facebook-small" title="Facebook" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small rss-small">
-                                                                <a href="#" class="fade-socials-small rss-small" title="Rss" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small twitter-small">
-                                                                <a href="#" class="fade-socials-small twitter-small" title="Twitter" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small google-small">
-                                                                <a href="#" class="fade-socials-small google-small" title="Google" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small linkedin-small">
-                                                                <a href="#" class="fade-socials-small linkedin-small" title="Linkedin" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="socials-default  default">
-                                                                <a href="#" class="socials-default default "></a>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="accordion-wrapper row">
-                                    <div class="accordion-title span9">
-                                        <div class="plus">+</div>
-                                        <h4>Atty. Marvin C. Biligan</h4>
-                                    </div>
-                                    <div class="accordion-item span9">
-                                        <div class="row">
-                                            <div class="span2">
-                                                <div class="accordion-item-thumb">
-                                                    <img src="images/pages/Atty. Marvin C. Biligan.jpg" alt="Atty. Marvin C. Biligan"/>
-                                                </div>
-                                            </div>
-                                            <!-- end span3 -->
-                                            <div class="span7">
-                                                <div class="accordion-item-content">
-                                                    <p style="line-height: 1.8;">
-                                                        <i class="fas fa-map" style="color: #6c757d; margin-right: 8px;"></i>
-                                                        Region I<br>
-
-                                                        <i class="fas fa-map-marker-alt" style="color: #d9534f; margin-right: 8px;"></i>
-                                                        2nd & 3rd Floor, Braganza Building, Quezon Avenue, Sevilla, San Fernando City<br>
-                                                    
-                                                        <i class="fas fa-phone" style="color: #5cb85c; margin-right: 8px;"></i>
-                                                        (072) 609-09-94<br>
-                                                    
-                                                        <i class="fas fa-envelope" style="color: #0275d8; margin-right: 8px;"></i>
-                                                        <a href="mailto:region1@ncip.gov.ph" style="color: #0275d8; text-decoration: none;">
-                                                            region1@ncip.gov.ph
-                                                        </a>
-                                                    </p>
-
-                                                    <div class="meta">
-                                                        <p>
-                                                            <img class="icon" src="images/icons/role.png" alt="role_icon"/>
-                                                            Role: Officer-in-Charge
-                                                        </p>
-
-                                                        <div>
-                                                            <div class="social_title">
-                                                                <p>
-                                                                    <img class="icon" src="images/icons/social-meta.png" alt="social_icon"/>
-                                                                    Get in touch:
-                                                                </p>
-                                                            </div>
-                                                            <div class="fade-socials-small facebook-small">
-                                                                <a href="#" class="fade-socials-small facebook-small" title="Facebook" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small rss-small">
-                                                                <a href="#" class="fade-socials-small rss-small" title="Rss" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small twitter-small">
-                                                                <a href="#" class="fade-socials-small twitter-small" title="Twitter" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small google-small">
-                                                                <a href="#" class="fade-socials-small google-small" title="Google" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small linkedin-small">
-                                                                <a href="#" class="fade-socials-small linkedin-small" title="Linkedin" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="socials-default  default">
-                                                                <a href="#" class="socials-default default "></a>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="accordion-wrapper row">
-                                    <div class="accordion-title span9">
-                                        <div class="plus">+</div>
-                                        <h4>Atty. Ronaldo M. Daquioag</h4>
-                                    </div>
-                                    <div class="accordion-item span9">
-                                        <div class="row">
-                                            <div class="span2">
-                                                <div class="accordion-item-thumb">
-                                                    <img src="images/pages/Atty. Ronaldo M. Daquioag.jpg" alt="Atty. Ronaldo M. Daquioag"/>
-                                                </div>
-                                            </div>
-                                            <!-- end span3 -->
-                                            <div class="span7">
-                                                <div class="accordion-item-content">
-                                                    <p style="line-height: 1.8;">
-                                                        <i class="fas fa-map" style="color: #6c757d; margin-right: 8px;"></i>
-                                                        Region II<br>
-
-                                                        <i class="fas fa-map-marker-alt" style="color: #d9534f; margin-right: 8px;"></i>
-                                                        Dalan na Paccorofun,Carig Sur, Tuguegarao City<br>
-                                                    
-                                                        <i class="fas fa-phone" style="color: #5cb85c; margin-right: 8px;"></i>
-                                                        (02) 875 1200 Local 0200<br>
-                                                    
-                                                        <i class="fas fa-envelope" style="color: #0275d8; margin-right: 8px;"></i>
-                                                        <a href="mailto:region2@ncip.gov.ph" style="color: #0275d8; text-decoration: none;">
-                                                            region2@ncip.gov.ph
-                                                        </a>
-                                                    </p>
-
-                                                    <div class="meta">
-                                                        <p>
-                                                            <img class="icon" src="images/icons/role.png" alt="role_icon"/>
-                                                            Role: Director IV
-                                                        </p>
-
-                                                        <div>
-                                                            <div class="social_title">
-                                                                <p>
-                                                                    <img class="icon" src="images/icons/social-meta.png" alt="social_icon"/>
-                                                                    Get in touch:
-                                                                </p>
-                                                            </div>
-                                                            <div class="fade-socials-small facebook-small">
-                                                                <a href="#" class="fade-socials-small facebook-small" title="Facebook" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small rss-small">
-                                                                <a href="#" class="fade-socials-small rss-small" title="Rss" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small twitter-small">
-                                                                <a href="#" class="fade-socials-small twitter-small" title="Twitter" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small google-small">
-                                                                <a href="#" class="fade-socials-small google-small" title="Google" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small linkedin-small">
-                                                                <a href="#" class="fade-socials-small linkedin-small" title="Linkedin" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="socials-default  default">
-                                                                <a href="#" class="socials-default default "></a>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="accordion-wrapper row">
-                                    <div class="accordion-title span9">
-                                        <div class="plus">+</div>
-                                        <h4>Atty. Atanacio D. Addog</h4>
-                                    </div>
-                                    <div class="accordion-item span9">
-                                        <div class="row">
-                                            <div class="span2">
-                                                <div class="accordion-item-thumb">
-                                                    <img src="images/pages/Atty. Atanacio D. Addog.jpg" alt="Atty. Atanacio D. Addog"/>
-                                                </div>
-                                            </div>
-                                            <!-- end span3 -->
-                                            <div class="span7">
-                                                <div class="accordion-item-content">
-                                                    <p style="line-height: 1.8;">
-                                                        <i class="fas fa-map" style="color: #6c757d; margin-right: 8px;"></i>
-                                                        Region III<br>
-
-                                                        <i class="fas fa-map-marker-alt" style="color: #d9534f; margin-right: 8px;"></i>
-                                                        3rd Flr. KL Building, Consunji St., Sto. Rosario, City of San Fernando, Pampanga, 2000<br>
-                                                    
-                                                        <i class="fas fa-phone" style="color: #5cb85c; margin-right: 8px;"></i>
-                                                        (045) 961- 59- 56<br>
-                                                    
-                                                        <i class="fas fa-envelope" style="color: #0275d8; margin-right: 8px;"></i>
-                                                        <a href="mailto:region3@ncip.gov.ph" style="color: #0275d8; text-decoration: none;">
-                                                            region3@ncip.gov.ph
-                                                        </a>
-                                                    </p>
-
-                                                    <div class="meta">
-                                                        <p>
-                                                            <img class="icon" src="images/icons/role.png" alt="role_icon"/>
-                                                            Role: Director IV
-                                                        </p>
-
-                                                        <div>
-                                                            <div class="social_title">
-                                                                <p>
-                                                                    <img class="icon" src="images/icons/social-meta.png" alt="social_icon"/>
-                                                                    Get in touch:
-                                                                </p>
-                                                            </div>
-                                                            <div class="fade-socials-small facebook-small">
-                                                                <a href="#" class="fade-socials-small facebook-small" title="Facebook" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small rss-small">
-                                                                <a href="#" class="fade-socials-small rss-small" title="Rss" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small twitter-small">
-                                                                <a href="#" class="fade-socials-small twitter-small" title="Twitter" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small google-small">
-                                                                <a href="#" class="fade-socials-small google-small" title="Google" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small linkedin-small">
-                                                                <a href="#" class="fade-socials-small linkedin-small" title="Linkedin" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="socials-default  default">
-                                                                <a href="#" class="socials-default default "></a>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="accordion-wrapper row">
-                                    <div class="accordion-title span9">
-                                        <div class="plus">+</div>
-                                        <h4>Atty. Josefina S. Rodriguez-Agusti</h4>
-                                    </div>
-                                    <div class="accordion-item span9">
-                                        <div class="row">
-                                            <div class="span2">
-                                                <div class="accordion-item-thumb">
-                                                    <img src="images/pages/Atty. Josefina S. Rodriguez-Agusti.jpg" alt="Atty. Josefina S. Rodriguez-Agustig"/>
-                                                </div>
-                                            </div>
-                                            <!-- end span3 -->
-                                            <div class="span7">
-                                                <div class="accordion-item-content">
-                                                    <p style="line-height: 1.8;">
-                                                        <i class="fas fa-map" style="color: #6c757d; margin-right: 8px;"></i>
-                                                        Region IV-A<br>
-
-                                                        <i class="fas fa-map-marker-alt" style="color: #d9534f; margin-right: 8px;"></i>
-                                                        3rd Flr, 574 Argo Bldg., EDSA cor. P. Tuazon Avenue, Quezon City<br>
-                                                    
-                                                        <i class="fas fa-phone" style="color: #5cb85c; margin-right: 8px;"></i>
-                                                        (045) 961- 59- 56<br>
-                                                    
-                                                        <i class="fas fa-envelope" style="color: #0275d8; margin-right: 8px;"></i>
-                                                        <a href="mailto:region4a@ncip.gov.ph" style="color: #0275d8; text-decoration: none;">
-                                                            region4a@ncip.gov.ph
-                                                        </a>
-                                                    </p>
-
-                                                    <div class="meta">
-                                                        <p>
-                                                            <img class="icon" src="images/icons/role.png" alt="role_icon"/>
-                                                            Role: Director IV
-                                                        </p>
-
-                                                        <div>
-                                                            <div class="social_title">
-                                                                <p>
-                                                                    <img class="icon" src="images/icons/social-meta.png" alt="social_icon"/>
-                                                                    Get in touch:
-                                                                </p>
-                                                            </div>
-                                                            <div class="fade-socials-small facebook-small">
-                                                                <a href="#" class="fade-socials-small facebook-small" title="Facebook" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small rss-small">
-                                                                <a href="#" class="fade-socials-small rss-small" title="Rss" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small twitter-small">
-                                                                <a href="#" class="fade-socials-small twitter-small" title="Twitter" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small google-small">
-                                                                <a href="#" class="fade-socials-small google-small" title="Google" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small linkedin-small">
-                                                                <a href="#" class="fade-socials-small linkedin-small" title="Linkedin" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="socials-default  default">
-                                                                <a href="#" class="socials-default default "></a>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="accordion-wrapper row">
-                                    <div class="accordion-title span9">
-                                        <div class="plus">+</div>
-                                        <h4>Atty. Charo C. Limbo</h4>
-                                    </div>
-                                    <div class="accordion-item span9">
-                                        <div class="row">
-                                            <div class="span2">
-                                                <div class="accordion-item-thumb">
-                                                    <img src="images/pages/Atty. Charo C. Limbo.jpg" alt="Atty. Charo C. Limbo"/>
-                                                </div>
-                                            </div>
-                                            <!-- end span3 -->
-                                            <div class="span7">
-                                                <div class="accordion-item-content">
-                                                    <p style="line-height: 1.8;">
-                                                        <i class="fas fa-map" style="color: #6c757d; margin-right: 8px;"></i>
-                                                        Region V<br>
-
-                                                        <i class="fas fa-map-marker-alt" style="color: #d9534f; margin-right: 8px;"></i>
-                                                        Highway 1 San Nicolas, Iriga City 4431<br>
-                                                    
-                                                        <i class="fas fa-phone" style="color: #5cb85c; margin-right: 8px;"></i>
-                                                        (054) 299-2752 / (054) 299-6167<br>
-                                                    
-                                                        <i class="fas fa-envelope" style="color: #0275d8; margin-right: 8px;"></i>
-                                                        <a href="mailto:region5@ncip.gov.ph" style="color: #0275d8; text-decoration: none;">
-                                                            region5@ncip.gov.ph
-                                                        </a>
-                                                    </p>
-
-                                                    <div class="meta">
-                                                        <p>
-                                                            <img class="icon" src="images/icons/role.png" alt="role_icon"/>
-                                                            Role: Officer-in-Charge
-                                                        </p>
-
-                                                        <div>
-                                                            <div class="social_title">
-                                                                <p>
-                                                                    <img class="icon" src="images/icons/social-meta.png" alt="social_icon"/>
-                                                                    Get in touch:
-                                                                </p>
-                                                            </div>
-                                                            <div class="fade-socials-small facebook-small">
-                                                                <a href="#" class="fade-socials-small facebook-small" title="Facebook" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small rss-small">
-                                                                <a href="#" class="fade-socials-small rss-small" title="Rss" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small twitter-small">
-                                                                <a href="#" class="fade-socials-small twitter-small" title="Twitter" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small google-small">
-                                                                <a href="#" class="fade-socials-small google-small" title="Google" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small linkedin-small">
-                                                                <a href="#" class="fade-socials-small linkedin-small" title="Linkedin" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="socials-default  default">
-                                                                <a href="#" class="socials-default default "></a>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
 
                                 <div class="accordion-wrapper row">
                                     <div class="accordion-title span9">
@@ -2371,364 +1362,10 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                     </div>
                                     </div>
                                 </div>
 
-                                <div class="accordion-wrapper row">
-                                    <div class="accordion-title span9">
-                                        <div class="plus">+</div>
-                                        <h4>Atty. Maribel P. Idiang</h4>
-                                    </div>
-                                    <div class="accordion-item span9">
-                                        <div class="row">
-                                            <div class="span2">
-                                                <div class="accordion-item-thumb">
-                                                    <img src="images/pages/Atty. Maribel P. Idiang.jpg" alt="Atty. Maribel P. Idiang"/>
-                                                </div>
-                                            </div>
-                                            <!-- end span3 -->
-                                            <div class="span7">
-                                                <div class="accordion-item-content">
-                                                    <p style="line-height: 1.8;">
-                                                        <i class="fas fa-map" style="color: #6c757d; margin-right: 8px;"></i>
-                                                        Region IX<br>
-
-                                                        <i class="fas fa-map-marker-alt" style="color: #d9534f; margin-right: 8px;"></i>
-                                                        Raiza Bldg., Rizal Avenue, Lumbia District, Pagadian City, Zamboanga del Sur 7016<br>
-                                                    
-                                                        <i class="fas fa-phone" style="color: #5cb85c; margin-right: 8px;"></i>
-                                                        (062) 353-10-72<br>
-                                                    
-                                                        <i class="fas fa-envelope" style="color: #0275d8; margin-right: 8px;"></i>
-                                                        <a href="mailto:region9@ncip.gov.ph" style="color: #0275d8; text-decoration: none;">
-                                                            region9@ncip.gov.ph
-                                                        </a>
-                                                    </p>
-
-                                                    <div class="meta">
-                                                        <p>
-                                                            <img class="icon" src="images/icons/role.png" alt="role_icon"/>
-                                                            Role: Officer-in-Charge
-                                                        </p>
-
-                                                        <div>
-                                                            <div class="social_title">
-                                                                <p>
-                                                                    <img class="icon" src="images/icons/social-meta.png" alt="social_icon"/>
-                                                                    Get in touch:
-                                                                </p>
-                                                            </div>
-                                                            <div class="fade-socials-small facebook-small">
-                                                                <a href="#" class="fade-socials-small facebook-small" title="Facebook" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small rss-small">
-                                                                <a href="#" class="fade-socials-small rss-small" title="Rss" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small twitter-small">
-                                                                <a href="#" class="fade-socials-small twitter-small" title="Twitter" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small google-small">
-                                                                <a href="#" class="fade-socials-small google-small" title="Google" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small linkedin-small">
-                                                                <a href="#" class="fade-socials-small linkedin-small" title="Linkedin" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="socials-default  default">
-                                                                <a href="#" class="socials-default default "></a>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="accordion-wrapper row">
-                                    <div class="accordion-title span9">
-                                        <div class="plus">+</div>
-                                        <h4>Fundador S. Binahon</h4>
-                                    </div>
-                                    <div class="accordion-item span9">
-                                        <div class="row">
-                                            <div class="span2">
-                                                <div class="accordion-item-thumb">
-                                                    <img src="images/pages/Fundador S. Binahon.jpg" alt="Fundador S. Binahon"/>
-                                                </div>
-                                            </div>
-                                            <!-- end span3 -->
-                                            <div class="span7">
-                                                <div class="accordion-item-content">
-                                                    <p style="line-height: 1.8;">
-                                                        <i class="fas fa-map" style="color: #6c757d; margin-right: 8px;"></i>
-                                                        Region X<br>
-
-                                                        <i class="fas fa-map-marker-alt" style="color: #d9534f; margin-right: 8px;"></i>
-                                                        3rd & 4th flr. Halasan Bldg. cor. Tiano & del Pilar Sts., Cagayan de Oro City<br>
-                                                    
-                                                        <i class="fas fa-phone" style="color: #5cb85c; margin-right: 8px;"></i>
-                                                        (08822) 71-15-00<br>
-                                                    </p>
-
-                                                    <div class="meta">
-                                                        <p>
-                                                            <img class="icon" src="images/icons/role.png" alt="role_icon"/>
-                                                            Role: Officer-in-Charge
-                                                        </p>
-
-                                                        <div>
-                                                            <div class="social_title">
-                                                                <p>
-                                                                    <img class="icon" src="images/icons/social-meta.png" alt="social_icon"/>
-                                                                    Get in touch:
-                                                                </p>
-                                                            </div>
-                                                            <div class="fade-socials-small facebook-small">
-                                                                <a href="#" class="fade-socials-small facebook-small" title="Facebook" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small rss-small">
-                                                                <a href="#" class="fade-socials-small rss-small" title="Rss" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small twitter-small">
-                                                                <a href="#" class="fade-socials-small twitter-small" title="Twitter" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small google-small">
-                                                                <a href="#" class="fade-socials-small google-small" title="Google" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small linkedin-small">
-                                                                <a href="#" class="fade-socials-small linkedin-small" title="Linkedin" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="socials-default  default">
-                                                                <a href="#" class="socials-default default "></a>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="accordion-wrapper row">
-                                    <div class="accordion-title span9">
-                                        <div class="plus">+</div>
-                                        <h4>Atty. Geroncio R. Aguio</h4>
-                                    </div>
-                                    <div class="accordion-item span9">
-                                        <div class="row">
-                                            <div class="span2">
-                                                <div class="accordion-item-thumb">
-                                                    <img src="images/pages/Atty. Geroncio R. Aguio.jpg" alt="Atty. Geroncio R. Aguio"/>
-                                                </div>
-                                            </div>
-                                            <!-- end span3 -->
-                                            <div class="span7">
-                                                <div class="accordion-item-content">
-                                                    <p style="line-height: 1.8;">
-                                                        <i class="fas fa-map" style="color: #6c757d; margin-right: 8px;"></i>
-                                                        Region XI<br>
-
-                                                        <i class="fas fa-map-marker-alt" style="color: #d9534f; margin-right: 8px;"></i>
-                                                        E. Valeroso Bldg., Sandawa Plaza, New Matina, Davao City, 8000<br>
-                                                    
-                                                        <i class="fas fa-phone" style="color: #5cb85c; margin-right: 8px;"></i>
-                                                        (02) 8575 1200 Local 1100<br>
-                                                    
-                                                        <i class="fas fa-envelope" style="color: #0275d8; margin-right: 8px;"></i>
-                                                        <a href="mailto:region11@ncip.gov.ph" style="color: #0275d8; text-decoration: none;">
-                                                            region11@ncip.gov.ph
-                                                        </a>
-                                                    </p>
-
-                                                    <div class="meta">
-                                                        <p>
-                                                            <img class="icon" src="images/icons/role.png" alt="role_icon"/>
-                                                            Role: Director IV
-                                                        </p>
-
-                                                        <div>
-                                                            <div class="social_title">
-                                                                <p>
-                                                                    <img class="icon" src="images/icons/social-meta.png" alt="social_icon"/>
-                                                                    Get in touch:
-                                                                </p>
-                                                            </div>
-                                                            <div class="fade-socials-small facebook-small">
-                                                                <a href="#" class="fade-socials-small facebook-small" title="Facebook" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small rss-small">
-                                                                <a href="#" class="fade-socials-small rss-small" title="Rss" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small twitter-small">
-                                                                <a href="#" class="fade-socials-small twitter-small" title="Twitter" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small google-small">
-                                                                <a href="#" class="fade-socials-small google-small" title="Google" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small linkedin-small">
-                                                                <a href="#" class="fade-socials-small linkedin-small" title="Linkedin" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="socials-default  default">
-                                                                <a href="#" class="socials-default default "></a>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="accordion-wrapper row">
-                                    <div class="accordion-title span9">
-                                        <div class="plus">+</div>
-                                        <h4>Atty. Adolf Ryan S. Lantion</h4>
-                                    </div>
-                                    <div class="accordion-item span9">
-                                        <div class="row">
-                                            <div class="span2">
-                                                <div class="accordion-item-thumb">
-                                                    <img src="images/pages/Atty. Adolf Ryan S. Lantion.jpg" alt="Atty. Adolf Ryan S. Lantion"/>
-                                                </div>
-                                            </div>
-                                            <!-- end span3 -->
-                                            <div class="span7">
-                                                <div class="accordion-item-content">
-                                                    <p style="line-height: 1.8;">
-                                                        <i class="fas fa-map" style="color: #6c757d; margin-right: 8px;"></i>
-                                                        Region XII<br>
-
-                                                        <i class="fas fa-map-marker-alt" style="color: #d9534f; margin-right: 8px;"></i>
-                                                        2nd Floor & 3rd Floor, Jayven Bldg., General Santos Drive, cor. Posadas St., Koronadal City, South Cotabato 9506<br>
-                                                    
-                                                        <i class="fas fa-phone" style="color: #5cb85c; margin-right: 8px;"></i>
-                                                        (02) 8575 1200 Local 1200<br>
-                                                    
-                                                        <i class="fas fa-envelope" style="color: #0275d8; margin-right: 8px;"></i>
-                                                        <a href="mailto:region12@ncip.gov.ph" style="color: #0275d8; text-decoration: none;">
-                                                            region12@ncip.gov.ph
-                                                        </a>
-                                                    </p>
-
-                                                    <div class="meta">
-                                                        <p>
-                                                            <img class="icon" src="images/icons/role.png" alt="role_icon"/>
-                                                            Role: Director IV
-                                                        </p>
-
-                                                        <div>
-                                                            <div class="social_title">
-                                                                <p>
-                                                                    <img class="icon" src="images/icons/social-meta.png" alt="social_icon"/>
-                                                                    Get in touch:
-                                                                </p>
-                                                            </div>
-                                                            <div class="fade-socials-small facebook-small">
-                                                                <a href="#" class="fade-socials-small facebook-small" title="Facebook" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small rss-small">
-                                                                <a href="#" class="fade-socials-small rss-small" title="Rss" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small twitter-small">
-                                                                <a href="#" class="fade-socials-small twitter-small" title="Twitter" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small google-small">
-                                                                <a href="#" class="fade-socials-small google-small" title="Google" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small linkedin-small">
-                                                                <a href="#" class="fade-socials-small linkedin-small" title="Linkedin" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="socials-default  default">
-                                                                <a href="#" class="socials-default default "></a>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="accordion-wrapper row">
-                                    <div class="accordion-title span9">
-                                        <div class="plus">+</div>
-                                        <h4>Ordonio P. Rocero Jr.</h4>
-                                    </div>
-                                    <div class="accordion-item span9">
-                                        <div class="row">
-                                            <div class="span2">
-                                                <div class="accordion-item-thumb">
-                                                    <img src="images/pages/Ordonio P. Rocero Jr..jpg" alt="Ordonio P. Rocero Jr."/>
-                                                </div>
-                                            </div>
-                                            <!-- end span3 -->
-                                            <div class="span7">
-                                                <div class="accordion-item-content">
-                                                    <p style="line-height: 1.8;">
-                                                        <i class="fas fa-map" style="color: #6c757d; margin-right: 8px;"></i>
-                                                        Region XIII<br>
-
-                                                        <i class="fas fa-map-marker-alt" style="color: #d9534f; margin-right: 8px;"></i>
-                                                        First Floor Samping Building., J.C. Aquino, Butuan City<br>
-                                                    
-                                                        <i class="fas fa-phone" style="color: #5cb85c; margin-right: 8px;"></i>
-                                                        (085)226-5116<br>
-                                                    
-                                                        <i class="fas fa-envelope" style="color: #0275d8; margin-right: 8px;"></i>
-                                                        <a href="mailto:region13@ncip.gov.ph" style="color: #0275d8; text-decoration: none;">
-                                                            region13@ncip.gov.ph
-                                                        </a>
-                                                    </p>
-
-                                                    <div class="meta">
-                                                        <p>
-                                                            <img class="icon" src="images/icons/role.png" alt="role_icon"/>
-                                                            Role: Director IV
-                                                        </p>
-
-                                                        <div>
-                                                            <div class="social_title">
-                                                                <p>
-                                                                    <img class="icon" src="images/icons/social-meta.png" alt="social_icon"/>
-                                                                    Get in touch:
-                                                                </p>
-                                                            </div>
-                                                            <div class="fade-socials-small facebook-small">
-                                                                <a href="#" class="fade-socials-small facebook-small" title="Facebook" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small rss-small">
-                                                                <a href="#" class="fade-socials-small rss-small" title="Rss" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small twitter-small">
-                                                                <a href="#" class="fade-socials-small twitter-small" title="Twitter" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small google-small">
-                                                                <a href="#" class="fade-socials-small google-small" title="Google" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="fade-socials-small linkedin-small">
-                                                                <a href="#" class="fade-socials-small linkedin-small" title="Linkedin" style="display: none;"></a>
-                                                            </div>
-                                                            <div class="socials-default  default">
-                                                                <a href="#" class="socials-default default "></a>
-                                                            </div>
-
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
 
                         <script>
@@ -2758,9 +1395,247 @@
     <div class="slogan" style="margin-bottom: 20px; margin-top: -30px;">
         <h2>PROVINCIAL OFFICE EMPLOYEES</h2>
     </div>
-    <!-- END SLOGAN  -->  
+    <!-- END SLOGAN  -->
+     
+    <!-- START PRIMARY -->
+    <div id="primary" class="sidebar-no" style="margin-top: -20px;">
+            <div class="container group">
+                <div class="row">
+                                <!-- START CONTENT -->
+                    <div id="content-page" class="span12 content group">
+                            <div class="page type-page status-publish  group">
 
-    <!-- START FOOTER -->
+                                <div id="2" class="slider slider-266 usquare">
+
+                                    <div class="usquare_module_wrapper usquare_items_3">
+                                        <div class="usquare_module_shade"></div>
+                                        <div class="usquare_block">
+                                            <img src="images/slider/usquare/00110.jpg" class="usquare_square" alt="" style="background-color: transparent; width: 195px; height: 195px;"/>
+
+                                            <div class="usquare_square" style="background-color: transparent; width: 195px; height: 195px;">
+                                                <div class="usquare_square_text_wrapper">
+                                                    <img src="sliders/usquare/images/arrow-dark.png" class="usquare_arrow" alt="arrow">
+
+                                                    <div class="clear"></div>
+                                                    <h2>JOHN DOE</h2>
+                                                    <span>graphic designer / illustrator</span>
+
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <!-- usquare_square_wrapper -->
+                                            </div>
+                                            <!--div usquare_square -->
+                                            <div class="usquare_block_extended" style="background-color: #fff">
+                                                <a href="#" class="close">
+                                                    <img src="sliders/usquare/images/close.png" alt="close"/>
+                                                </a>
+                                                <ul class="social_background"></ul>
+                                                <div class="clear"></div>
+                                                <!--span class="bold">info:</span-->
+                                                <div class="usquare_about">
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec magna lacus.
+                                                    Sed sed mi est. Nulla in tristique tortor. Curabitur ipsum orci, bibendum in
+                                                    interdum et, congue
+                                                    viverra nisl. In sit amet dui mauris, vel hendrerit eros. Nunc scelerisque
+                                                    pellentesque magna, et
+                                                    tempus massa sagittis at.
+                                                </div>
+                                            </div>
+                                            <!-- usquare_block_extended -->
+                                        </div>
+
+                                        <div class="usquare_block">
+                                            <img src="images/slider/usquare/00213.jpg" class="usquare_square" alt="" style="background-color: transparent; width: 195px; height: 195px;"/>
+
+                                            <div class="usquare_square" style="background-color: transparent; width: 195px; height: 195px;">
+                                                <div class="usquare_square_text_wrapper">
+                                                    <img src="sliders/usquare/images/arrow-dark.png" class="usquare_arrow" alt="arrow">
+
+                                                    <div class="clear"></div>
+                                                    <h2>JANE DOE</h2> <span>web designer / illustrator</span>
+
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <!-- usquare_square_wrapper -->
+                                            </div>
+                                            <!--div usquare_square -->
+                                            <div class="usquare_block_extended" style="background-color: #fff">
+                                                <a href="#" class="close">
+                                                    <img src="sliders/usquare/images/close.png" alt="close"/>
+                                                </a>
+                                                <ul class="social_background"></ul>
+                                                <div class="clear"></div>
+                                                <!--span class="bold">info:</span-->
+                                                <div class="usquare_about">
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec magna lacus.
+                                                    Sed sed mi est. Nulla in tristique tortor. Curabitur ipsum orci, bibendum in
+                                                    interdum et, congue
+                                                    viverra nisl. In sit amet dui mauris, vel hendrerit eros. Nunc scelerisque
+                                                    pellentesque magna, et
+                                                    tempus massa sagittis at.
+                                                </div>
+                                            </div>
+                                            <!-- usquare_block_extended -->
+                                        </div>
+                                        <div class="usquare_block">
+                                            <img src="images/slider/usquare/00312.jpg" class="usquare_square" alt="" style="background-color: transparent; width: 195px; height: 195px;"/>
+
+                                            <div class="usquare_square" style="background-color: transparent; width: 195px; height: 195px;">
+                                                <div class="usquare_square_text_wrapper">
+                                                    <img src="sliders/usquare/images/arrow-dark.png" class="usquare_arrow" alt="arrow">
+
+                                                    <div class="clear"></div>
+                                                    <h2>JOHN DOE</h2>
+                                                    <span>SEO & SEM Specialist</span>
+
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <!-- usquare_square_wrapper -->
+                                            </div>
+                                            <!--div usquare_square -->
+                                            <div class="usquare_block_extended" style="background-color: #fff">
+                                                <a href="#" class="close"><img src="sliders/usquare/images/close.png" alt="close"/></a>
+                                                <ul class="social_background"></ul>
+                                                <div class="clear"></div>
+                                                <!--span class="bold">info:</span-->
+                                                <div class="usquare_about">
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec magna lacus.
+                                                    Sed sed mi est. Nulla in tristique tortor. Curabitur ipsum orci, bibendum in
+                                                    interdum et, congue
+                                                    viverra nisl. In sit amet dui mauris, vel hendrerit eros. Nunc scelerisque
+                                                    pellentesque magna, et
+                                                    tempus massa sagittis at.
+                                                </div>
+                                            </div>
+                                            <!-- usquare_block_extended -->
+                                        </div>
+                                        <div class="usquare_block">
+                                            <div class="usquare_square" style="background-color: transparent; width: 195px; height: 195px;">
+                                                <div class="usquare_square_text_wrapper" style="right: 0; text-align: right;">
+                                                    <img src="sliders/usquare/images/arrow_r-dark.png" class="usquare_arrow" alt="arrow" style="float: right; padding: 0 0 5px;">
+
+                                                    <div class="clear"></div>
+                                                    <h2>JOHN DOE</h2>
+                                                    <span>graphic designer</span>
+
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <!-- usquare_square_wrapper -->
+                                            </div>
+                                            <!--div usquare_square -->
+                                            <img src="images/slider/usquare/0049.jpg" class="usquare_square" alt="" style="background-color: transparent; width: 195px; height: 195px;"/>
+
+                                            <div class="usquare_block_extended" style="background-color: #fff">
+                                                <a href="#" class="close">
+                                                    <img src="sliders/usquare/images/close.png" alt="close"/>
+                                                </a>
+                                                <ul class="social_background"></ul>
+                                                <div class="clear"></div>
+                                                <!--span class="bold">info:</span-->
+                                                <div class="usquare_about">
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec magna lacus.
+                                                    Sed sed mi est. Nulla in tristique tortor. Curabitur ipsum orci, bibendum in
+                                                    interdum et, congue
+                                                    viverra nisl. In sit amet dui mauris, vel hendrerit eros. Nunc scelerisque
+                                                    pellentesque magna, et
+                                                    tempus massa sagittis at.
+                                                </div>
+                                            </div>
+                                            <!-- usquare_block_extended -->
+                                        </div>
+                                        <div class="usquare_block">
+                                            <div class="usquare_square" style="background-color: transparent; width: 195px; height: 195px;">
+                                                <div class="usquare_square_text_wrapper" style="right: 0; text-align: right;">
+                                                    <img src="sliders/usquare/images/arrow_r-dark.png" class="usquare_arrow" alt="arrow" style="float: right; padding: 0 0 5px;">
+
+                                                    <div class="clear"></div>
+                                                    <h2>MOLLY SMITH</h2>
+                                                    <span>web developer</span>
+
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <!-- usquare_square_wrapper -->
+                                            </div>
+                                            <!--div usquare_square -->
+                                            <img src="images/slider/usquare/0058.jpg" class="usquare_square" alt="" style="background-color: transparent; width: 195px; height: 195px;"/>
+
+                                            <div class="usquare_block_extended" style="background-color: #fff">
+                                                <a href="#" class="close">
+                                                    <img src="sliders/usquare/images/close.png" alt="close"/>
+                                                </a>
+                                                <ul class="social_background"></ul>
+                                                <div class="clear"></div>
+                                                <!--span class="bold">info:</span-->
+                                                <div class="usquare_about">Lorem ipsum dolor sit amet, consectetur adipiscing
+                                                    elit. In nec magna lacus.
+                                                    Sed sed mi est. Nulla in tristique tortor. Curabitur ipsum orci, bibendum in
+                                                    interdum et, congue
+                                                    viverra nisl. In sit amet dui mauris, vel hendrerit eros. Nunc scelerisque
+                                                    pellentesque magna, et
+                                                    tempus massa sagittis at.
+                                                </div>
+                                            </div>
+                                            <!-- usquare_block_extended -->
+                                        </div>
+                                        <div class="usquare_block">
+                                            <div class="usquare_square" style="background-color: transparent; width: 195px; height: 195px;">
+                                                <div class="usquare_square_text_wrapper" style="right: 0; text-align: right;">
+                                                    <img src="sliders/usquare/images/arrow_r-dark.png" class="usquare_arrow" alt="arrow" style="float: right; padding: 0 0 5px;">
+
+                                                    <div class="clear"></div>
+                                                    <h2>JOHN DOE</h2>
+                                                    <span>CEO / Founder</span>
+
+                                                    <div class="clear"></div>
+                                                </div>
+                                                <!-- usquare_square_wrapper -->
+                                            </div>
+                                            <!--div usquare_square -->
+                                            <img src="images/slider/usquare/0066.jpg" class="usquare_square" alt="" style="background-color: transparent; width: 195px; height: 195px;"/>
+
+                                            <div class="usquare_block_extended" style="background-color: #fff">
+                                                <a href="#" class="close">
+                                                    <img src="sliders/usquare/images/close.png" alt="close"/>
+                                                </a>
+                                                <ul class="social_background"></ul>
+                                                <div class="clear"></div>
+                                                <!--span class="bold">info:</span-->
+                                                <div class="usquare_about">
+                                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec magna lacus.
+                                                    Sed sed mi est. Nulla in tristique tortor. Curabitur ipsum orci, bibendum in
+                                                    interdum et, congue
+                                                    viverra nisl. In sit amet dui mauris, vel hendrerit eros. Nunc scelerisque
+                                                    pellentesque magna, et
+                                                    tempus massa sagittis at.
+                                                </div>
+                                            </div>
+                                            <!-- usquare_block_extended -->
+                                        </div>
+                                    </div>
+                                    <script> (function ($) {
+                                        $(document).ready(function () {
+                                            $(".usquare_module_wrapper").uSquare({ opening_speed: 300, closing_speed: 500, easing: "swing" });
+                                        });
+                                    })(jQuery); </script>
+                                </div>
+
+                            </div>
+                        <!-- START COMMENTS -->
+                        <div id="comments">
+                        </div>
+                        <!-- END COMMENTS -->
+                    </div>
+                                <!-- END CONTENT -->
+
+
+                                <!-- START EXTRA CONTENT -->
+                                <!-- END EXTRA CONTENT -->
+                </div>
+            </div>
+    </div>
+    <!-- END PRIMARY -->
+
+    <!-- FOOTER -->
     <?php include 'components/footer.php'; ?>
 
     <div class="wrapper-border"></div>
@@ -2783,6 +1658,8 @@
 <script type='text/javascript' src='js/jquery.colorbox-min.js'></script>
 <script type='text/javascript' src='js/responsive.js'></script>
 <script type='text/javascript' src='js/mobilemenu.js'></script>
+<script type='text/javascript' src='sliders/usquare/js/frontend/jquery.usquare.js'></script>
+<script type='text/javascript' src='sliders/usquare/js/frontend/jquery.mCustomScrollbar.min.js'></script>
 <script type='text/javascript' src='js/jquery.superfish.js'></script>
 <script type='text/javascript' src='js/jquery.placeholder.js'></script>
 <script type='text/javascript' src='js/contact.js'></script>

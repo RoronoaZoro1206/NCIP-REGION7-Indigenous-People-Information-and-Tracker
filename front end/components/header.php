@@ -70,7 +70,7 @@
 
                     <div class="text-content">
                         <h3>CUSTOMER SUPPORT</h3>
-                        <p>+63 &nbsp;998 - 765 - 4321</p>
+                        <p>+63 &nbsp;906 - 588 - 1698</p>
                     </div>
                 </div>
 

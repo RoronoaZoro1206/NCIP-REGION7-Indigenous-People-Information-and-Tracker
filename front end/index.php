@@ -426,7 +426,7 @@
 
                         <div class="clear"></div>
 
-                        <div class="margin-bottom">
+                        <div class="margin-bottom" id="partnerships">
                             <div class="logos-slider wrapper">
                                 <h2>
                                     Our <span class="title-highlight">partners</span>

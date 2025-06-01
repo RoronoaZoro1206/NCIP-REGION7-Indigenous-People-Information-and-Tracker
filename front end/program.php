@@ -90,7 +90,7 @@
                                     Our <span class="title-highlight">Services</span>
                                 </h3>
                                 <div class="services-row row group">
-                                    <div class="span3 service_first">
+                                    <div class="span3 service_first" id="ancestral">
                                         <div class="circle-services">
                                             <div class="ch-item no-empty" style="background-image: url(images/01-175x175.jpg);">
                                                 <div class="ch-info">
@@ -128,7 +128,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="span3 ">
+                                    <div class="span3" id="development">
                                         <div class="circle-services">
                                             <div class="ch-item no-empty" style="background-image: url(images/02-175x175.jpg);">
                                                 <div class="ch-info">
@@ -167,7 +167,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="span3 ">
+                                    <div class="span3">
                                         <div class="circle-services">
                                             <div class="ch-item no-empty" style="background-image: url(images/03-175x175.jpg);">
                                                 <div class="ch-info">
@@ -205,7 +205,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="span3 ">
+                                    <div class="span3" id="education">
                                         <div class="circle-services">
                                             <div class="ch-item no-empty" style="background-image: url(images/04-175x175.jpg);">
                                                 <div class="ch-info">
@@ -244,7 +244,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="span3 ">
+                                    <div class="span3" id="culture">
                                         <div class="circle-services">
                                             <div class="ch-item no-empty" style="background-image: url(images/05-175x175.jpg);">
                                                 <div class="ch-info">
@@ -361,7 +361,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="span3 ">
+                                    <div class="span3" id="rights">
                                         <div class="circle-services">
                                             <div class="ch-item no-empty" style="background-image: url(images/08-175x175.jpg);">
                                                 <div class="ch-info">

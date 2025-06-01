@@ -34,11 +34,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     try {
         // Get user's timezone (fallback to UTC if not set)
-        $userTimezone = $user['user_timezone'] ?? 'Asia/Manila';
+        $userTimezone = $user['USER_TIMEZONE'] ?? 'Asia/Manila';
         
         // Convert stored UTC time to user's timezone
         $expiryUtc = new DateTime(
-            $user['user_token_expiry'], 
+            $user['USER_TOKEN_EXPIRY'], 
             new DateTimeZone('Asia/Manila')
         );
         $expiryUserLocal = $expiryUtc->setTimezone(
@@ -50,29 +50,76 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         // Check expiration
         if ($expiryUserLocal < $now) {
+            // Log expired token attempt
+            $log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
+                         VALUES (?, 'PASSWORD_RESET_EXPIRED', ?, CURRENT_TIMESTAMP)";
+            $log_stmt = $pdo->prepare($log_query);
+            $log_details = "Attempted to use expired password reset token";
+            $log_stmt->execute([$user['USER_ID'], $log_details]);
+            
             $_SESSION['reset_error'] = "Reset token has expired.";
             header("Location: forgot-password.php");
             exit;
         }
     } catch (Exception $e) {
         // Fallback to server time if timezone conversion fails
-        if (strtotime($user['user_token_expiry']) < time()) {
+        if (strtotime($user['USER_TOKEN_EXPIRY']) < time()) {
+            // Log expired token attempt
+            $log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
+                         VALUES (?, 'PASSWORD_RESET_EXPIRED', ?, CURRENT_TIMESTAMP)";
+            $log_stmt = $pdo->prepare($log_query);
+            $log_details = "Attempted to use expired password reset token (fallback check)";
+            $log_stmt->execute([$user['USER_ID'], $log_details]);
+            
             $_SESSION['reset_error'] = "Reset token has expired.";
             header("Location: forgot-password.php");
             exit;
         }
     }
 
+    // Validate password strength
+    if (strlen($password) < 8) {
+        $_SESSION['reset_error'] = "Password must be at least 8 characters long.";
+        header("Location: reset-password.php?token=" . urlencode($token));
+        exit;
+    }
+
     // Hash new password and update
-    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-    if (!updateUserPassword($pdo, $user['user_id'], $hashedPassword)) {
+    $options = [
+        'cost' => 12
+    ];
+    $hashedPassword = password_hash($password, PASSWORD_BCRYPT, $options);
+    
+    if (!updateUserPassword($pdo, $user['USER_ID'], $hashedPassword)) {
+        // Log password update failure
+        $log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
+                     VALUES (?, 'PASSWORD_RESET_FAILED', ?, CURRENT_TIMESTAMP)";
+        $log_stmt = $pdo->prepare($log_query);
+        $log_details = "Failed to update password during reset";
+        $log_stmt->execute([$user['USER_ID'], $log_details]);
+        
         $_SESSION['reset_error'] = "Failed to update password.";
         header("Location: reset-password.php?token=" . urlencode($token));
         exit;
     }
 
+    // Log successful password reset
+    $log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
+                 VALUES (?, 'PASSWORD_RESET_SUCCESS', ?, CURRENT_TIMESTAMP)";
+    $log_stmt = $pdo->prepare($log_query);
+    $log_details = "Password reset completed successfully";
+    $log_stmt->execute([$user['USER_ID'], $log_details]);
+
+    // Check if this is an admin user and redirect appropriately
+    $is_admin = strtoupper($user['USER_ROLE']) === 'ADMIN';
+    
     $_SESSION['forgot_success'] = "Password reset successful. You can now log in.";
-    header("Location: form-content.php?show=login");
+    
+    if ($is_admin) {
+        header("Location: ../admin/login.php");
+    } else {
+        header("Location: form-content.php?show=login");
+    }
     exit;
 }
 ?>

@@ -1,4 +1,5 @@
 <?php
+// filepath: c:\xampp\htdocs\Information Management\IM---Copy\admin\contacts\archived_messages.php
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -64,12 +65,12 @@ if (!empty($search)) {
     $params[':search'] = "%$search%";
 }
 
-// Get archived messages with pagination - EXCLUDE SOFT DELETED MESSAGES
+// Get archived messages with pagination - EXCLUDE SOFT DELETED MESSAGES (PostgreSQL COMPATIBLE)
 try {
-    // Count total archived messages for pagination (excluding soft deleted)
+    // Count total archived messages for pagination (excluding soft deleted) - FIXED FOR PostgreSQL
     $count_sql = "SELECT COUNT(*) FROM contact_message 
                   WHERE contm_status = 'Archived' 
-                  AND (contm_deleted_at IS NULL OR contm_deleted_at = '')" . $search_condition;
+                  AND contm_deleted_at IS NULL" . $search_condition;
     $count_stmt = $pdo->prepare($count_sql);
     
     if (!empty($search)) {
@@ -87,13 +88,13 @@ try {
         $current_page = 1;
     }
     
-    // Get messages for current page (excluding soft deleted)
+    // Get messages for current page (excluding soft deleted) - FIXED FOR PostgreSQL
     $sql = "SELECT contm_id, contm_name, contm_email, contm_phone, contm_message, 
                    contm_submission_date, contm_status, contm_reply, contm_reply_date 
             FROM contact_message 
             WHERE contm_status = 'Archived' 
-            AND (contm_deleted_at IS NULL OR contm_deleted_at = '')" . $search_condition . " 
-            ORDER BY contm_submission_date DESC 
+            AND contm_deleted_at IS NULL" . $search_condition . " 
+            ORDER BY contm_submission_date ASC, contm_id ASC 
             LIMIT :limit OFFSET :offset";
             
     $stmt = $pdo->prepare($sql);
@@ -113,6 +114,33 @@ try {
     $messages = [];
     $total_pages = 0;
     $total_records = 0;
+}
+
+// Helper functions for date formatting
+function safe_date_format($date_string, $format = 'M d, Y') {
+    if (empty($date_string) || $date_string === null) {
+        return 'Unknown';
+    }
+    
+    try {
+        $date = new DateTime($date_string);
+        return $date->format($format);
+    } catch (Exception $e) {
+        return 'Invalid date';
+    }
+}
+
+function safe_time_format($date_string, $format = 'g:i A') {
+    if (empty($date_string) || $date_string === null) {
+        return 'Unknown';
+    }
+    
+    try {
+        $date = new DateTime($date_string);
+        return $date->format($format);
+    } catch (Exception $e) {
+        return 'Invalid time';
+    }
 }
 ?>
 
@@ -163,6 +191,9 @@ try {
         .alert {
             border-radius: 10px;
         }
+        .status-badge {
+            font-size: 0.75rem;
+        }
     </style>
 </head>
 <body>
@@ -178,52 +209,62 @@ try {
                     <a href="index.php" class="btn btn-primary">
                         <i class="bi bi-inbox me-1"></i>Back to Inbox
                     </a>
-                    <a href="../recycle-bin/index.php" class="btn btn-outline-secondary">
-                        <i class="bi bi-recycle me-1"></i>Recycle Bin
-                    </a>
                 </div>
             </div>
             
-            <?php if (isset($_SESSION['success_message'])): ?>
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check-circle-fill me-2"></i>
-                    <?php echo htmlspecialchars($_SESSION['success_message']); ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-                <?php unset($_SESSION['success_message']); ?>
-            <?php endif; ?>
+            <!-- Alert Container for dynamic messages -->
+            <div id="alert-container">
+                <?php if (isset($_SESSION['success_message'])): ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        <?php echo htmlspecialchars($_SESSION['success_message']); ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    <?php unset($_SESSION['success_message']); ?>
+                <?php endif; ?>
 
-            <?php if (isset($_SESSION['error_message'])): ?>
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    <?php echo htmlspecialchars($_SESSION['error_message']); ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-                <?php unset($_SESSION['error_message']); ?>
-            <?php endif; ?>
-            
-            <?php if (isset($_GET['moved']) && $_GET['moved'] === 'true'): ?>
-                <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                    <i class="bi bi-recycle me-2"></i>
-                    Message moved to recycle bin successfully.
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            <?php endif; ?>
-            
-            <?php if (isset($_GET['error'])): ?>
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    <?php 
-                        $error = $_GET['error'];
-                        if ($error === 'database') {
-                            echo "A database error occurred.";
-                        } else {
-                            echo "An error occurred while processing your request.";
-                        }
-                    ?>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            <?php endif; ?>
+                <?php if (isset($_SESSION['error_message'])): ?>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <?php echo htmlspecialchars($_SESSION['error_message']); ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                    <?php unset($_SESSION['error_message']); ?>
+                <?php endif; ?>
+                
+                <?php if (isset($_GET['moved']) && $_GET['moved'] === 'true'): ?>
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        <i class="bi bi-recycle me-2"></i>
+                        Message moved to recycle bin successfully.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <?php endif; ?>
+                
+                <?php if (isset($_GET['unarchived']) && $_GET['unarchived'] === 'true'): ?>
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle me-2"></i>
+                        Message unarchived successfully.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <?php endif; ?>
+                
+                <?php if (isset($_GET['error'])): ?>
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <?php 
+                            $error = $_GET['error'];
+                            if ($error === 'database') {
+                                echo "A database error occurred.";
+                            } elseif ($error === 'not_found') {
+                                echo "Message not found or already processed.";
+                            } else {
+                                echo "An error occurred while processing your request.";
+                            }
+                        ?>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <?php endif; ?>
+            </div>
             
             <!-- Search Bar -->
             <div class="card mb-4">
@@ -234,7 +275,7 @@ try {
                                 <span class="input-group-text"><i class="bi bi-search"></i></span>
                                 <input type="text" class="form-control" placeholder="Search archived messages by name, email, or content..." name="search" value="<?php echo htmlspecialchars($search); ?>">
                                 <button class="btn btn-primary" type="submit">
-                                    Search
+                                    <i class="bi bi-search me-1"></i>Search
                                 </button>
                                 <?php if (!empty($search)): ?>
                                     <a href="archived_messages.php" class="btn btn-outline-secondary">
@@ -300,7 +341,7 @@ try {
                                         <th style="width: 150px;">Name</th>
                                         <th style="width: 200px;">Email</th>
                                         <th>Message Preview</th>
-                                        <th style="width: 150px;">Date Archived</th>
+                                        <th style="width: 150px;">Date Submitted</th>
                                         <th style="width: 200px;" class="text-center">Actions</th>
                                     </tr>
                                 </thead>
@@ -312,6 +353,12 @@ try {
                                             </td>
                                             <td>
                                                 <strong><?php echo htmlspecialchars($message['contm_name'] ?? 'Unknown'); ?></strong>
+                                                <br>
+                                                <small class="text-muted">
+                                                    <span class="badge bg-dark status-badge">
+                                                        <i class="bi bi-archive me-1"></i>Archived
+                                                    </span>
+                                                </small>
                                             </td>
                                             <td>
                                                 <a href="mailto:<?php echo htmlspecialchars($message['contm_email'] ?? ''); ?>" class="text-decoration-none">
@@ -332,18 +379,10 @@ try {
                                             <td>
                                                 <small class="text-muted">
                                                     <i class="bi bi-calendar3 me-1"></i>
-                                                    <?php 
-                                                        echo isset($message['contm_submission_date']) 
-                                                            ? date('M d, Y', strtotime($message['contm_submission_date'])) 
-                                                            : 'Unknown date'; 
-                                                    ?>
+                                                    <?php echo safe_date_format($message['contm_submission_date']); ?>
                                                     <br>
                                                     <i class="bi bi-clock me-1"></i>
-                                                    <?php 
-                                                        echo isset($message['contm_submission_date']) 
-                                                            ? date('g:i A', strtotime($message['contm_submission_date'])) 
-                                                            : ''; 
-                                                    ?>
+                                                    <?php echo safe_time_format($message['contm_submission_date']); ?>
                                                 </small>
                                             </td>
                                             <td class="text-center">
@@ -359,15 +398,13 @@ try {
                                                             title="Unarchive Message">
                                                         <i class="bi bi-box-arrow-up"></i>
                                                     </button>
-                                                    <button type="button" 
-                                                            class="btn btn-sm btn-outline-warning" 
-                                                            data-bs-toggle="modal" 
-                                                            data-bs-target="#recycleBinModal" 
-                                                            data-id="<?php echo $message['contm_id']; ?>"
-                                                            data-name="<?php echo htmlspecialchars($message['contm_name'] ?? 'this message'); ?>"
-                                                            title="Move to Recycle Bin">
-                                                        <i class="bi bi-recycle"></i>
-                                                    </button>
+                                                    <a href="delete.php?id=<?php echo $message['contm_id']; ?>&action=soft_delete" 
+                                                    class="btn btn-sm btn-outline-danger delete-message-btn" 
+                                                    data-message-id="<?php echo $message['contm_id']; ?>"
+                                                    data-message-name="<?php echo htmlspecialchars($message['contm_name'] ?? 'this message'); ?>"
+                                                    title="Move to Recycle Bin">
+                                                        <i class="bi bi-trash"></i>
+                                                    </a>
                                                 </div>
                                             </td>
                                         </tr>
@@ -416,26 +453,28 @@ try {
         </div>
     </div>
     
-    <!-- Move to Recycle Bin Modal -->
-    <div class="modal fade" id="recycleBinModal" tabindex="-1" aria-hidden="true">
+    <!-- Move to Recycle Bin Confirmation Modal -->
+    <div class="modal fade" id="deleteMessageModal" tabindex="-1" aria-labelledby="deleteMessageModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header bg-warning text-dark">
-                    <h5 class="modal-title">
-                        <i class="bi bi-recycle me-2"></i>Move to Recycle Bin
+                    <h5 class="modal-title" id="deleteMessageModalLabel">
+                        <i class="bi bi-recycle me-2"></i>Move Message to Recycle Bin
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="text-center mb-3">
-                        <i class="bi bi-recycle text-warning" style="font-size: 3rem;"></i>
+                        <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 3rem;"></i>
                     </div>
-                    <h6 class="text-center mb-3">Move this archived message to the recycle bin?</h6>
-                    <div class="bg-light p-3 rounded">
-                        <strong>Message from:</strong> <span id="recycleBinMessageName">Loading...</span><br>
+                    <h6 class="text-center mb-3">Are you sure you want to move this archived message to the recycle bin?</h6>
+                    <div class="bg-light p-3 rounded" id="messageDetailsContainer">
+                        <!-- Message details will be populated by JavaScript -->
+                    </div>
+                    <div class="mt-3">
                         <small class="text-muted">
                             <i class="bi bi-info-circle me-1"></i>
-                            The message will be moved to the recycle bin where it can be permanently deleted or restored later.
+                            This action will move the message to the recycle bin where it can be restored later if needed.
                         </small>
                     </div>
                 </div>
@@ -443,9 +482,9 @@ try {
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                         <i class="bi bi-x-circle me-1"></i>Cancel
                     </button>
-                    <button type="button" class="btn btn-warning" id="confirmMoveToRecycleBin">
-                        <i class="bi bi-recycle me-1"></i>Move to Recycle Bin
-                    </button>
+                    <a href="#" class="btn btn-warning" id="confirmDeleteBtn">
+                        <i class="bi bi-recycle me-1"></i>Yes, Move to Recycle Bin
+                    </a>
                 </div>
             </div>
         </div>
@@ -454,24 +493,54 @@ try {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Setup recycle bin modal
-        const recycleBinModal = document.getElementById('recycleBinModal');
-        let currentMessageId = null;
+        // Initialize modal instances
+        const deleteMessageModal = new bootstrap.Modal(document.getElementById('deleteMessageModal'), {});
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
         
-        if (recycleBinModal) {
-            recycleBinModal.addEventListener('show.bs.modal', function(event) {
-                const button = event.relatedTarget;
-                currentMessageId = button.getAttribute('data-id');
-                const name = button.getAttribute('data-name');
+        // Handle delete button clicks
+        document.querySelectorAll('.delete-message-btn').forEach(function(button) {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
                 
-                document.getElementById('recycleBinMessageName').textContent = name;
+                const messageId = this.getAttribute('data-message-id');
+                const messageName = this.getAttribute('data-message-name');
+                const currentDeleteUrl = this.getAttribute('href');
+                
+                // Update modal content
+                const messageDetailsContainer = document.getElementById('messageDetailsContainer');
+                messageDetailsContainer.innerHTML = `
+                    <i class="bi bi-person-fill me-1"></i> <strong>From:</strong> ${messageName}<br>
+                    <i class="bi bi-hash me-1"></i> <strong>ID:</strong> #${messageId}<br>
+                    <i class="bi bi-archive me-1"></i> <strong>Status:</strong> Archived
+                `;
+                
+                // Update the confirm button href
+                confirmDeleteBtn.setAttribute('href', currentDeleteUrl);
+                
+                // Show the modal
+                deleteMessageModal.show();
+                
+                return false;
             });
-            
-            // Setup confirmation button
-            document.getElementById('confirmMoveToRecycleBin').addEventListener('click', function() {
-                if (currentMessageId) {
-                    moveToRecycleBin(currentMessageId);
-                }
+        });
+        
+        // Handle confirm delete button click
+        if (confirmDeleteBtn) {
+            confirmDeleteBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Show loading state
+                const originalText = this.innerHTML;
+                this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Moving to Recycle Bin...';
+                this.classList.add('disabled');
+                
+                // Close modal first
+                deleteMessageModal.hide();
+                
+                // Navigate to delete URL after modal is hidden
+                setTimeout(() => {
+                    window.location.href = this.getAttribute('href');
+                }, 300);
             });
         }
         
@@ -486,62 +555,6 @@ try {
             }, 5000);
         });
     });
-
-    function moveToRecycleBin(messageId) {
-        // Show loading state
-        const confirmBtn = document.getElementById('confirmMoveToRecycleBin');
-        const originalText = confirmBtn.innerHTML;
-        confirmBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Moving...';
-        confirmBtn.disabled = true;
-        
-        fetch('ajax/delete_message.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-Requested-With': 'XMLHttpRequest'
-            },
-            body: `message_id=${messageId}&action=soft_delete`
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Close modal
-                const modalInstance = bootstrap.Modal.getInstance(document.getElementById('recycleBinModal'));
-                modalInstance.hide();
-                
-                // Remove the row from table
-                const row = document.getElementById(`msg-row-${messageId}`);
-                if (row) {
-                    row.style.transition = 'opacity 0.3s ease';
-                    row.style.opacity = '0';
-                    setTimeout(() => {
-                        row.remove();
-                        
-                        // Check if table is now empty
-                        const tableBody = document.querySelector('tbody');
-                        if (tableBody && tableBody.children.length === 0) {
-                            location.reload(); // Reload to show empty state
-                        }
-                    }, 300);
-                }
-                
-                // Show success message
-                showAlert('warning', data.message, 'bi-recycle');
-                
-            } else {
-                showAlert('danger', 'Error: ' + data.message, 'bi-exclamation-triangle-fill');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showAlert('danger', 'An error occurred while moving the message to recycle bin', 'bi-exclamation-triangle-fill');
-        })
-        .finally(() => {
-            // Reset button state
-            confirmBtn.innerHTML = originalText;
-            confirmBtn.disabled = false;
-        });
-    }
 
     function unarchiveMessage(messageId) {
         // Show loading state
@@ -603,9 +616,8 @@ try {
             <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         `;
         
-        const container = document.querySelector('.container-fluid');
-        const firstCard = container.querySelector('.card');
-        container.insertBefore(alertDiv, firstCard);
+        const alertContainer = document.getElementById('alert-container');
+        alertContainer.appendChild(alertDiv);
         
         // Auto-dismiss after 5 seconds
         setTimeout(() => {

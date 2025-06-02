@@ -167,7 +167,7 @@ function safe_time_format($date_string, $format = 'g:i A') {
             background-color: #f8f9fa;
             padding: 20px;
             border-radius: 8px;
-            white-space: pre-wrap;
+
             word-wrap: break-word;
         }
         .status-badge {

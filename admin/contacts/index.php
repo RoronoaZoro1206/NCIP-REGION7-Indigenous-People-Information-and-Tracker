@@ -77,7 +77,6 @@ $status_counts = [
     'all' => 0,
     'unread' => 0,
     'read' => 0,
-    'replied' => 0,
     'archived' => 0
 ];
 
@@ -394,10 +393,6 @@ function safe_time_format($date_string, $format = 'g:i A') {
                                    class="btn btn-outline-primary <?php echo $status_filter === 'Read' ? 'active' : ''; ?>">
                                     Read <span class="badge bg-primary"><?php echo isset($status_counts['read']) ? $status_counts['read'] : 0; ?></span>
                                 </a>
-                                <a href="index.php?status=Replied<?php echo !empty($search) ? '&search='.$search : ''; ?>" 
-                                   class="btn btn-outline-success <?php echo $status_filter === 'Replied' ? 'active' : ''; ?>">
-                                    Replied <span class="badge bg-success"><?php echo isset($status_counts['replied']) ? $status_counts['replied'] : 0; ?></span>
-                                </a>
                             </div>
                         </div>
 
@@ -485,9 +480,6 @@ function safe_time_format($date_string, $format = 'g:i A') {
                                                     break;
                                                 case 'Read':
                                                     $badge_class = 'bg-primary';
-                                                    break;
-                                                case 'Replied':
-                                                    $badge_class = 'bg-success';
                                                     break;
                                                 case 'Archived':
                                                     $badge_class = 'bg-dark';
@@ -584,7 +576,6 @@ function safe_time_format($date_string, $format = 'g:i A') {
                                                                         <option value="">Select Status</option>
                                                                         <option value="Unread" <?php echo $msg['contm_status'] == 'Unread' ? 'selected' : ''; ?>>Unread</option>
                                                                         <option value="Read" <?php echo $msg['contm_status'] == 'Read' ? 'selected' : ''; ?>>Read</option>
-                                                                        <option value="Replied" <?php echo $msg['contm_status'] == 'Replied' ? 'selected' : ''; ?>>Replied</option>
                                                                         <option value="Archived" <?php echo $msg['contm_status'] == 'Archived' ? 'selected' : ''; ?>>Archived</option>
                                                                     </select>
                                                                 </div>
@@ -743,7 +734,6 @@ function safe_time_format($date_string, $format = 'g:i A') {
                             switch (newStatus) {
                                 case 'Unread': badgeClass = 'bg-danger'; break;
                                 case 'Read': badgeClass = 'bg-primary'; break;
-                                case 'Replied': badgeClass = 'bg-success'; break;
                                 case 'Archived': badgeClass = 'bg-dark'; break;
                             }
                             statusBadge.className = `badge ${badgeClass}`;

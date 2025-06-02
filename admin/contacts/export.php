@@ -32,11 +32,11 @@ if (!$user_role || strtoupper($user_role) !== 'ADMIN') {
 }
 
 /**
- * Ensure the contact_message table has soft delete columns
+ * Ensure the contact_message table has all required columns
  */
-function ensureContactSoftDeleteColumns($pdo) {
+function ensureContactMessageColumns($pdo) {
     try {
-        // Check if soft delete columns exist, if not, add them
+        // Check if columns exist, if not, add them
         $columns_to_add = [
             'contm_deleted_at' => 'TIMESTAMP NULL',
             'contm_deleted_by' => 'INTEGER'
@@ -59,13 +59,41 @@ function ensureContactSoftDeleteColumns($pdo) {
         $pdo->exec("CREATE INDEX IF NOT EXISTS idx_contact_message_deleted_at ON contact_message(contm_deleted_at)");
         
     } catch (PDOException $e) {
-        error_log("Error ensuring soft delete columns for contact_message: " . $e->getMessage());
+        error_log("Error ensuring contact message columns: " . $e->getMessage());
         // Don't throw - this is not critical for basic functionality
     }
 }
 
-// Ensure soft delete columns exist
-ensureContactSoftDeleteColumns($pdo);
+/**
+ * Format datetime to match EXACTLY what index.php displays
+ */
+function formatDateTimeForExcel($datetime) {
+    if (empty($datetime) || $datetime === null) {
+        return 'N/A';
+    }
+    
+    try {
+        // Handle both string and DateTime objects
+        if ($datetime instanceof DateTime) {
+            $date = $datetime;
+        } else {
+            $date = new DateTime($datetime);
+        }
+        
+        // Convert to Manila timezone (matching admin panel)
+        $date->setTimezone(new DateTimeZone('Asia/Manila'));
+        
+        // Format exactly like admin panel: "Jun 02, 2025 12:53 AM"
+        return $date->format('M d, Y g:i A');
+        
+    } catch (Exception $e) {
+        error_log("Date formatting error: " . $e->getMessage());
+        return $datetime; // Return original if formatting fails
+    }
+}
+
+// Ensure columns exist
+ensureContactMessageColumns($pdo);
 
 // Get filter parameters from URL if present
 $status_filter = isset($_GET['status']) ? $_GET['status'] : '';
@@ -73,18 +101,8 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
 $export_type = isset($_GET['type']) ? $_GET['type'] : 'all'; // all, active, archived
 
 try {
-    // First check if reply columns exist
-    $check_columns = $pdo->prepare("SELECT column_name FROM information_schema.columns 
-                                   WHERE table_name = 'contact_message' 
-                                   AND column_name IN ('contm_reply', 'contm_reply_date')");
-    $check_columns->execute();
-    $existing_columns = $check_columns->fetchAll(PDO::FETCH_COLUMN, 0);
-    
-    $has_reply_column = in_array('contm_reply', $existing_columns);
-    $has_reply_date_column = in_array('contm_reply_date', $existing_columns);
-    
-    // Build query conditions - FIXED FOR PostgreSQL COMPATIBILITY
-    $conditions = ["c.contm_deleted_at IS NULL"]; // PostgreSQL-compatible - REMOVED EMPTY STRING CHECK
+    // Build query conditions - PostgreSQL compatible
+    $conditions = ["c.contm_deleted_at IS NULL"]; // Only non-deleted messages
     $params = [];
     
     // Add status filter condition
@@ -106,7 +124,7 @@ try {
     // Build WHERE clause
     $where_clause = "WHERE " . implode(' AND ', $conditions);
     
-    // Query to get contact messages - PostgreSQL compatible
+    // Query to get contact messages - PostgreSQL compatible (NO REPLY COLUMNS)
     $query = "SELECT 
                 c.contm_id,
                 c.contm_name,
@@ -114,19 +132,9 @@ try {
                 c.contm_phone,
                 c.contm_message,
                 c.contm_submission_date,
-                c.contm_status";
-    
-    // Add reply columns only if they exist
-    if ($has_reply_column) {
-        $query .= ", c.contm_reply";
-    }
-    if ($has_reply_date_column) {
-        $query .= ", c.contm_reply_date";
-    }
-    
-    $query .= " FROM contact_message c
-              {$where_clause}
-              ORDER BY c.contm_submission_date DESC";
+                c.contm_status
+              FROM contact_message c {$where_clause} 
+              ORDER BY c.contm_submission_date ASC, c.contm_id ASC";
     
     $stmt = $pdo->prepare($query);
     
@@ -153,29 +161,18 @@ try {
         ->setKeywords("NCIP contact messages export")
         ->setCompany("National Commission on Indigenous Peoples");
 
-    // Define column letters
+    // Define column letters (ONLY 7 COLUMNS - NO REPLY COLUMNS)
     $columns = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-    if ($has_reply_column) $columns[] = 'H';
-    if ($has_reply_date_column) $columns[] = $has_reply_column ? 'I' : 'H';
+    $last_column = 'G'; // Status is the last column
     
-    $last_column = end($columns);
-    
-    // Set column widths
+    // Set column widths (ADJUSTED FOR BETTER SPACING)
     $sheet->getColumnDimension('A')->setWidth(8);   // ID
-    $sheet->getColumnDimension('B')->setWidth(20);  // Name
-    $sheet->getColumnDimension('C')->setWidth(25);  // Email
-    $sheet->getColumnDimension('D')->setWidth(15);  // Phone
-    $sheet->getColumnDimension('E')->setWidth(40);  // Message
-    $sheet->getColumnDimension('F')->setWidth(18);  // Submission Date
-    $sheet->getColumnDimension('G')->setWidth(12);  // Status
-    
-    if ($has_reply_column) {
-        $sheet->getColumnDimension('H')->setWidth(40); // Reply Content
-    }
-    if ($has_reply_date_column) {
-        $reply_date_col = $has_reply_column ? 'I' : 'H';
-        $sheet->getColumnDimension($reply_date_col)->setWidth(18); // Reply Date
-    }
+    $sheet->getColumnDimension('B')->setWidth(25);  // Name (increased)
+    $sheet->getColumnDimension('C')->setWidth(30);  // Email (increased)
+    $sheet->getColumnDimension('D')->setWidth(18);  // Phone (increased)
+    $sheet->getColumnDimension('E')->setWidth(50);  // Message (increased)
+    $sheet->getColumnDimension('F')->setWidth(25);  // Submission Date (increased)
+    $sheet->getColumnDimension('G')->setWidth(15);  // Status (increased)
     
     $current_row = 1;
     
@@ -251,7 +248,7 @@ try {
     
     $current_row += 2; // Add empty row
     
-    // SECTION HEADERS ROW
+    // SECTION HEADERS ROW (UPDATED - NO REPLY SECTION)
     $sheet->setCellValue("A{$current_row}", 'Contact Information');
     $sheet->mergeCells("A{$current_row}:D{$current_row}");
     
@@ -259,13 +256,6 @@ try {
     $sheet->mergeCells("E{$current_row}:F{$current_row}");
     
     $sheet->setCellValue("G{$current_row}", 'Status');
-    
-    if ($has_reply_column || $has_reply_date_column) {
-        $reply_start = 'H';
-        $reply_end = $last_column;
-        $sheet->setCellValue("{$reply_start}{$current_row}", 'Reply Information');
-        $sheet->mergeCells("{$reply_start}{$current_row}:{$reply_end}{$current_row}");
-    }
     
     $sheet->getStyle("A{$current_row}:{$last_column}{$current_row}")->applyFromArray([
         'font' => [
@@ -288,15 +278,8 @@ try {
     
     $current_row++;
     
-    // COLUMN HEADERS ROW
+    // COLUMN HEADERS ROW (NO REPLY COLUMNS)
     $headers = ['ID', 'Name', 'Email', 'Phone', 'Message', 'Submission Date', 'Status'];
-    
-    if ($has_reply_column) {
-        $headers[] = 'Reply Content';
-    }
-    if ($has_reply_date_column) {
-        $headers[] = 'Reply Date';
-    }
     
     foreach ($headers as $index => $header) {
         $col = $columns[$index];
@@ -325,88 +308,31 @@ try {
     $current_row++;
     $data_start_row = $current_row;
     
-    // DATA ROWS
+    // DATA ROWS (NO REPLY DATA)
     if (count($messages) > 0) {
         foreach ($messages as $msg) {
-            $col_index = 0;
-            
             // ID
-            $sheet->setCellValue($columns[$col_index] . $current_row, $msg['contm_id']);
-            $col_index++;
+            $sheet->setCellValue('A' . $current_row, $msg['contm_id']);
             
             // Name
-            $sheet->setCellValue($columns[$col_index] . $current_row, $msg['contm_name']);
-            $col_index++;
+            $sheet->setCellValue('B' . $current_row, $msg['contm_name']);
             
             // Email
-            $sheet->setCellValue($columns[$col_index] . $current_row, $msg['contm_email']);
-            $col_index++;
+            $sheet->setCellValue('C' . $current_row, $msg['contm_email']);
             
             // Phone
-            $sheet->setCellValue($columns[$col_index] . $current_row, $msg['contm_phone'] ?? 'N/A');
-            $col_index++;
+            $sheet->setCellValue('D' . $current_row, $msg['contm_phone'] ?? 'N/A');
             
             // Message
-            $sheet->setCellValue($columns[$col_index] . $current_row, $msg['contm_message']);
-            $sheet->getStyle($columns[$col_index] . $current_row)->getAlignment()->setWrapText(true);
-            $col_index++;
+            $sheet->setCellValue('E' . $current_row, $msg['contm_message']);
+            $sheet->getStyle('E' . $current_row)->getAlignment()->setWrapText(true);
             
-            // Submission Date - FIXED FOR PostgreSQL TIMESTAMP
-            if (!empty($msg['contm_submission_date'])) {
-                try {
-                    // Handle PostgreSQL timestamp format properly
-                    $date_timestamp = strtotime($msg['contm_submission_date']);
-                    if ($date_timestamp !== false) {
-                        $sheet->setCellValue($columns[$col_index] . $current_row, 
-                            \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($date_timestamp));
-                        $sheet->getStyle($columns[$col_index] . $current_row)->getNumberFormat()
-                            ->setFormatCode('yyyy-mm-dd hh:mm:ss');
-                    } else {
-                        // Fallback to string if timestamp conversion fails
-                        $sheet->setCellValue($columns[$col_index] . $current_row, $msg['contm_submission_date']);
-                    }
-                } catch (Exception $e) {
-                    // Fallback to string format
-                    $sheet->setCellValue($columns[$col_index] . $current_row, $msg['contm_submission_date']);
-                }
-            } else {
-                $sheet->setCellValue($columns[$col_index] . $current_row, 'N/A');
-            }
-            $col_index++;
+            // Submission Date - EXACT FORMAT MATCHING ADMIN PANEL
+            $formatted_submission_date = formatDateTimeForExcel($msg['contm_submission_date']);
+            $sheet->setCellValue('F' . $current_row, $formatted_submission_date);
             
             // Status
-            $sheet->setCellValue($columns[$col_index] . $current_row, $msg['contm_status']);
-            $col_index++;
-            
-            // Reply Content (if column exists)
-            if ($has_reply_column) {
-                $reply_content = $msg['contm_reply'] ?? 'No reply yet';
-                $sheet->setCellValue($columns[$col_index] . $current_row, $reply_content);
-                $sheet->getStyle($columns[$col_index] . $current_row)->getAlignment()->setWrapText(true);
-                $col_index++;
-            }
-            
-            // Reply Date (if column exists) - FIXED FOR PostgreSQL TIMESTAMP
-            if ($has_reply_date_column) {
-                if (!empty($msg['contm_reply_date'])) {
-                    try {
-                        $reply_date_timestamp = strtotime($msg['contm_reply_date']);
-                        if ($reply_date_timestamp !== false) {
-                            $sheet->setCellValue($columns[$col_index] . $current_row, 
-                                \PhpOffice\PhpSpreadsheet\Shared\Date::PHPToExcel($reply_date_timestamp));
-                            $sheet->getStyle($columns[$col_index] . $current_row)->getNumberFormat()
-                                ->setFormatCode('yyyy-mm-dd hh:mm:ss');
-                        } else {
-                            $sheet->setCellValue($columns[$col_index] . $current_row, $msg['contm_reply_date']);
-                        }
-                    } catch (Exception $e) {
-                        $sheet->setCellValue($columns[$col_index] . $current_row, $msg['contm_reply_date']);
-                    }
-                } else {
-                    $sheet->setCellValue($columns[$col_index] . $current_row, 'N/A');
-                }
-                $col_index++;
-            }
+            $sheet->setCellValue('G' . $current_row, $msg['contm_status']);
             
             $current_row++;
         }

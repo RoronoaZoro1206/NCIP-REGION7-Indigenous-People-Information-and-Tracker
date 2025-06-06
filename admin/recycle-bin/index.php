@@ -1,7 +1,12 @@
 <?php
+
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+// Set timezone to Philippines
+date_default_timezone_set('Asia/Manila');
 
 // Check if user is logged in
 if (!isset($_SESSION["user_id"])) {
@@ -48,6 +53,46 @@ try {
         });
     }
     
+    // Get usernames for deleted_by user IDs
+    $user_ids = array_unique(array_filter(array_column($all_items, 'deleted_by')));
+    $usernames = [];
+    
+    if (!empty($user_ids)) {
+        $placeholders = str_repeat('?,', count($user_ids) - 1) . '?';
+        $stmt = $pdo->prepare("SELECT user_id, user_username FROM users WHERE user_id IN ($placeholders)");
+        $stmt->execute($user_ids);
+        
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $usernames[$row['user_id']] = $row['user_username'];
+        }
+    }
+    
+    // Add username information to items and convert timezone
+    foreach ($all_items as &$item) {
+        if ($item['deleted_by']) {
+            $item['deleted_by_username'] = $usernames[$item['deleted_by']] ?? 'Unknown User';
+        } else {
+            $item['deleted_by_username'] = 'Unknown User';
+        }
+        
+        // Convert deleted_at to Philippines timezone if it exists
+        if (!empty($item['deleted_at'])) {
+            try {
+                // Create DateTime object from the stored time (assuming UTC or server timezone)
+                $dt = new DateTime($item['deleted_at']);
+                // Convert to Philippines timezone
+                $dt->setTimezone(new DateTimeZone('Asia/Manila'));
+                $item['deleted_at_ph'] = $dt->format('Y-m-d H:i:s');
+            } catch (Exception $e) {
+                // If conversion fails, use original time
+                $item['deleted_at_ph'] = $item['deleted_at'];
+            }
+        } else {
+            $item['deleted_at_ph'] = $item['deleted_at'];
+        }
+    }
+    unset($item); // Break reference
+    
     // Get total count
     $total_items = count($all_items);
     
@@ -85,6 +130,19 @@ try {
     error_log("Recycle bin error: " . $e->getMessage());
 }
 
+// Function to convert and format datetime to Philippines timezone
+function formatPhilippinesTime($datetime) {
+    if (empty($datetime)) return 'N/A';
+    
+    try {
+        $dt = new DateTime($datetime);
+        $dt->setTimezone(new DateTimeZone('Asia/Manila'));
+        return $dt;
+    } catch (Exception $e) {
+        return new DateTime($datetime);
+    }
+}
+
 // Handle AJAX requests
 if (isset($_GET['action'])) {
     header('Content-Type: application/json');
@@ -107,6 +165,24 @@ if (isset($_GET['action'])) {
                     }
                     
                     if ($item) {
+                        // Get username for this specific item
+                        if ($item['deleted_by']) {
+                            $stmt = $pdo->prepare("SELECT user_username FROM users WHERE user_id = ?");
+                            $stmt->execute([$item['deleted_by']]);
+                            $user_data = $stmt->fetch(PDO::FETCH_ASSOC);
+                            $item['deleted_by_username'] = $user_data ? $user_data['user_username'] : 'Unknown User';
+                        } else {
+                            $item['deleted_by_username'] = 'Unknown User';
+                        }
+                        
+                        // Convert deleted_at to Philippines timezone
+                        if (!empty($item['deleted_at'])) {
+                            $dt = formatPhilippinesTime($item['deleted_at']);
+                            $item['deleted_at_formatted'] = $dt->format('F j, Y g:i A');
+                        } else {
+                            $item['deleted_at_formatted'] = 'N/A';
+                        }
+                        
                         echo json_encode(['success' => true, 'item' => $item]);
                     } else {
                         echo json_encode(['success' => false, 'message' => 'Item not found']);
@@ -289,6 +365,12 @@ include '../includes/sidebar.php';
             background-color: rgba(0, 0, 0, 0.02);
         }
         
+        .timezone-indicator {
+            font-size: 0.7rem;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
         @media (max-width: 768px) {
             .main-content {
                 margin-left: 0;
@@ -318,6 +400,7 @@ include '../includes/sidebar.php';
                 <div>
                     <h1><i class="bi bi-trash me-3"></i>Recycle Bin</h1>
                     <p>Manage deleted items - restore items to their original locations</p>
+                    <small class="timezone-indicator">All times shown in Philippines timezone (GMT+8)</small>
                 </div>
             </div>
         </div>
@@ -429,7 +512,7 @@ include '../includes/sidebar.php';
                         <th>Type</th>
                         <th>Source</th>
                         <th>Deleted By</th>
-                        <th>Deleted At</th>
+                        <th>Deleted At <small class="timezone-indicator">(PH Time)</small></th>
                         <th class="actions-column">Actions</th>
                     </tr>
                 </thead>
@@ -467,12 +550,15 @@ include '../includes/sidebar.php';
                             </span>
                         </td>
                         <td>
-                            <div class="fw-bold"><?php echo htmlspecialchars($item['deleted_by'] ?: 'Unknown'); ?></div>
+                            <div class="fw-bold"><?php echo htmlspecialchars($item['deleted_by_username'] ?: 'Unknown User'); ?></div>
                             <small class="text-muted">User ID: <?php echo htmlspecialchars($item['deleted_by'] ?: 'N/A'); ?></small>
                         </td>
                         <td>
-                            <div class="fw-bold"><?php echo date('M j, Y', strtotime($item['deleted_at'])); ?></div>
-                            <small class="text-muted"><?php echo date('g:i A', strtotime($item['deleted_at'])); ?></small>
+                            <?php 
+                            $deletedTime = formatPhilippinesTime($item['deleted_at_ph'] ?? $item['deleted_at']);
+                            ?>
+                            <div class="fw-bold"><?php echo $deletedTime->format('M j, Y'); ?></div>
+                            <small class="text-muted"><?php echo $deletedTime->format('g:i A'); ?></small>
                         </td>
                         <td class="actions-column">
                             <div class="item-actions">
@@ -692,10 +778,17 @@ include '../includes/sidebar.php';
                             </div>
                             <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <strong>Deleted At:</strong><br>
-                                    ${new Date(item.deleted_at).toLocaleString()}
+                                    <strong>Deleted At (PH Time):</strong><br>
+                                    ${item.deleted_at_formatted || 'N/A'}
                                 </div>
                                 <div class="col-md-6">
+                                    <strong>Deleted By:</strong><br>
+                                    ${item.deleted_by_username || 'Unknown User'}<br>
+                                    <small class="text-muted">User ID: ${item.deleted_by || 'N/A'}</small>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-12">
                                     <strong>Source Table:</strong><br>
                                     ${item.table || 'N/A'}
                                 </div>

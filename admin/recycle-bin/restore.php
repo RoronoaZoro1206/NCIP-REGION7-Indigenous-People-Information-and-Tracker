@@ -380,4 +380,4 @@ if (!in_array($_SERVER['REQUEST_METHOD'], ['POST', 'GET'])) {
 
 // Clean up output buffer before ending
 ob_end_clean();
-?>
+?>w

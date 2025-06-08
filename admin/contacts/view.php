@@ -535,7 +535,7 @@ function safe_time_format($date_string, $format = 'g:i A') {
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                showAlert('success', `Message ${newStatus.toLowerCase()} successfully`, 'bi-check-circle-fill');
+                showAlert('success', `The message status turned to ${newStatus.toLowerCase()} successfully`, 'bi-check-circle-fill');
                 
                 // Update the status badge
                 const statusBadge = document.querySelector('.status-badge');

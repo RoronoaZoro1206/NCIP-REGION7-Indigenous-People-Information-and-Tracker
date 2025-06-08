@@ -59,8 +59,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST"){
         unset($_SESSION['errors']);
         unset($_SESSION['old']);
         
-        $_SESSION["signup_success"] = "Registration successful! Your account has been created. Please proceed to login.";
-        
         // Always redirect to user login - never admin
         header("Location: form-content.php?show=login&success=1");
         exit();

@@ -1,4 +1,5 @@
 <?php
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -25,178 +26,249 @@ try {
     // Comprehensive query similar to index.php
     $detailed_query = "
     SELECT 
-        a.APP_CODE,
-        a.APP_LAST_NAME,
-        a.APP_FIRST_NAME,
-        a.APP_MIDDLE_INITIAL,
-        a.APP_DATE_OF_BIRTH,
-        a.APP_PLACE_OF_BIRTH,
-        a.APP_GENDER,
-        a.APP_CIVIL_STATUS,
-        a.APP_ETHNO_GROUP,
-        a.APP_PHONE_NUMBER,
-        a.APP_EMAIL,
-        a.APP_FORM_SIGNED,
-        a.APP_SIGNATURE_DATE,
+        a.app_code,
+        a.app_last_name,
+        a.app_first_name,
+        a.app_middle_initial,
+        a.app_date_of_birth,
+        a.app_place_of_birth,
+        a.app_gender,
+        a.app_civil_status,
+        a.app_ethno_group,
+        a.app_phone_number,
+        a.app_email,
+        a.app_form_signed,
+        a.app_signature_date,
         
-        adm.ADMIN_CODE,
-        adm.ADMIN_APP_NUMBER,
-        adm.ADMIN_DOF,
-        adm.ADMIN_ACTION_TAKEN_CSC_PO,
-        adm.ADMIN_ACTION_TAKEN_RO,
-        adm.ADMIN_CADT,
-        adm.ADMIN_CONG_DISTRICT,
-        adm.ADMIN_ADD_REMARKS,
-        adm.ADMIN_ASSISTANCE_TYPE,
+        adm.admin_code,
+        adm.admin_app_number,
+        adm.admin_dof,
+        adm.admin_action_taken_csc_po,
+        adm.admin_action_taken_ro,
+        adm.admin_cadt,
+        adm.admin_cong_district,
+        adm.admin_add_remarks,
+        adm.admin_assistance_type,
         
-        addr.ADDR_MAIL,
-        addr.ADDR_PERMANENT,
-        addr.ADDR_HOUSE_AND_STREET,
-        addr.ADDR_BARANGAY,
-        addr.ADDR_MUNICIPALITY,
-        addr.ADDR_PROVINCE,
+        addr.addr_mail,
+        addr.addr_permanent,
+        addr.addr_house_and_street,
+        addr.addr_barangay,
+        addr.addr_municipality,
+        addr.addr_province,
         
-        (SELECT string_agg(CONCAT(
-            ec.EDUC_NAME, ':', 
-            ' School: ', s.SCH_NAME,
-            ' Address: ', s.SCH_ADDRESS, 
-            ' Year: ', s.SCH_YEAR_GRAD::text, 
-            ' Grade: ', s.SCH_GRADE_AVG::text, 
-            ' Rank: ', s.SCH_RANK
-        ), '||') 
-         FROM EDUCATION_ATTAINMENT ea 
-         JOIN EDUCATION_CATEGORY ec ON ea.EDUC_ID = ec.EDUC_ID 
-         JOIN SCHOOL s ON ea.EDUA_CODE = s.EDUC_CODE 
-         WHERE ea.APP_CODE = a.APP_CODE) as EDUCATION_DETAIL,
+        (SELECT CONCAT(
+            'School: ', COALESCE(s.sch_name, 'N/A'),
+            ' Address: ', COALESCE(s.sch_address, 'N/A'), 
+            ' Year: ', COALESCE(s.sch_year_grad::text, 'N/A'), 
+            ' Grade: ', COALESCE(s.sch_grade_avg::text, 'N/A'), 
+            ' Rank: ', COALESCE(s.sch_rank, 'N/A')
+        ) 
+        FROM education_attainment ea 
+        JOIN education_category ec ON ea.educ_id = ec.educ_id 
+        LEFT JOIN school s ON ea.edua_code = s.edua_code
+        WHERE ea.app_code = a.app_code AND ec.educ_name = 'Elementary' LIMIT 1) as elementary_education,
+
+        (SELECT CONCAT(
+            'School: ', COALESCE(s.sch_name, 'N/A'),
+            ' Address: ', COALESCE(s.sch_address, 'N/A'), 
+            ' Year: ', COALESCE(s.sch_year_grad::text, 'N/A'), 
+            ' Grade: ', COALESCE(s.sch_grade_avg::text, 'N/A'), 
+            ' Rank: ', COALESCE(s.sch_rank, 'N/A')
+        ) 
+        FROM education_attainment ea 
+        JOIN education_category ec ON ea.educ_id = ec.educ_id 
+        LEFT JOIN school s ON ea.edua_code = s.edua_code
+        WHERE ea.app_code = a.app_code AND ec.educ_name = 'High School' LIMIT 1) as high_school_education,
+
+        (SELECT CONCAT(
+            'School: ', COALESCE(s.sch_name, 'N/A'),
+            ' Address: ', COALESCE(s.sch_address, 'N/A'), 
+            ' Year: ', COALESCE(s.sch_year_grad::text, 'N/A'), 
+            ' Grade: ', COALESCE(s.sch_grade_avg::text, 'N/A'), 
+            ' Rank: ', COALESCE(s.sch_rank, 'N/A')
+        ) 
+        FROM education_attainment ea 
+        JOIN education_category ec ON ea.educ_id = ec.educ_id 
+        LEFT JOIN school s ON ea.edua_code = s.edua_code
+        WHERE ea.app_code = a.app_code AND ec.educ_name = 'Vocational' LIMIT 1) as vocational_education,
+
+        (SELECT CONCAT(
+            'School: ', COALESCE(s.sch_name, 'N/A'),
+            ' Address: ', COALESCE(s.sch_address, 'N/A'), 
+            ' Year: ', COALESCE(s.sch_year_grad::text, 'N/A'), 
+            ' Grade: ', COALESCE(s.sch_grade_avg::text, 'N/A'), 
+            ' Rank: ', COALESCE(s.sch_rank, 'N/A')
+        ) 
+        FROM education_attainment ea 
+        JOIN education_category ec ON ea.educ_id = ec.educ_id 
+        LEFT JOIN school s ON ea.edua_code = s.edua_code
+        WHERE ea.app_code = a.app_code AND ec.educ_name = 'College/Undergraduate' LIMIT 1) as college_education,
+
+        (SELECT CONCAT(
+            'School: ', COALESCE(s.sch_name, 'N/A'),
+            ' Address: ', COALESCE(s.sch_address, 'N/A'), 
+            ' Year: ', COALESCE(s.sch_year_grad::text, 'N/A'), 
+            ' Grade: ', COALESCE(s.sch_grade_avg::text, 'N/A'), 
+            ' Rank: ', COALESCE(s.sch_rank, 'N/A')
+        ) 
+        FROM education_attainment ea 
+        JOIN education_category ec ON ea.educ_id = ec.educ_id 
+        LEFT JOIN school s ON ea.edua_code = s.edua_code
+        WHERE ea.app_code = a.app_code AND ec.educ_name = 'Post-Graduate' LIMIT 1) as post_graduate_education,
+
+        (SELECT CONCAT(
+            'School: ', COALESCE(s.sch_name, 'N/A'),
+            ' Address: ', COALESCE(s.sch_address, 'N/A'), 
+            ' Year: ', COALESCE(s.sch_year_grad::text, 'N/A'), 
+            ' Grade: ', COALESCE(s.sch_grade_avg::text, 'N/A'), 
+            ' Rank: ', COALESCE(s.sch_rank, 'N/A')
+        ) 
+        FROM education_attainment ea 
+        JOIN education_category ec ON ea.educ_id = ec.educ_id 
+        LEFT JOIN school s ON ea.edua_code = s.edua_code
+        WHERE ea.app_code = a.app_code AND ec.educ_name = 'Masteral' LIMIT 1) as masteral_education,
+
+        (SELECT CONCAT(
+            'School: ', COALESCE(s.sch_name, 'N/A'),
+            ' Address: ', COALESCE(s.sch_address, 'N/A'), 
+            ' Year: ', COALESCE(s.sch_year_grad::text, 'N/A'), 
+            ' Grade: ', COALESCE(s.sch_grade_avg::text, 'N/A'), 
+            ' Rank: ', COALESCE(s.sch_rank, 'N/A')
+        ) 
+        FROM education_attainment ea 
+        JOIN education_category ec ON ea.educ_id = ec.educ_id 
+        LEFT JOIN school s ON ea.edua_code = s.edua_code
+        WHERE ea.app_code = a.app_code AND ec.educ_name = 'Doctorate' LIMIT 1) as doctorate_education,
          
         /* Father specific fields */
-        (SELECT fb.FAM_NAME FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Father' LIMIT 1) as FATHER_NAME,
+        (SELECT fb.fam_name FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Father' LIMIT 1) as father_name,
         
-        (SELECT fb.FAM_IS_ALIVE FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Father' LIMIT 1) as FATHER_IS_ALIVE,
+        (SELECT fb.fam_is_alive FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Father' LIMIT 1) as father_is_alive,
         
-        (SELECT fb.FAM_ADDR FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Father' LIMIT 1) as FATHER_ADDRESS,
+        (SELECT fb.fam_addr FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Father' LIMIT 1) as father_address,
         
-        (SELECT fb.FAM_OCCUP FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Father' LIMIT 1) as FATHER_OCCUPATION,
+        (SELECT fb.fam_occup FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Father' LIMIT 1) as father_occupation,
         
-        (SELECT fb.FAM_OFFICE_ADDR FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Father' LIMIT 1) as FATHER_OFFICE_ADDR,
+        (SELECT fb.fam_office_addr FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Father' LIMIT 1) as father_office_addr,
         
-        (SELECT fb.FAM_EDUC_ATTAIN FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Father' LIMIT 1) as FATHER_EDUCATION,
+        (SELECT fb.fam_educ_attain FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Father' LIMIT 1) as father_education,
         
-        (SELECT fb.FAM_ETHNO_GROUP FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Father' LIMIT 1) as FATHER_ETHNICITY,
+        (SELECT fb.fam_ethno_group FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Father' LIMIT 1) as father_ethnicity,
         
-        (SELECT fb.FAM_ANNUAL_INCOME FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Father' LIMIT 1) as FATHER_INCOME,
+        (SELECT fb.fam_annual_income FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Father' LIMIT 1) as father_income,
         
-        (SELECT fb.FAM_YEAR_ITR FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Father' LIMIT 1) as FATHER_ITR_YEAR,
+        (SELECT fb.fam_year_itr FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Father' LIMIT 1) as father_itr_year,
 
         /* Mother specific fields */
-        (SELECT fb.FAM_NAME FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Mother' LIMIT 1) as MOTHER_NAME,
+        (SELECT fb.fam_name FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Mother' LIMIT 1) as mother_name,
         
-        (SELECT fb.FAM_IS_ALIVE FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Mother' LIMIT 1) as MOTHER_IS_ALIVE,
+        (SELECT fb.fam_is_alive FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Mother' LIMIT 1) as mother_is_alive,
         
-        (SELECT fb.FAM_ADDR FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Mother' LIMIT 1) as MOTHER_ADDRESS,
+        (SELECT fb.fam_addr FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Mother' LIMIT 1) as mother_address,
         
-        (SELECT fb.FAM_OCCUP FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Mother' LIMIT 1) as MOTHER_OCCUPATION,
+        (SELECT fb.fam_occup FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Mother' LIMIT 1) as mother_occupation,
         
-        (SELECT fb.FAM_OFFICE_ADDR FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Mother' LIMIT 1) as MOTHER_OFFICE_ADDR,
+        (SELECT fb.fam_office_addr FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Mother' LIMIT 1) as mother_office_addr,
         
-        (SELECT fb.FAM_EDUC_ATTAIN FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Mother' LIMIT 1) as MOTHER_EDUCATION,
+        (SELECT fb.fam_educ_attain FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Mother' LIMIT 1) as mother_education,
         
-        (SELECT fb.FAM_ETHNO_GROUP FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Mother' LIMIT 1) as MOTHER_ETHNICITY,
+        (SELECT fb.fam_ethno_group FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Mother' LIMIT 1) as mother_ethnicity,
         
-        (SELECT fb.FAM_ANNUAL_INCOME FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Mother' LIMIT 1) as MOTHER_INCOME,
+        (SELECT fb.fam_annual_income FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Mother' LIMIT 1) as mother_income,
         
-        (SELECT fb.FAM_YEAR_ITR FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Mother' LIMIT 1) as MOTHER_ITR_YEAR,
+        (SELECT fb.fam_year_itr FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Mother' LIMIT 1) as mother_itr_year,
 
         /* Guardian specific fields */
-        (SELECT fb.FAM_NAME FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Guardian' LIMIT 1) as GUARDIAN_NAME,
+        (SELECT fb.fam_name FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Guardian' LIMIT 1) as guardian_name,
         
-        (SELECT fb.FAM_IS_ALIVE FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Guardian' LIMIT 1) as GUARDIAN_IS_ALIVE,
+        (SELECT fb.fam_is_alive FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Guardian' LIMIT 1) as guardian_is_alive,
         
-        (SELECT fb.FAM_ADDR FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Guardian' LIMIT 1) as GUARDIAN_ADDRESS,
+        (SELECT fb.fam_addr FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Guardian' LIMIT 1) as guardian_address,
         
-        (SELECT fb.FAM_OCCUP FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Guardian' LIMIT 1) as GUARDIAN_OCCUPATION,
+        (SELECT fb.fam_occup FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Guardian' LIMIT 1) as guardian_occupation,
         
-        (SELECT fb.FAM_OFFICE_ADDR FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Guardian' LIMIT 1) as GUARDIAN_OFFICE_ADDR,
+        (SELECT fb.fam_office_addr FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Guardian' LIMIT 1) as guardian_office_addr,
         
-        (SELECT fb.FAM_EDUC_ATTAIN FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Guardian' LIMIT 1) as GUARDIAN_EDUCATION,
+        (SELECT fb.fam_educ_attain FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Guardian' LIMIT 1) as guardian_education,
         
-        (SELECT fb.FAM_ETHNO_GROUP FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Guardian' LIMIT 1) as GUARDIAN_ETHNICITY,
+        (SELECT fb.fam_ethno_group FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Guardian' LIMIT 1) as guardian_ethnicity,
         
-        (SELECT fb.FAM_ANNUAL_INCOME FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Guardian' LIMIT 1) as GUARDIAN_INCOME,
+        (SELECT fb.fam_annual_income FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Guardian' LIMIT 1) as guardian_income,
         
-        (SELECT fb.FAM_YEAR_ITR FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Guardian' LIMIT 1) as GUARDIAN_ITR_YEAR,
+        (SELECT fb.fam_year_itr FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Guardian' LIMIT 1) as guardian_itr_year,
          
         (SELECT string_agg(CONCAT(
-            sib.SIB_LAST_NAME, ', ', sib.SIB_FIRST_NAME, ' ', sib.SIB_MIDDLE_INITIAL,
-            CASE WHEN sch.SCHOLAR_NAME IS NOT NULL 
-                THEN CONCAT(' (Scholarship: ', sch.SCHOLAR_NAME, 
-                           ', Course: ', sch.SCHOLAR_COURSE, 
-                           ', Year: ', sch.SCHOLAR_YEAR, ')')
+            sib.sib_last_name, ', ', sib.sib_first_name, ' ', sib.sib_middle_initial,
+            CASE WHEN sch.scholar_name IS NOT NULL 
+                THEN CONCAT(' (Scholarship: ', sch.scholar_name, 
+                           ', Course: ', sch.scholar_course, 
+                           ', Year: ', sch.scholar_year, ')')
                 ELSE ''
             END
         ), '||') 
-         FROM SIBLING sib 
-         LEFT JOIN SCHOLARSHIP sch ON sib.SIB_CODE = sch.SIB_CODE 
-         WHERE sib.APP_CODE = a.APP_CODE) as SIBLING_DETAIL,
+         FROM sibling sib 
+         LEFT JOIN scholarship sch ON sib.sib_code = sch.sib_code 
+         WHERE sib.app_code = a.app_code) as sibling_detail,
          
-        pref.PREF_NAME,
-        pref.PREF_ADDR,
-        pref.PREF_DEGREE,
-        pref.PREF_REMARKS,
+        pref.pref_name,
+        pref.pref_addr,
+        pref.pref_degree,
+        pref.pref_remarks,
         
         (SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END 
-         FROM SIGNATURE_SCAN scan 
-         WHERE scan.APP_CODE = a.APP_CODE) as HAS_SIGNATURE,
+         FROM signature_scan scan 
+         WHERE scan.app_code = a.app_code) as has_signature,
          
-        (SELECT scan.SCAN_FILENAME 
-         FROM SIGNATURE_SCAN scan 
-         WHERE scan.APP_CODE = a.APP_CODE LIMIT 1) as SIGNATURE_FILENAME,
+        (SELECT scan.scan_filename 
+         FROM signature_scan scan 
+         WHERE scan.app_code = a.app_code LIMIT 1) as signature_filename,
          
-        (SELECT scan.SCAN_FILETYPE 
-         FROM SIGNATURE_SCAN scan 
-         WHERE scan.APP_CODE = a.APP_CODE LIMIT 1) as SIGNATURE_FILETYPE,
+        (SELECT scan.scan_filetype 
+         FROM signature_scan scan 
+         WHERE scan.app_code = a.app_code LIMIT 1) as signature_filetype,
         
-        (SELECT ss.STATUS_CODE FROM SCHOLARSHIP_STATUS ss 
-         WHERE ss.APP_CODE = a.APP_CODE AND ss.STATUS_IS_ACTIVE = TRUE LIMIT 1) as STATUS,
+        (SELECT ss.status_code FROM scholarship_status ss 
+         WHERE ss.app_code = a.app_code AND ss.status_is_active = TRUE LIMIT 1) as status,
          
-        (SELECT ss.STATUS_DATE FROM SCHOLARSHIP_STATUS ss 
-         WHERE ss.APP_CODE = a.APP_CODE AND ss.STATUS_IS_ACTIVE = TRUE LIMIT 1) as STATUS_DATE,
+        (SELECT ss.status_date FROM scholarship_status ss 
+         WHERE ss.app_code = a.app_code AND ss.status_is_active = TRUE LIMIT 1) as status_date,
          
-        (SELECT ss.STATUS_REMARKS FROM SCHOLARSHIP_STATUS ss 
-         WHERE ss.APP_CODE = a.APP_CODE AND ss.STATUS_IS_ACTIVE = TRUE LIMIT 1) as STATUS_REMARKS
+        (SELECT ss.status_remarks FROM scholarship_status ss 
+         WHERE ss.app_code = a.app_code AND ss.status_is_active = TRUE LIMIT 1) as status_remarks
         
-    FROM APPLICANT a
-    LEFT JOIN ADMINISTRATOR adm ON a.ADMIN_CODE = adm.ADMIN_CODE
-    LEFT JOIN ADDRESS addr ON a.APP_CODE = addr.APP_CODE
-    LEFT JOIN SCHOOL_PREFERENCE pref ON a.APP_CODE = pref.APP_CODE
-    WHERE a.APP_CODE = :app_code";
+    FROM applicant a
+    LEFT JOIN administrator adm ON a.admin_code = adm.admin_code
+    LEFT JOIN address addr ON a.app_code = addr.app_code
+    LEFT JOIN school_preference pref ON a.app_code = pref.app_code
+    WHERE a.app_code = :app_code";
     
     $stmt = $pdo->prepare($detailed_query);
     $stmt->bindParam(':app_code', $app_code);
@@ -210,69 +282,24 @@ try {
         exit();
     }
     
-    // Process education detail
-    if (!empty($application['education_detail'])) {
-        $application['education_array'] = explode('||', $application['education_detail']);
-    } else {
-        $application['education_array'] = [];
-    }
-    
-    // Process family detail
+    // Process sibling data for display - This is the key fix
+    $application['sibling_array'] = [];
     if (!empty($application['sibling_detail'])) {
         $application['sibling_array'] = explode('||', $application['sibling_detail']);
-    } else {
-        $application['sibling_array'] = [];
     }
     
-    // Get education by level
-    $application['elementary'] = '';
-    $application['high_school'] = '';
-    $application['vocational'] = '';
-    $application['college'] = '';
-    
-    if (!empty($application['education_array'])) {
-        foreach ($application['education_array'] as $edu) {
-            if (strpos($edu, 'Elementary:') === 0) {
-                $application['elementary'] = str_replace('Elementary:', '', $edu);
-            } elseif (strpos($edu, 'High School:') === 0) {
-                $application['high_school'] = str_replace('High School:', '', $edu);
-            } elseif (strpos($edu, 'Vocational:') === 0) {
-                $application['vocational'] = str_replace('Vocational:', '', $edu);
-            } elseif (strpos($edu, 'College/Undergraduate:') === 0) {
-                $application['college'] = str_replace('College/Undergraduate:', '', $edu);
-            }
-        }
+    // Normalize status - treat any unknown status as PENDING
+    $application['status'] = strtoupper($application['status'] ?? 'PENDING');
+    if (!in_array($application['status'], ['PENDING', 'APPROVED', 'REJECTED'])) {
+        $application['status'] = 'PENDING';
     }
     
     // Fetch supporting documents if available
-    $doc_query = "SELECT * FROM SIGNATURE_SCAN WHERE APP_CODE = :app_code";
+    $doc_query = "SELECT * FROM signature_scan WHERE app_code = :app_code";
     $doc_stmt = $pdo->prepare($doc_query);
     $doc_stmt->bindParam(':app_code', $app_code);
     $doc_stmt->execute();
     $applicant_documents = $doc_stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // If application status is pending, mark it as being reviewed
-    if (empty($application['status']) || $application['status'] == 'PENDING') {
-        $update_stmt = $pdo->prepare("
-            UPDATE SCHOLARSHIP_STATUS 
-            SET STATUS_IS_ACTIVE = FALSE 
-            WHERE APP_CODE = :app_code AND STATUS_IS_ACTIVE = TRUE
-        ");
-        $update_stmt->bindParam(':app_code', $app_code);
-        $update_stmt->execute();
-        
-        // Insert new status as Under Review
-        $insert_stmt = $pdo->prepare("
-            INSERT INTO SCHOLARSHIP_STATUS 
-            (APP_CODE, STATUS_CODE, STATUS_DATE, STATUS_IS_ACTIVE, STATUS_REMARKS) 
-            VALUES (:app_code, 'UNDER REVIEW', CURRENT_TIMESTAMP, TRUE, 'Auto-updated when viewed by admin')
-        ");
-        $insert_stmt->bindParam(':app_code', $app_code);
-        $insert_stmt->execute();
-        
-        $application['status'] = 'UNDER REVIEW';
-        $application['status_date'] = date('Y-m-d H:i:s');
-    }
     
 } catch (PDOException $e) {
     $_SESSION['error_message'] = "Database error: " . $e->getMessage();
@@ -297,6 +324,7 @@ try {
             margin-left: 250px;
             padding: 20px;
         }
+        
         .card-dashboard {
             border-radius: 10px;
             box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
@@ -347,6 +375,14 @@ try {
             padding: 10px;
             background: white;
         }
+        .spin {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
     </style>
 </head>
 
@@ -359,14 +395,7 @@ try {
         <div class="container-fluid">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="../index.php">Dashboard</a></li>
-                            <li class="breadcrumb-item"><a href="index.php">Scholarship Applications</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">View Application</li>
-                        </ol>
-                    </nav>
-                    <h1>Application Details</h1>
+                    <h1><i class="bi bi-file-earmark-text"></i> Application Details</h1>
                 </div>
                 <div class="btn-group" role="group">
                     <a href="edit.php?id=<?php echo $app_code; ?>" class="btn btn-primary">
@@ -374,9 +403,6 @@ try {
                     </a>
                     <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#statusModal">
                         <i class="bi bi-check2-circle"></i> Update Status
-                    </button>
-                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                        <i class="bi bi-trash"></i> Delete
                     </button>
                     <a href="index.php" class="btn btn-secondary">
                         <i class="bi bi-arrow-left"></i> Back to List
@@ -415,12 +441,9 @@ try {
                 <div>
                     <?php
                     $status_class = '';
-                    switch(strtoupper($application['status'] ?? 'PENDING')) {
+                    switch($application['status']) {
                         case 'PENDING':
-                            $status_class = 'bg-warning';
-                            break;
-                        case 'UNDER REVIEW':
-                            $status_class = 'bg-primary';
+                            $status_class = 'bg-warning text-dark';
                             break;
                         case 'APPROVED':
                             $status_class = 'bg-success';
@@ -433,7 +456,7 @@ try {
                     }
                     ?>
                     <span class="badge <?php echo $status_class; ?> status-badge">
-                        <?php echo htmlspecialchars($application['status'] ?? 'PENDING'); ?>
+                        <?php echo htmlspecialchars($application['status']); ?>
                     </span>
                 </div>
             </div>
@@ -490,7 +513,7 @@ try {
                             <div class="row">
                                 <div class="col-md-12">
                                     <p class="field-label">Remarks</p>
-                                    <p><?php echo nl2br(htmlspecialchars($application['admin_add_remarks'] ?? 'N/A')); ?></p>
+                                    <p id="admin-remarks-display"><?php echo nl2br(htmlspecialchars($application['admin_add_remarks'] ?? 'No remarks')); ?></p>
                                 </div>
                             </div>
                         </div>
@@ -606,25 +629,85 @@ try {
                             <!-- Elementary -->
                             <div class="mb-4">
                                 <h6 class="text-primary mb-3">Elementary Education</h6>
-                                <p><?php echo !empty($application['elementary']) ? htmlspecialchars($application['elementary']) : 'No elementary education data available.'; ?></p>
+                                <p><?php 
+                                    if (!empty($application['elementary_education']) && $application['elementary_education'] !== 'School: N/A Address: N/A Year: N/A Grade: N/A Rank: N/A') {
+                                        echo htmlspecialchars($application['elementary_education']);
+                                    } else {
+                                        echo '<span class="text-muted">No elementary education data available.</span>';
+                                    }
+                                ?></p>
                             </div>
                             
                             <!-- High School -->
                             <div class="mb-4">
                                 <h6 class="text-primary mb-3">High School Education</h6>
-                                <p><?php echo !empty($application['high_school']) ? htmlspecialchars($application['high_school']) : 'No high school education data available.'; ?></p>
+                                <p><?php 
+                                    if (!empty($application['high_school_education']) && $application['high_school_education'] !== 'School: N/A Address: N/A Year: N/A Grade: N/A Rank: N/A') {
+                                        echo htmlspecialchars($application['high_school_education']);
+                                    } else {
+                                        echo '<span class="text-muted">No high school education data available.</span>';
+                                    }
+                                ?></p>
                             </div>
                             
                             <!-- Vocational -->
                             <div class="mb-4">
                                 <h6 class="text-primary mb-3">Vocational Education</h6>
-                                <p><?php echo !empty($application['vocational']) ? htmlspecialchars($application['vocational']) : 'No vocational education data available.'; ?></p>
+                                <p><?php 
+                                    if (!empty($application['vocational_education']) && $application['vocational_education'] !== 'School: N/A Address: N/A Year: N/A Grade: N/A Rank: N/A') {
+                                        echo htmlspecialchars($application['vocational_education']);
+                                    } else {
+                                        echo '<span class="text-muted">No vocational education data available.</span>';
+                                    }
+                                ?></p>
                             </div>
                             
-                            <!-- College -->
-                            <div>
+                            <!-- College/Undergraduate -->
+                            <div class="mb-4">
                                 <h6 class="text-primary mb-3">College/Undergraduate Education</h6>
-                                <p><?php echo !empty($application['college']) ? htmlspecialchars($application['college']) : 'No college education data available.'; ?></p>
+                                <p><?php 
+                                    if (!empty($application['college_education']) && $application['college_education'] !== 'School: N/A Address: N/A Year: N/A Grade: N/A Rank: N/A') {
+                                        echo htmlspecialchars($application['college_education']);
+                                    } else {
+                                        echo '<span class="text-muted">No college education data available.</span>';
+                                    }
+                                ?></p>
+                            </div>
+                            
+                            <!-- Post-Graduate -->
+                            <div class="mb-4">
+                                <h6 class="text-primary mb-3">Post-Graduate Education</h6>
+                                <p><?php 
+                                    if (!empty($application['post_graduate_education']) && $application['post_graduate_education'] !== 'School: N/A Address: N/A Year: N/A Grade: N/A Rank: N/A') {
+                                        echo htmlspecialchars($application['post_graduate_education']);
+                                    } else {
+                                        echo '<span class="text-muted">No post-graduate education data available.</span>';
+                                    }
+                                ?></p>
+                            </div>
+                            
+                            <!-- Masteral -->
+                            <div class="mb-4">
+                                <h6 class="text-primary mb-3">Masteral Education</h6>
+                                <p><?php 
+                                    if (!empty($application['masteral_education']) && $application['masteral_education'] !== 'School: N/A Address: N/A Year: N/A Grade: N/A Rank: N/A') {
+                                        echo htmlspecialchars($application['masteral_education']);
+                                    } else {
+                                        echo '<span class="text-muted">No masteral education data available.</span>';
+                                    }
+                                ?></p>
+                            </div>
+                            
+                            <!-- Doctorate -->
+                            <div>
+                                <h6 class="text-primary mb-3">Doctorate Education</h6>
+                                <p><?php 
+                                    if (!empty($application['doctorate_education']) && $application['doctorate_education'] !== 'School: N/A Address: N/A Year: N/A Grade: N/A Rank: N/A') {
+                                        echo htmlspecialchars($application['doctorate_education']);
+                                    } else {
+                                        echo '<span class="text-muted">No doctorate education data available.</span>';
+                                    }
+                                ?></p>
                             </div>
                         </div>
                     </div>
@@ -685,7 +768,7 @@ try {
                             </div>
                             
                             <!-- Mother Information -->
-                            <div class="mb-4">
+                            <div class="mb-4 sub-section">
                                 <div class="family-member-header">Mother's Information</div>
                                 <div class="row mb-3">
                                     <div class="col-md-8">
@@ -734,7 +817,7 @@ try {
                             </div>
                             
                             <!-- Guardian Information -->
-                            <div>
+                            <div class="sub-section">
                                 <div class="family-member-header">Guardian's Information</div>
                                 <div class="row mb-3">
                                     <div class="col-md-8">
@@ -784,7 +867,7 @@ try {
                         </div>
                     </div>
 
-                    <!-- Siblings Information -->
+                    <!-- Siblings Information - FIXED SECTION -->
                     <div class="card card-dashboard mb-4">
                         <div class="card-header">
                             <h5 class="mb-0">Siblings</h5>
@@ -805,6 +888,7 @@ try {
                                             <?php foreach ($application['sibling_array'] as $sibling): ?>
                                                 <tr>
                                                     <?php
+                                                    // Parse the sibling data
                                                     $parts = explode('(Scholarship:', $sibling);
                                                     $name = trim($parts[0]);
                                                     
@@ -813,6 +897,7 @@ try {
                                                     $year = '';
                                                     
                                                     if (count($parts) > 1) {
+                                                        // Extract scholarship details
                                                         preg_match('/Scholarship: ([^,]+)/', $sibling, $scholarship_match);
                                                         preg_match('/Course: ([^,]+)/', $sibling, $course_match);
                                                         preg_match('/Year: ([^\)]+)/', $sibling, $year_match);
@@ -881,7 +966,7 @@ try {
                         <div class="card-body">
                             <p><strong>Current Status:</strong> 
                                 <span class="badge <?php echo $status_class; ?>">
-                                    <?php echo htmlspecialchars($application['status'] ?? 'PENDING'); ?>
+                                    <?php echo htmlspecialchars($application['status']); ?>
                                 </span>
                             </p>
                             <p><strong>Status Date:</strong> 
@@ -917,7 +1002,11 @@ try {
                                 <p><strong>E-Signature:</strong></p>
                                 <div class="text-center mt-3 mb-3">
                                     <div class="signature-display mx-auto">
-                                        <img src="get_signature.php?id=<?php echo $app_code; ?>" class="img-fluid" alt="Applicant's Signature">
+                                        <img src="get_signature.php?id=<?php echo $app_code; ?>" 
+                                             alt="Applicant Signature" 
+                                             class="img-fluid" 
+                                             onclick="showSignatureModal()"
+                                             style="cursor: pointer;">
                                     </div>
                                 </div>
                             <?php else: ?>
@@ -938,7 +1027,7 @@ try {
                                 </div>
                                 <div class="d-grid">
                                     <button type="button" id="save-notes" class="btn btn-primary">
-                                        <i class="bi bi-save"></i> Save Notes
+                                        <i class="bi bi-floppy"></i> Save Notes
                                     </button>
                                 </div>
                             </form>
@@ -954,12 +1043,6 @@ try {
                             <div class="d-grid gap-2">
                                 <a href="edit.php?id=<?php echo $app_code; ?>" class="btn btn-warning">
                                     <i class="bi bi-pencil-square"></i> Edit Application
-                                </a>
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                    <i class="bi bi-trash"></i> Delete Application
-                                </button>
-                                <a href="print.php?id=<?php echo $app_code; ?>" class="btn btn-info" target="_blank">
-                                    <i class="bi bi-printer"></i> Print Application
                                 </a>
                                 <a href="index.php" class="btn btn-secondary">
                                     <i class="bi bi-arrow-left"></i> Back to List
@@ -987,10 +1070,9 @@ try {
                             <label for="new_status" class="form-label">Select New Status</label>
                             <select class="form-select" id="new_status" name="new_status" required>
                                 <option value="">Select Status</option>
-                                <option value="PENDING" <?php echo ($application['status'] ?? '') == 'PENDING' ? 'selected' : ''; ?>>Pending</option>
-                                <option value="UNDER REVIEW" <?php echo ($application['status'] ?? '') == 'UNDER REVIEW' ? 'selected' : ''; ?>>Under Review</option>
-                                <option value="APPROVED" <?php echo ($application['status'] ?? '') == 'APPROVED' ? 'selected' : ''; ?>>Approved</option>
-                                <option value="REJECTED" <?php echo ($application['status'] ?? '') == 'REJECTED' ? 'selected' : ''; ?>>Rejected</option>
+                                <option value="PENDING" <?php echo $application['status'] == 'PENDING' ? 'selected' : ''; ?>>Pending</option>
+                                <option value="APPROVED" <?php echo $application['status'] == 'APPROVED' ? 'selected' : ''; ?>>Approved</option>
+                                <option value="REJECTED" <?php echo $application['status'] == 'REJECTED' ? 'selected' : ''; ?>>Rejected</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -1032,56 +1114,89 @@ try {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Toggle sidebar on mobile
-            const sidebarToggle = document.getElementById('sidebarToggle');
-            if (sidebarToggle) {
-                sidebarToggle.addEventListener('click', function() {
-                    document.querySelector('.sidebar').classList.toggle('show-mobile');
-                });
-            }
-            
-            // Auto-dismiss alerts after 5 seconds
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(function(alert) {
-                setTimeout(function() {
-                    const closeButton = alert.querySelector('.btn-close');
-                    if (closeButton) {
-                        closeButton.click();
-                    }
-                }, 5000);
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle sidebar on mobile
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', function() {
+                document.querySelector('.sidebar').classList.toggle('show-mobile');
             });
-            
-            // Handle saving admin notes via AJAX
-            document.getElementById('save-notes').addEventListener('click', function() {
-                const notesContent = document.getElementById('admin_notes').value;
+        }
+        
+        // Auto-dismiss alerts after 5 seconds
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            setTimeout(function() {
+                const closeButton = alert.querySelector('.btn-close');
+                if (closeButton) {
+                    closeButton.click();
+                }
+            }, 5000);
+        });
+        
+        // Handle saving admin notes via AJAX - UPDATED WITH REAL-TIME
+        const saveNotesBtn = document.getElementById('save-notes');
+        const notesTextarea = document.getElementById('admin_notes');
+        
+        if (saveNotesBtn && notesTextarea) {
+            saveNotesBtn.addEventListener('click', function(e) {
+                e.preventDefault();
                 
+                const notes = notesTextarea.value.trim();
+                const appCode = '<?php echo $app_code; ?>';
+                
+                // Show loading state
+                const originalText = saveNotesBtn.innerHTML;
+                saveNotesBtn.innerHTML = '<i class="bi bi-hourglass-split spin"></i> Saving...';
+                saveNotesBtn.disabled = true;
+                
+                // Make AJAX request
                 fetch('ajax/update_notes.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: `app_code=${<?php echo $app_code; ?>}&notes=${encodeURIComponent(notesContent)}`
+                    body: `app_code=${encodeURIComponent(appCode)}&notes=${encodeURIComponent(notes)}`
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        showAlert('success', 'Admin notes saved successfully');
+                        // Update the display in real-time
+                        const remarksDisplay = document.getElementById('admin-remarks-display');
+                        if (remarksDisplay) {
+                            remarksDisplay.innerHTML = notes ? notes.replace(/\n/g, '<br>') : 'No remarks';
+                        }
+                        
+                        // Show success message
+                        showAlert('Notes saved successfully!', 'success');
+                        
+                        // Reset button
+                        saveNotesBtn.innerHTML = '<i class="bi bi-check-circle"></i> Saved!';
+                        setTimeout(() => {
+                            saveNotesBtn.innerHTML = originalText;
+                        }, 2000);
                     } else {
-                        showAlert('danger', data.message || 'Failed to save notes');
+                        throw new Error(data.message || 'Failed to save notes');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    showAlert('danger', 'An error occurred while saving notes');
+                    showAlert('Error saving notes: ' + error.message, 'danger');
+                    saveNotesBtn.innerHTML = originalText;
+                })
+                .finally(() => {
+                    saveNotesBtn.disabled = false;
                 });
             });
-            
-            // Handle status update form submission via AJAX
-            document.getElementById('status-form').addEventListener('submit', function(e) {
+        }
+        
+        // Handle status form submission
+        const statusForm = document.getElementById('status-form');
+        if (statusForm) {
+            statusForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                const formData = new FormData(this);
+                const formData = new FormData(statusForm);
                 
                 fetch('ajax/update_status.php', {
                     method: 'POST',
@@ -1090,95 +1205,274 @@ try {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
+                        showAlert('Status updated successfully!', 'success');
+                        
                         // Close modal
-                        bootstrap.Modal.getInstance(document.getElementById('statusModal')).hide();
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('statusModal'));
+                        if (modal) modal.hide();
                         
-                        // Update status display
-                        const statusBadge = document.querySelector('.status-badge');
-                        statusBadge.textContent = data.new_status;
-                        
-                        // Update badge color
-                        statusBadge.className = 'badge status-badge';
-                        switch (data.new_status.toUpperCase()) {
-                            case 'PENDING':
-                                statusBadge.classList.add('bg-warning');
-                                break;
-                            case 'UNDER REVIEW':
-                                statusBadge.classList.add('bg-primary');
-                                break;
-                            case 'APPROVED':
-                                statusBadge.classList.add('bg-success');
-                                break;
-                            case 'REJECTED':
-                                statusBadge.classList.add('bg-danger');
-                                break;
-                            default:
-                                statusBadge.classList.add('bg-secondary');
-                        }
-                        
-                        showAlert('success', 'Application status updated successfully');
+                        // Reload page to show updated status
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
                     } else {
-                        showAlert('danger', data.message || 'Failed to update status');
+                        throw new Error(data.message || 'Failed to update status');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    showAlert('danger', 'An error occurred while updating status');
+                    showAlert('Error updating status: ' + error.message, 'danger');
                 });
             });
-            
-            // Handle delete form submission via AJAX
-            document.getElementById('delete-form').addEventListener('submit', function(e) {
+        }
+        
+        // Handle delete form submission
+        const deleteForm = document.getElementById('delete-form');
+        if (deleteForm) {
+            deleteForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
-                const formData = new FormData(this);
-                
-                fetch('ajax/delete_application.php', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        showAlert('success', 'Application deleted successfully');
-                        // Redirect back to list after short delay
-                        setTimeout(() => {
-                            window.location.href = 'index.php';
-                        }, 2000);
-                    } else {
-                        bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
-                        showAlert('danger', data.message || 'Failed to delete application');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
-                    showAlert('danger', 'An error occurred while deleting application');
-                });
+                if (confirm('Are you absolutely sure you want to delete this application? This action cannot be undone.')) {
+                    const formData = new FormData(deleteForm);
+                    
+                    fetch('ajax/delete_application.php', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            showAlert('Application deleted successfully!', 'success');
+                            
+                            // Redirect to index after delay
+                            setTimeout(() => {
+                                window.location.href = 'index.php';
+                            }, 1500);
+                        } else {
+                            throw new Error(data.message || 'Failed to delete application');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showAlert('Error deleting application: ' + error.message, 'danger');
+                    });
+                }
             });
-            
-            // Helper function to show alerts
-            function showAlert(type, message) {
-                const alertContainer = document.getElementById('alert-container');
-                const alertHTML = `
+        }
+        
+        // Utility function to show alerts
+        function showAlert(message, type = 'info') {
+            const alertContainer = document.getElementById('alert-container');
+            if (alertContainer) {
+                const alertHtml = `
                     <div class="alert alert-${type} alert-dismissible fade show" role="alert">
                         ${message}
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 `;
+                alertContainer.insertAdjacentHTML('beforeend', alertHtml);
                 
-                alertContainer.innerHTML = alertHTML + alertContainer.innerHTML;
-                
-                // Auto dismiss after 5 seconds
-                const newAlert = alertContainer.querySelector('.alert');
+                // Auto-dismiss after 5 seconds
                 setTimeout(() => {
-                    if (newAlert) {
-                        const bsAlert = new bootstrap.Alert(newAlert);
-                        bsAlert.close();
+                    const newAlert = alertContainer.lastElementChild;
+                    if (newAlert && newAlert.classList.contains('alert')) {
+                        const closeBtn = newAlert.querySelector('.btn-close');
+                        if (closeBtn) closeBtn.click();
                     }
                 }, 5000);
             }
+        }
+        
+        // Handle signature modal
+        window.showSignatureModal = function() {
+            const modalHtml = `
+                <div class="modal fade" id="signatureModal" tabindex="-1" aria-labelledby="signatureModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="signatureModalLabel">Applicant Signature</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <img src="get_signature.php?id=<?php echo $app_code; ?>" alt="Applicant Signature" class="img-fluid">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            // Remove existing modal if any
+            const existingModal = document.getElementById('signatureModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+            
+            // Add new modal
+            document.body.insertAdjacentHTML('beforeend', modalHtml);
+            
+            // Show modal
+            const modal = new bootstrap.Modal(document.getElementById('signatureModal'));
+            modal.show();
+        };
+        
+        // Print functionality
+        const printBtn = document.querySelector('a[href*="print.php"]');
+        if (printBtn) {
+            printBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const printUrl = this.href;
+                const printWindow = window.open(printUrl, '_blank', 'width=800,height=600');
+                
+                printWindow.onload = function() {
+                    setTimeout(() => {
+                        printWindow.print();
+                    }, 500);
+                };
+            });
+        }
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + E for Edit
+            if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+                e.preventDefault();
+                const editBtn = document.querySelector('a[href*="edit.php"]');
+                if (editBtn) editBtn.click();
+            }
+            
+            // Ctrl/Cmd + P for Print
+            if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
+                e.preventDefault();
+                const printBtn = document.querySelector('a[href*="print.php"]');
+                if (printBtn) printBtn.click();
+            }
+            
+            // Escape to go back
+            if (e.key === 'Escape') {
+                const backBtn = document.querySelector('a[href="index.php"]');
+                if (backBtn) backBtn.click();
+            }
         });
+        
+        // Auto-save notes functionality
+        let notesTimeout;
+        if (notesTextarea) {
+            notesTextarea.addEventListener('input', function() {
+                clearTimeout(notesTimeout);
+                notesTimeout = setTimeout(() => {
+                    // Auto-save after 3 seconds of no typing
+                    if (saveNotesBtn && !saveNotesBtn.disabled) {
+                        saveNotesBtn.click();
+                    }
+                }, 3000);
+            });
+        }
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Enhanced table functionality for siblings
+        const siblingTable = document.querySelector('.table-responsive table');
+        if (siblingTable) {
+            // Add hover effects
+            const rows = siblingTable.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                row.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = '#f8f9fa';
+                });
+                row.addEventListener('mouseleave', function() {
+                    this.style.backgroundColor = '';
+                });
+            });
+        }
+        
+        // Form validation enhancement
+        const forms = document.querySelectorAll('form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const requiredFields = form.querySelectorAll('[required]');
+                let hasErrors = false;
+                
+                requiredFields.forEach(field => {
+                    if (!field.value.trim()) {
+                        field.classList.add('is-invalid');
+                        hasErrors = true;
+                    } else {
+                        field.classList.remove('is-invalid');
+                    }
+                });
+                
+                if (hasErrors) {
+                    e.preventDefault();
+                    showAlert('Please fill in all required fields.', 'warning');
+                }
+            });
+        });
+        
+        // Tooltips initialization
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+        // Popovers initialization
+        const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+        popoverTriggerList.map(function(popoverTriggerEl) {
+            return new bootstrap.Popover(popoverTriggerEl);
+        });
+        
+        // Responsive table enhancement
+        const tables = document.querySelectorAll('.table-responsive');
+        tables.forEach(table => {
+            if (table.scrollWidth > table.clientWidth) {
+                const scrollIndicator = document.createElement('div');
+                scrollIndicator.className = 'alert alert-info';
+                scrollIndicator.innerHTML = '<i class="bi bi-arrow-left-right"></i> Scroll horizontally to view all columns';
+                table.parentNode.insertBefore(scrollIndicator, table);
+            }
+        });
+    });
+    
+    // Global functions
+    window.refreshPage = function() {
+        window.location.reload();
+    };
+    
+    window.goBack = function() {
+        window.history.back();
+    };
+    
+    window.exportToPDF = function() {
+        window.print();
+    };
+    
+    // Check for unsaved changes
+    window.addEventListener('beforeunload', function(e) {
+        const notesTextarea = document.getElementById('admin_notes');
+        if (notesTextarea && notesTextarea.dataset.original !== notesTextarea.value) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
+    
+    // Set original value for notes to detect changes
+    document.addEventListener('DOMContentLoaded', function() {
+        const notesTextarea = document.getElementById('admin_notes');
+        if (notesTextarea) {
+            notesTextarea.dataset.original = notesTextarea.value;
+        }
+    });
     </script>
 </body>
 </html>

@@ -27,9 +27,11 @@
                     <li>
                         <a href="contact.php">CONTACT</a>
                     </li>
+                    <li>
+                        <a href="../admin/login.php">ADMIN</a>
+                    </li>
                 </ul>
-                <!-- END MAIN NAVIGATION -->
-
+                <!-- END MAIN NAVIGATION BAR -->
             </div>
         </div>
     </div>

@@ -1,15 +1,21 @@
 <?php
+// filepath: c:\xampp\htdocs\Information Management\IM---Copy\front end\validator.php
 
 declare(strict_types=1);
 
+// Start session if not already started
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
 class RegisterValidator {
-    private $username;
-    private $email;
-    private $password;
-    private $confirm_password;
-    private $pdo;
-    private $role;
-    private $redirect_url;
+    protected $username;    // Changed from private to protected
+    protected $email;       // Changed from private to protected
+    protected $password;    // Changed from private to protected
+    protected $confirm_password; // Changed from private to protected
+    protected $pdo;         // Changed from private to protected
+    protected $role;        // Changed from private to protected
+    protected $redirect_url; // Changed from private to protected
 
     function __construct(string $username, string $email, string $password, string $confirm_password, object $pdo, string $role = 'USER', string $redirect_url = "form-content.php?show=register"){
         $this->username = $username;
@@ -63,7 +69,7 @@ class RegisterValidator {
 
         return $this->role; // Return the validated role for use when creating the user
     }
-};
+}
 
 class LoginValidator {
     private $username;
@@ -109,11 +115,15 @@ class LoginValidator {
                 $errors["insufficient_privileges"] = "You don't have the required permissions to access this area";
                 
                 // Log unauthorized access attempt
-                $log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
-                              VALUES (?, 'UNAUTHORIZED_ACCESS', ?, CURRENT_TIMESTAMP)";
-                $log_stmt = $this->pdo->prepare($log_query);
-                $details = "Attempted to access " . $this->required_role . " area with " . $user["user_role"] . " privileges";
-                $log_stmt->execute([$user["user_id"], $details]);
+                try {
+                    $log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
+                                  VALUES (?, 'UNAUTHORIZED_ACCESS', ?, CURRENT_TIMESTAMP)";
+                    $log_stmt = $this->pdo->prepare($log_query);
+                    $details = "Attempted to access " . $this->required_role . " area with " . $user["user_role"] . " privileges";
+                    $log_stmt->execute([$user["user_id"], $details]);
+                } catch (PDOException $e) {
+                    error_log("Failed to log unauthorized access: " . $e->getMessage());
+                }
             }
         }
 
@@ -125,16 +135,20 @@ class LoginValidator {
         
         // Log successful login
         if ($user) {
-            $log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
-                         VALUES (?, 'LOGIN', ?, CURRENT_TIMESTAMP)";
-            $log_stmt = $this->pdo->prepare($log_query);
-            $details = "Successful login by " . $user["user_username"] . " with " . $user["user_role"] . " role";
-            $log_stmt->execute([$user["user_id"], $details]);
+            try {
+                $log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
+                             VALUES (?, 'LOGIN', ?, CURRENT_TIMESTAMP)";
+                $log_stmt = $this->pdo->prepare($log_query);
+                $details = "Successful login by " . $user["user_username"] . " with " . $user["user_role"] . " role";
+                $log_stmt->execute([$user["user_id"], $details]);
+            } catch (PDOException $e) {
+                error_log("Failed to log successful login: " . $e->getMessage());
+            }
         }
         
         return $user;
     }
-};
+}
 
 /**
  * Admin validator class for admin-specific registrations
@@ -200,36 +214,99 @@ class AdminRegisterValidator extends RegisterValidator {
 
 /**
  * Check if current logged-in user has admin privileges
+ * Uses flexible session structure to accommodate different session formats
  * 
  * @return bool True if user is admin, false otherwise
  */
 function is_admin_user() {
-    if (!isset($_SESSION["user"]) || !isset($_SESSION["user"]["user_role"])) {
-        return false;
+    // Check both session structures for compatibility
+    if (isset($_SESSION["user"]) && isset($_SESSION["user"]["user_role"])) {
+        return strtoupper($_SESSION["user"]["user_role"]) === 'ADMIN';
     }
     
-    return strtoupper($_SESSION["user"]["user_role"]) === 'ADMIN';
+    // Alternative session structure
+    if (isset($_SESSION["role"])) {
+        return strtoupper($_SESSION["role"]) === 'ADMIN';
+    }
+    
+    return false;
+}
+
+/**
+ * Get current user ID from session
+ * Handles different session structures
+ * 
+ * @return int|null User ID or null if not found
+ */
+function get_current_user_id() {
+    if (isset($_SESSION["user"]) && isset($_SESSION["user"]["user_id"])) {
+        return $_SESSION["user"]["user_id"];
+    }
+    
+    if (isset($_SESSION["user_id"])) {
+        return $_SESSION["user_id"];
+    }
+    
+    return null;
 }
 
 /**
  * Require admin privileges to access a page
  * If user is not admin, redirects to unauthorized page
+ * 
+ * @param object|null $pdo Optional PDO connection for logging
  */
-function require_admin() {
+function require_admin($pdo = null) {
     if (!is_admin_user()) {
         // Log unauthorized access if user is logged in but not admin
-        if (isset($_SESSION["user"]) && isset($_SESSION["user"]["user_id"])) {
-            global $pdo;
-            if ($pdo) {
+        $user_id = get_current_user_id();
+        if ($user_id && $pdo) {
+            try {
                 $log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
                              VALUES (?, 'UNAUTHORIZED_ACCESS', ?, CURRENT_TIMESTAMP)";
                 $log_stmt = $pdo->prepare($log_query);
                 $details = "Non-admin user attempted to access admin area: " . $_SERVER['REQUEST_URI'];
-                $log_stmt->execute([$_SESSION["user"]["user_id"], $details]);
+                $log_stmt->execute([$user_id, $details]);
+            } catch (PDOException $e) {
+                error_log("Failed to log unauthorized access: " . $e->getMessage());
             }
         }
         
-        header("Location: unauthorized.php");
+        // Check if unauthorized.php exists, otherwise redirect to login
+        if (file_exists("unauthorized.php")) {
+            header("Location: unauthorized.php");
+        } else if (file_exists("../unauthorized.php")) {
+            header("Location: ../unauthorized.php");
+        } else {
+            header("Location: login.php");
+        }
         exit();
     }
 }
+
+/**
+ * Safely get user role from session
+ * 
+ * @return string|null Current user role or null
+ */
+function get_user_role() {
+    if (isset($_SESSION["user"]) && isset($_SESSION["user"]["user_role"])) {
+        return $_SESSION["user"]["user_role"];
+    }
+    
+    if (isset($_SESSION["role"])) {
+        return $_SESSION["role"];
+    }
+    
+    return null;
+}
+
+/**
+ * Check if user is logged in
+ * 
+ * @return bool True if user is logged in, false otherwise
+ */
+function is_logged_in() {
+    return get_current_user_id() !== null;
+}
+?>

@@ -53,42 +53,51 @@ $stats = [
 ];
 
 try {
-    // Count total applicants
-    $stmt = $pdo->query("SELECT COUNT(*) as total FROM APPLICANT");
+    // Count total applicants (using lowercase)
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM applicant WHERE app_deleted_at IS NULL");
     if ($stmt) {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stats['applicants'] = $row['total'] ?? 0;
     }
 
-    // Count pending applications - Fix status code case sensitivity
-    $stmt = $pdo->query("SELECT COUNT(*) as total FROM SCHOLARSHIP_STATUS WHERE UPPER(STATUS_CODE) = 'PENDING' AND STATUS_IS_ACTIVE = TRUE");
-    if ($stmt) {
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stats['pending'] = $row['total'] ?? 0;
+    // Count status applications with proper status normalization (using lowercase)
+    $count_status_query = "SELECT 
+        CASE 
+            WHEN ss.status_code IS NULL OR ss.status_code NOT IN ('PENDING', 'APPROVED', 'REJECTED') 
+            THEN 'PENDING' 
+            ELSE UPPER(ss.status_code) 
+        END as normalized_status,
+        COUNT(DISTINCT a.app_code) as count
+        FROM applicant a
+        LEFT JOIN scholarship_status ss ON a.app_code = ss.app_code AND ss.status_is_active = TRUE
+        WHERE a.app_deleted_at IS NULL
+        GROUP BY 
+        CASE 
+            WHEN ss.status_code IS NULL OR ss.status_code NOT IN ('PENDING', 'APPROVED', 'REJECTED') 
+            THEN 'PENDING' 
+            ELSE UPPER(ss.status_code) 
+        END";
+
+    $count_status_stmt = $pdo->query($count_status_query);
+    while ($row = $count_status_stmt->fetch(PDO::FETCH_ASSOC)) {
+        $status = strtolower($row['normalized_status']);
+        if ($status === 'pending') {
+            $stats['pending'] = $row['count'];
+        } elseif ($status === 'approved') {
+            $stats['approved'] = $row['count'];
+        } elseif ($status === 'rejected') {
+            $stats['rejected'] = $row['count'];
+        }
     }
 
-    // Count approved applications
-    $stmt = $pdo->query("SELECT COUNT(*) as total FROM SCHOLARSHIP_STATUS WHERE UPPER(STATUS_CODE) = 'APPROVED' AND STATUS_IS_ACTIVE = TRUE");
-    if ($stmt) {
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stats['approved'] = $row['total'] ?? 0;
-    }
-
-    // Count rejected applications
-    $stmt = $pdo->query("SELECT COUNT(*) as total FROM SCHOLARSHIP_STATUS WHERE UPPER(STATUS_CODE) = 'REJECTED' AND STATUS_IS_ACTIVE = TRUE");
-    if ($stmt) {
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $stats['rejected'] = $row['total'] ?? 0;
-    }
-
-    // Count total messages (excluding soft deleted ones)
-    $stmt = $pdo->query("SELECT COUNT(*) as total FROM CONTACT_MESSAGE WHERE contm_deleted_at IS NULL");
+    // Count total messages (excluding soft deleted ones) (using lowercase)
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM contact_message WHERE contm_deleted_at IS NULL");
     if ($stmt) {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stats['total_messages'] = $row['total'] ?? 0;
     }
 
-    // Get recycle bin statistics for bar chart (excluding announcements)
+    // Get recycle bin statistics for bar chart (using lowercase)
     try {
         // Users - deleted vs not deleted
         $stmt = $pdo->query("SELECT COUNT(*) as total FROM users WHERE user_deleted_at IS NOT NULL");
@@ -108,17 +117,17 @@ try {
         $stmt = $pdo->query("SELECT COUNT(*) as total FROM population_table WHERE popt_deleted_at IS NULL");
         $active_population = $stmt ? ($stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0) : 0;
         
-        // Applicants - deleted vs not deleted (if soft delete exists)
+        // Applicants - deleted vs not deleted
         $stmt = $pdo->query("SELECT COUNT(*) as total FROM applicant WHERE app_deleted_at IS NOT NULL");
         $deleted_applicants = $stmt ? ($stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0) : 0;
         $stmt = $pdo->query("SELECT COUNT(*) as total FROM applicant WHERE app_deleted_at IS NULL");
         $active_applicants = $stmt ? ($stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0) : 0;
         
-        // Recycle bin table records vs total records
+        // Recycle bin table records
         $stmt = $pdo->query("SELECT COUNT(*) as total FROM recycle_bin");
         $recycle_bin_items = $stmt ? ($stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0) : 0;
         
-        // Scholarships - deleted vs not deleted (if exists)
+        // Scholarships - deleted vs not deleted
         $stmt = $pdo->query("SELECT COUNT(*) as total FROM scholarship WHERE scholar_deleted_at IS NOT NULL");
         $deleted_scholarships = $stmt ? ($stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0) : 0;
         $stmt = $pdo->query("SELECT COUNT(*) as total FROM scholarship WHERE scholar_deleted_at IS NULL");
@@ -138,7 +147,7 @@ try {
                 'messages' => $active_messages,
                 'population' => $active_population,
                 'applicants' => $active_applicants,
-                'recycle_items' => 0, // No "active" recycle bin items
+                'recycle_items' => 0,
                 'scholarships' => $active_scholarships
             ]
         ];
@@ -146,48 +155,52 @@ try {
     } catch (PDOException $e) {
         error_log("Recycle bin stats error: " . $e->getMessage());
         $recycle_bin_stats = [
-            'deleted' => [
-                'users' => 0,
-                'messages' => 0,
-                'population' => 0,
-                'applicants' => 0,
-                'recycle_items' => 0,
-                'scholarships' => 0
-            ],
-            'active' => [
-                'users' => 0,
-                'messages' => 0,
-                'population' => 0,
-                'applicants' => 0,
-                'recycle_items' => 0,
-                'scholarships' => 0
-            ]
+            'deleted' => ['users' => 0, 'messages' => 0, 'population' => 0, 'applicants' => 0, 'recycle_items' => 0, 'scholarships' => 0],
+            'active' => ['users' => 0, 'messages' => 0, 'population' => 0, 'applicants' => 0, 'recycle_items' => 0, 'scholarships' => 0]
         ];
     }
 
-    // Get recent applicants with more robust error handling
+    // Get recent applicants with CORRECT status handling - FIXED QUERY (using lowercase)
     try {
-        $stmt = $pdo->query("SELECT a.APP_CODE, a.APP_LAST_NAME, a.APP_FIRST_NAME, a.APP_EMAIL, a.APP_ETHNO_GROUP, a.APP_DATE_OF_BIRTH,
-                            (SELECT ss.STATUS_CODE FROM SCHOLARSHIP_STATUS ss WHERE ss.APP_CODE = a.APP_CODE AND ss.STATUS_IS_ACTIVE = TRUE LIMIT 1) as STATUS 
-                           FROM APPLICANT a 
-                           ORDER BY a.APP_CODE DESC LIMIT 5");
+        $recent_applicants_query = "SELECT 
+            a.app_code, 
+            a.app_last_name, 
+            a.app_first_name, 
+            a.app_email, 
+            a.app_ethno_group, 
+            a.app_date_of_birth,
+            COALESCE(ss.status_code, 'PENDING') as status,
+            ss.status_date
+        FROM applicant a 
+        LEFT JOIN scholarship_status ss ON a.app_code = ss.app_code AND ss.status_is_active = TRUE
+        WHERE a.app_deleted_at IS NULL
+        ORDER BY a.app_code DESC 
+        LIMIT 5";
+        
+        $stmt = $pdo->query($recent_applicants_query);
         if ($stmt) {
             $recent_applicants = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            // Set a default status for applicants with no status
-            foreach ($recent_applicants as &$applicant) {
-                if (empty($applicant['STATUS'])) {
-                    $applicant['STATUS'] = 'PENDING';
-                }
-            }
+        } else {
+            $recent_applicants = [];
         }
     } catch (PDOException $e) {
         error_log("Recent applicants query error: " . $e->getMessage());
         $recent_applicants = [];
     }
 
-    // Get recent messages with better error handling (excluding soft deleted ones)
+    // Get recent messages with better error handling (using lowercase)
     try {
-        $stmt = $pdo->query("SELECT * FROM CONTACT_MESSAGE WHERE contm_deleted_at IS NULL ORDER BY CONTM_SUBMISSION_DATE DESC LIMIT 5");
+        $stmt = $pdo->query("SELECT 
+            contm_id,
+            contm_name,
+            contm_email,
+            contm_message,
+            contm_submission_date,
+            contm_status
+            FROM contact_message 
+            WHERE contm_deleted_at IS NULL 
+            ORDER BY contm_submission_date DESC 
+            LIMIT 5");
         if ($stmt) {
             $recent_messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
@@ -196,9 +209,9 @@ try {
         $recent_messages = [];
     }
 
-    // Get ethnic group distribution for chart with improved error handling
+    // Get ethnic group distribution for chart (using lowercase)
     try {
-        $stmt = $pdo->query("SELECT APP_ETHNO_GROUP, COUNT(*) as count FROM APPLICANT GROUP BY APP_ETHNO_GROUP ORDER BY COUNT(*) DESC LIMIT 5");
+        $stmt = $pdo->query("SELECT app_ethno_group, COUNT(*) as count FROM applicant WHERE app_ethno_group IS NOT NULL AND app_deleted_at IS NULL GROUP BY app_ethno_group ORDER BY COUNT(*) DESC LIMIT 5");
         if ($stmt) {
             $ethnic_groups = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
@@ -207,7 +220,7 @@ try {
         $ethnic_groups = [];
     }
 
-    // Get population distribution by IP group from population_table
+    // Get population distribution by IP group from population_table (using lowercase)
     try {
         $pop_stmt = $pdo->query("SELECT 
                                     popt_ip_group, 
@@ -242,20 +255,18 @@ try {
     }
 
 } catch (PDOException $e) {
-    // Improved error logging
     error_log("Dashboard error: " . $e->getMessage());
     $error_message = "There was an error loading the dashboard data: " . $e->getMessage();
 }
 
-// Log dashboard access
+// Log dashboard access (using lowercase)
 try {
-    $log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
+    $log_query = "INSERT INTO user_logs (user_id, log_type, log_details, log_timestamp) 
                  VALUES (:user_id, 'DASHBOARD_ACCESS', 'Admin accessed dashboard', CURRENT_TIMESTAMP)";
     $log_stmt = $pdo->prepare($log_query);
     $log_stmt->bindParam(":user_id", $_SESSION["user_id"]);
     $log_stmt->execute();
 } catch (PDOException $e) {
-    // Just log but don't interrupt
     error_log("Could not log dashboard access: " . $e->getMessage());
 }
 ?>
@@ -309,6 +320,27 @@ try {
                 margin-left: 0;
             }
         }
+        .error-section {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .error-title {
+            color: #856404;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+        .error-details {
+            color: #664d03;
+            font-size: 0.875rem;
+            font-family: monospace;
+            background-color: rgba(0,0,0,0.05);
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            margin-top: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -318,11 +350,11 @@ try {
     <div class="main-content">
         <div class="container-fluid">
             <?php if(isset($error_message)): ?>
-            <div class="alert alert-danger"><?php echo $error_message; ?></div>
+            <div class="alert alert-danger"><?php echo htmlspecialchars($error_message); ?></div>
             <?php endif; ?>
             
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1>Dashboard</h1>
+                <h1><i class="bi bi-diagram-3"></i> Admin Dashboard</h1>
                 <div>
                     <button class="btn btn-outline-primary" id="refreshDashboard">
                         <i class="bi bi-arrow-clockwise"></i> Refresh Data
@@ -394,7 +426,7 @@ try {
                             </div>
                         </div>
                         <div class="card-footer bg-success border-top-0">
-                            <a href="scholarships/approved.php" class="text-white text-decoration-none">
+                            <a href="scholarships/index.php?status=APPROVED" class="text-white text-decoration-none">
                                 <small>View Details <i class="bi bi-arrow-right"></i></small>
                             </a>
                         </div>
@@ -430,7 +462,7 @@ try {
                 <div class="col-lg-3">
                     <div class="card card-dashboard">
                         <div class="card-header bg-white">
-                            <h5 class="card-title mb-0">Application Status Distribution</h5>
+                            <h5 class="card-title mb-0">Application Status</h5>
                         </div>
                         <div class="card-body">
                             <div class="chart-container">
@@ -502,11 +534,11 @@ try {
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <h4 class="text-primary"><?php echo number_format($population_stats['grand_total_population']); ?></h4>
+                                <h4 class="text-primary"><?php echo number_format($population_stats['grand_total_population'] ?? 0); ?></h4>
                                 <small class="text-muted">Total Indigenous Population</small>
                             </div>
                             <div class="mb-3">
-                                <h5 class="text-success"><?php echo $population_stats['total_locations']; ?></h5>
+                                <h5 class="text-success"><?php echo $population_stats['total_locations'] ?? 0; ?></h5>
                                 <small class="text-muted">Total Recorded Locations</small>
                             </div>
                             <div class="mb-3">
@@ -518,8 +550,8 @@ try {
                                 <?php if(!empty($population_groups)): ?>
                                     <?php foreach(array_slice($population_groups, 0, 5) as $group): ?>
                                         <div class="d-flex justify-content-between mb-1">
-                                            <span><?php echo htmlspecialchars($group['popt_ip_group']); ?></span>
-                                            <strong><?php echo number_format($group['total_population']); ?></strong>
+                                            <span><?php echo htmlspecialchars($group['popt_ip_group'] ?? 'Unknown'); ?></span>
+                                            <strong><?php echo number_format($group['total_population'] ?? 0); ?></strong>
                                         </div>
                                     <?php endforeach; ?>
                                     <?php if(count($population_groups) > 5): ?>
@@ -559,25 +591,39 @@ try {
                                         <?php if(!empty($recent_applicants)): ?>
                                             <?php foreach ($recent_applicants as $applicant): ?>
                                             <tr>
-                                                <td><?php echo htmlspecialchars($applicant['APP_LAST_NAME'] . ', ' . $applicant['APP_FIRST_NAME']); ?></td>
-                                                <td><?php echo htmlspecialchars($applicant['APP_ETHNO_GROUP']); ?></td>
                                                 <td>
-                                                    <?php if ($applicant['STATUS'] == 'APPROVED'): ?>
+                                                    <?php 
+                                                    $lastName = htmlspecialchars($applicant['app_last_name'] ?? 'Unknown');
+                                                    $firstName = htmlspecialchars($applicant['app_first_name'] ?? 'Unknown');
+                                                    echo $lastName . ', ' . $firstName;
+                                                    ?>
+                                                </td>
+                                                <td><?php echo htmlspecialchars($applicant['app_ethno_group'] ?? 'Not specified'); ?></td>
+                                                <td>
+                                                    <?php 
+                                                    $status = strtoupper($applicant['status'] ?? 'PENDING');
+                                                    // Normalize status
+                                                    if (!in_array($status, ['PENDING', 'APPROVED', 'REJECTED'])) {
+                                                        $status = 'PENDING';
+                                                    }
+                                                    
+                                                    if ($status === 'APPROVED'): ?>
                                                         <span class="badge bg-success">Approved</span>
-                                                    <?php elseif ($applicant['STATUS'] == 'REJECTED'): ?>
+                                                    <?php elseif ($status === 'REJECTED'): ?>
                                                         <span class="badge bg-danger">Rejected</span>
                                                     <?php else: ?>
-                                                        <span class="badge bg-warning">Pending</span>
+                                                        <span class="badge bg-warning text-dark">Pending</span>
                                                     <?php endif; ?>
                                                 </td>
                                                 <td>
-                                                    <a href="scholarships/view.php?id=<?php echo $applicant['APP_CODE']; ?>" class="btn btn-sm btn-primary">View</a>
+                                                    <a href="scholarships/view.php?id=<?php echo htmlspecialchars($applicant['app_code'] ?? ''); ?>" 
+                                                       class="btn btn-sm btn-primary">View</a>
                                                 </td>
                                             </tr>
                                             <?php endforeach; ?>
                                         <?php else: ?>
                                             <tr>
-                                                <td colspan="4" class="text-center">No recent applicants</td>
+                                                <td colspan="4" class="text-center text-muted">No recent applicants found</td>
                                             </tr>
                                         <?php endif; ?>
                                     </tbody>
@@ -610,7 +656,15 @@ try {
                                             <?php foreach ($recent_messages as $message): ?>
                                             <tr>
                                                 <td><?php echo htmlspecialchars($message['contm_name'] ?? 'Unknown'); ?></td>
-                                                <td><?php echo isset($message['contm_submission_date']) ? date('M d, Y', strtotime($message['contm_submission_date'])) : 'No date'; ?></td>
+                                                <td>
+                                                    <?php 
+                                                    if (isset($message['contm_submission_date']) && !empty($message['contm_submission_date'])) {
+                                                        echo date('M d, Y', strtotime($message['contm_submission_date']));
+                                                    } else {
+                                                        echo 'No date';
+                                                    }
+                                                    ?>
+                                                </td>
                                                 <td>
                                                     <?php if (isset($message['contm_status'])): ?>
                                                         <?php if ($message['contm_status'] == 'Unread'): ?>
@@ -625,13 +679,14 @@ try {
                                                     <?php endif; ?>
                                                 </td>
                                                 <td>
-                                                    <a href="contacts/view.php?id=<?php echo $message['contm_id'] ?? 0; ?>" class="btn btn-sm btn-primary">View</a>
+                                                    <a href="contacts/view.php?id=<?php echo htmlspecialchars($message['contm_id'] ?? '0'); ?>" 
+                                                       class="btn btn-sm btn-primary">View</a>
                                                 </td>
                                             </tr>
                                             <?php endforeach; ?>
                                         <?php else: ?>
                                             <tr>
-                                                <td colspan="4" class="text-center">No recent messages</td>
+                                                <td colspan="4" class="text-center text-muted">No recent messages found</td>
                                             </tr>
                                         <?php endif; ?>
                                     </tbody>
@@ -726,8 +781,8 @@ try {
         
         if(!empty($population_groups)) {
             foreach ($population_groups as $group) {
-                $pop_labels[] = $group['popt_ip_group'];
-                $pop_data[] = (int)$group['total_population'];
+                $pop_labels[] = $group['popt_ip_group'] ?? 'Unknown';
+                $pop_data[] = (int)($group['total_population'] ?? 0);
             }
         }
         ?>
@@ -951,8 +1006,7 @@ try {
         $ethnic_data = [];
         if(!empty($ethnic_groups)) {
             foreach ($ethnic_groups as $group) {
-                // Add null checks to prevent undefined index errors
-                $ethnic_labels[] = $group['APP_ETHNO_GROUP'] ?? 'Unknown';
+                $ethnic_labels[] = $group['app_ethno_group'] ?? 'Unknown';
                 $ethnic_data[] = isset($group['count']) ? (int)$group['count'] : 0;
             }
         } else {

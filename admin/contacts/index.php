@@ -317,6 +317,20 @@ function safe_time_format($date_string, $format = 'g:i A') {
             line-clamp: 3;
             -webkit-box-orient: vertical;
         }
+
+
+        .row-fade-out {
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); background-color: #ffc107; }
+            100% { transform: scale(1); }
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 margin-left: 0;
@@ -689,190 +703,314 @@ function safe_time_format($date_string, $format = 'g:i A') {
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Auto-dismiss alerts after 5 seconds
-            const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(function(alert) {
-                setTimeout(function() {
-                    const closeButton = alert.querySelector('.btn-close');
-                    if (closeButton) {
-                        closeButton.click();
-                    }
-                }, 5000);
-            });
+    document.addEventListener('DOMContentLoaded', function() {
+        // Auto-dismiss alerts after 5 seconds
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            setTimeout(function() {
+                const closeButton = alert.querySelector('.btn-close');
+                if (closeButton) {
+                    closeButton.click();
+                }
+            }, 5000);
+        });
 
-            // AJAX for status updates
-            document.querySelectorAll('.update-status-form').forEach(form => {
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const formData = new FormData(this);
-                    const messageId = formData.get('message_id');
-                    const newStatus = formData.get('new_status');
-                    
-                    // Show loading state
-                    const submitBtn = this.querySelector('button[type="submit"]');
-                    const originalText = submitBtn.innerHTML;
-                    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Updating...';
-                    submitBtn.disabled = true;
-                    
-                    fetch('ajax/update_status.php', {
-                        method: 'POST',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest'
-                        },
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // Update the status badge
-                            const statusBadge = document.querySelector(`#status-badge-${messageId}`);
+        // AJAX for status updates with real-time count updates and row management
+        document.querySelectorAll('.update-status-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                const messageId = formData.get('message_id');
+                const newStatus = formData.get('new_status');
+                
+                // Get current URL parameters to check if we're in a filtered view
+                const urlParams = new URLSearchParams(window.location.search);
+                const currentStatusFilter = urlParams.get('status');
+                
+                // Show loading state
+                const submitBtn = this.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Updating...';
+                submitBtn.disabled = true;
+                
+                fetch('ajax/update_status.php', {
+                    method: 'POST',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update the status badge
+                        const statusBadge = document.querySelector(`#status-badge-${messageId}`);
+                        const row = document.querySelector(`#msg-row-${messageId}`);
+                        
+                        if (statusBadge) {
                             statusBadge.textContent = newStatus;
                             
                             // Update badge class
                             let badgeClass = 'bg-secondary';
                             switch (newStatus) {
-                                case 'Unread': badgeClass = 'bg-danger'; break;
-                                case 'Read': badgeClass = 'bg-primary'; break;
-                                case 'Archived': badgeClass = 'bg-dark'; break;
+                                case 'Unread': 
+                                    badgeClass = 'bg-danger'; 
+                                    break;
+                                case 'Read': 
+                                    badgeClass = 'bg-primary'; 
+                                    break;
+                                case 'Replied': 
+                                    badgeClass = 'bg-success'; 
+                                    break;
+                                case 'Archived': 
+                                    badgeClass = 'bg-dark'; 
+                                    break;
                             }
                             statusBadge.className = `badge ${badgeClass}`;
-                            
+                        }
+                        
+                        // Update status counts in navigation buttons
+                        updateStatusCounts(data.status_counts);
+                        
+                        // Handle row visibility and highlighting based on current filter
+                        if (row) {
                             // Update row highlighting
-                            const row = document.querySelector(`#msg-row-${messageId}`);
                             if (newStatus === 'Unread') {
                                 row.classList.add('table-active');
                             } else {
                                 row.classList.remove('table-active');
                             }
                             
-                            // Close the modal
-                            const modal = bootstrap.Modal.getInstance(document.querySelector(`#statusModal${messageId}`));
-                            modal.hide();
+                            // Check if we need to hide the row due to filter mismatch
+                            let shouldHideRow = false;
                             
-                            // Show success message
-                            showAlert('success', data.message, 'bi-check-circle-fill');
-                        } else {
-                            showAlert('danger', 'Error: ' + data.message, 'bi-exclamation-triangle-fill');
+                            if (currentStatusFilter) {
+                                // We're in a filtered view
+                                if (currentStatusFilter.toUpperCase() !== newStatus.toUpperCase()) {
+                                    shouldHideRow = true;
+                                }
+                            } else {
+                                // We're in the main view (shows all except archived)
+                                if (newStatus.toUpperCase() === 'ARCHIVED') {
+                                    shouldHideRow = true;
+                                }
+                            }
+                            
+                            if (shouldHideRow) {
+                                // Add fade out animation
+                                row.style.transition = 'opacity 0.5s ease-out, transform 0.5s ease-out';
+                                row.style.opacity = '0';
+                                row.style.transform = 'translateX(-20px)';
+                                
+                                setTimeout(() => {
+                                    row.style.display = 'none';
+                                }, 500);
+                            } 
                         }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        showAlert('danger', 'An error occurred while updating status', 'bi-exclamation-triangle-fill');
-                    })
-                    .finally(() => {
-                        // Reset button state
-                        submitBtn.innerHTML = originalText;
-                        submitBtn.disabled = false;
-                    });
+                        
+                        // Close the modal
+                        const modal = bootstrap.Modal.getInstance(document.querySelector(`#statusModal${messageId}`));
+                        if (modal) {
+                            modal.hide();
+                        }
+                        
+                        // Show success message with more details
+                        let successMessage = `Status updated from ${data.old_status} to ${data.new_status}`;
+                        showAlert('success', successMessage);
+                        
+                    } else {
+                        showAlert('danger', 'Error: ' + data.message, 'bi-exclamation-triangle-fill');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    showAlert('danger', 'An error occurred while updating status', 'bi-exclamation-triangle-fill');
+                })
+                .finally(() => {
+                    // Reset button state
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
                 });
             });
+        });
+
+        // Function to update status counts in navigation buttons
+        function updateStatusCounts(counts) {
+            // Update count badges in navigation buttons
+            const buttons = {
+                'all': document.querySelector('a[href="index.php"] .badge'),
+                'unread': document.querySelector('a[href*="status=Unread"] .badge'),
+                'read': document.querySelector('a[href*="status=Read"] .badge'),
+                'archived': document.querySelector('a[href="archived_messages.php"] .badge')
+            };
             
-            // Handle delete message modal (Similar to view.php)
-            const deleteMessageModal = new bootstrap.Modal(document.getElementById('deleteMessageModal'));
-            const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
-            const messageDetailsContainer = document.getElementById('messageDetailsContainer');
-            let currentDeleteUrl = '';
-            
-            // Add click event listener to all delete buttons
-            document.querySelectorAll('.delete-message-btn').forEach(function(btn) {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
+            Object.keys(buttons).forEach(status => {
+                const badge = buttons[status];
+                if (badge && counts[status] !== undefined) {
+                    badge.textContent = counts[status];
                     
-                    // Get message data from data attributes
-                    const messageId = this.getAttribute('data-message-id');
-                    const messageName = this.getAttribute('data-message-name');
-                    const messageEmail = this.getAttribute('data-message-email');
-                    
-                    // Build delete URL
-                    currentDeleteUrl = `delete.php?id=${messageId}&action=soft_delete`;
-                    
-                    // Populate message details in modal
-                    messageDetailsContainer.innerHTML = `
-                        <strong>Message Details:</strong><br>
-                        <i class="bi bi-person-fill me-1"></i> <strong>From:</strong> ${messageName}<br>
-                        <i class="bi bi-envelope-fill me-1"></i> <strong>Email:</strong> ${messageEmail}<br>
-                        <i class="bi bi-hash me-1"></i> <strong>ID:</strong> #${messageId}
-                    `;
-                    
-                    // Update the confirm button href
-                    confirmDeleteBtn.setAttribute('href', currentDeleteUrl);
-                    
-                    // Show the modal
-                    deleteMessageModal.show();
-                    
-                    return false;
-                });
-            });
-            
-            // Handle confirm delete button click
-            if (confirmDeleteBtn) {
-                confirmDeleteBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    // Show loading state
-                    const originalText = this.innerHTML;
-                    this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Moving to Recycle Bin...';
-                    this.classList.add('disabled');
-                    
-                    // Close modal first
-                    deleteMessageModal.hide();
-                    
-                    // Navigate to delete URL after modal is hidden
+                    // Add pulse animation to show the count has changed
+                    badge.style.animation = 'pulse 0.6s ease-in-out';
                     setTimeout(() => {
-                        window.location.href = currentDeleteUrl;
-                    }, 300);
-                });
-            }
-            
-            // Reset button state when modal is hidden
-            document.getElementById('deleteMessageModal').addEventListener('hidden.bs.modal', function() {
-                if (confirmDeleteBtn) {
-                    confirmDeleteBtn.innerHTML = '<i class="bi bi-recycle me-1"></i>Yes, Move to Recycle Bin';
-                    confirmDeleteBtn.classList.remove('disabled');
+                        badge.style.animation = '';
+                    }, 600);
                 }
             });
             
-            // Add smooth modal animations
-            const modal = document.getElementById('deleteMessageModal');
-            if (modal) {
-                modal.addEventListener('show.bs.modal', function () {
-                    const modalDialog = this.querySelector('.modal-dialog');
-                    if (modalDialog) {
-                        modalDialog.style.transform = 'scale(0.8)';
-                        modalDialog.style.opacity = '0';
-                        setTimeout(() => {
-                            modalDialog.style.transition = 'all 0.3s ease';
-                            modalDialog.style.transform = 'scale(1)';
-                            modalDialog.style.opacity = '1';
-                        }, 10);
-                    }
-                });
-            }
+            // If we're on a filtered page and the count for that filter is 0, show a message
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentStatusFilter = urlParams.get('status');
             
-            // Helper function to show alerts
-            function showAlert(type, message, icon = '') {
-                const alertDiv = document.createElement('div');
-                alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
-                alertDiv.innerHTML = `
-                    <i class="bi ${icon} me-2"></i>
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            if (currentStatusFilter) {
+                const filterStatus = currentStatusFilter.toLowerCase();
+                if (counts[filterStatus] === 0) {
+                    // Check if there are any visible rows left
+                    const visibleRows = document.querySelectorAll('tbody tr[id^="msg-row-"]:not([style*="display: none"])');
+                    if (visibleRows.length === 0) {
+                        // Replace table content with "no messages" message
+                        const tbody = document.querySelector('.table tbody');
+                        if (tbody) {
+                            tbody.innerHTML = `
+                                <tr>
+                                    <td colspan="8" class="text-center py-5">
+                                        <i class="bi bi-inbox display-1 text-muted"></i>
+                                        <h3 class="mt-3">No ${currentStatusFilter.charAt(0).toUpperCase() + currentStatusFilter.slice(1).toLowerCase()} Messages</h3>
+                                        <p class="text-muted">All messages have been processed or moved to other statuses.</p>
+                                        <a href="index.php" class="btn btn-primary">View All Messages</a>
+                                    </td>
+                                </tr>
+                            `;
+                        }
+                    }
+                }
+            } else {
+                // We're in main view, check if no inbox messages left
+                if (counts['all'] === 0) {
+                    const visibleRows = document.querySelectorAll('tbody tr[id^="msg-row-"]:not([style*="display: none"])');
+                    if (visibleRows.length === 0) {
+                        const tbody = document.querySelector('.table tbody');
+                        if (tbody) {
+                            tbody.innerHTML = `
+                                <tr>
+                                    <td colspan="8" class="text-center py-5">
+                                        <i class="bi bi-inbox display-1 text-muted"></i>
+                                        <h3 class="mt-3">No Messages in Inbox</h3>
+                                        <p class="text-muted">All messages have been archived or processed.</p>
+                                        <a href="archived_messages.php" class="btn btn-secondary">View Archived Messages</a>
+                                    </td>
+                                </tr>
+                            `;
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Handle delete message modal (Similar to view.php)
+        const deleteMessageModal = new bootstrap.Modal(document.getElementById('deleteMessageModal'));
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const messageDetailsContainer = document.getElementById('messageDetailsContainer');
+        let currentDeleteUrl = '';
+        
+        // Add click event listener to all delete buttons
+        document.querySelectorAll('.delete-message-btn').forEach(function(btn) {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Get message data from data attributes
+                const messageId = this.getAttribute('data-message-id');
+                const messageName = this.getAttribute('data-message-name');
+                const messageEmail = this.getAttribute('data-message-email');
+                
+                // Build delete URL
+                currentDeleteUrl = `delete.php?id=${messageId}&action=soft_delete`;
+                
+                // Populate message details in modal
+                messageDetailsContainer.innerHTML = `
+                    <strong>Message Details:</strong><br>
+                    <i class="bi bi-person-fill me-1"></i> <strong>From:</strong> ${messageName}<br>
+                    <i class="bi bi-envelope-fill me-1"></i> <strong>Email:</strong> ${messageEmail}<br>
+                    <i class="bi bi-hash me-1"></i> <strong>ID:</strong> #${messageId}
                 `;
                 
-                const alertContainer = document.querySelector('#alert-container');
-                alertContainer.appendChild(alertDiv);
+                // Update the confirm button href
+                confirmDeleteBtn.setAttribute('href', currentDeleteUrl);
                 
-                // Auto dismiss after 5 seconds
+                // Show the modal
+                deleteMessageModal.show();
+                
+                return false;
+            });
+        });
+        
+        // Handle confirm delete button click
+        if (confirmDeleteBtn) {
+            confirmDeleteBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Show loading state
+                const originalText = this.innerHTML;
+                this.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Moving to Recycle Bin...';
+                this.classList.add('disabled');
+                
+                // Close modal first
+                deleteMessageModal.hide();
+                
+                // Navigate to delete URL after modal is hidden
                 setTimeout(() => {
-                    const closeButton = alertDiv.querySelector('.btn-close');
-                    if (closeButton && alertDiv.parentNode) {
-                        closeButton.click();
-                    }
-                }, 5000);
+                    window.location.href = currentDeleteUrl;
+                }, 300);
+            });
+        }
+        
+        // Reset button state when modal is hidden
+        document.getElementById('deleteMessageModal').addEventListener('hidden.bs.modal', function() {
+            if (confirmDeleteBtn) {
+                confirmDeleteBtn.innerHTML = '<i class="bi bi-recycle me-1"></i>Yes, Move to Recycle Bin';
+                confirmDeleteBtn.classList.remove('disabled');
             }
         });
+        
+        // Add smooth modal animations
+        const modal = document.getElementById('deleteMessageModal');
+        if (modal) {
+            modal.addEventListener('show.bs.modal', function () {
+                const modalDialog = this.querySelector('.modal-dialog');
+                if (modalDialog) {
+                    modalDialog.style.transform = 'scale(0.8)';
+                    modalDialog.style.opacity = '0';
+                    setTimeout(() => {
+                        modalDialog.style.transition = 'all 0.3s ease';
+                        modalDialog.style.transform = 'scale(1)';
+                        modalDialog.style.opacity = '1';
+                    }, 10);
+                }
+            });
+        }
+        
+        // Helper function to show alerts
+        function showAlert(type, message, icon = '') {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            alertDiv.innerHTML = `
+                <i class="bi ${icon} me-2"></i>
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            
+            const alertContainer = document.querySelector('#alert-container');
+            alertContainer.appendChild(alertDiv);
+            
+            // Auto dismiss after 5 seconds
+            setTimeout(() => {
+                const closeButton = alertDiv.querySelector('.btn-close');
+                if (closeButton && alertDiv.parentNode) {
+                    closeButton.click();
+                }
+            }, 5000);
+        }
+    });
     </script>
 </body>
 </html>

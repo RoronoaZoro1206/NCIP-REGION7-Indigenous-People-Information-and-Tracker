@@ -225,13 +225,6 @@ if (isset($_SESSION['message'])) {
 
     <!-- Main content -->
     <div class="main-content">
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="../index.php">Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Users</li>
-            </ol>
-        </nav>
-
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h1 class="h2"><i class="bi bi-people me-2"></i>User Management</h1>
             <?php if ($is_admin): ?>

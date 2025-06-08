@@ -23,7 +23,7 @@ require_once __DIR__ . '/includes/functions.php';
 
 // Get user data
 try {
-    $stmt = $pdo->prepare("SELECT * FROM USERS WHERE user_id = :user_id");
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE user_id = :user_id");
     $stmt->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -65,8 +65,6 @@ unset($_SESSION['error_message']);
 
 // Define a variable to help with active menu highlighting
 $currentPage = 'profile';
-
-// Use simple HTML structure directly in profile.php instead of including header
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -92,6 +90,21 @@ $currentPage = 'profile';
             border: 3px solid #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid rgba(0,0,0,.125);
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+            }
+        }
     </style>
 </head>
 <body>
@@ -102,22 +115,28 @@ $currentPage = 'profile';
     <div class="main-content">
         <div class="container-fluid">
             <?php if($success_message): ?>
-            <div class="alert alert-success"><?php echo $success_message; ?></div>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle me-2"></i><?php echo htmlspecialchars($success_message); ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
             <?php endif; ?>
             
             <?php if($error_message): ?>
-            <div class="alert alert-danger"><?php echo $error_message; ?></div>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i><?php echo htmlspecialchars($error_message); ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
             <?php endif; ?>
 
-            <div class="row mb-4">
-                <div class="col-md-12">
-                    <h1>My Profile</h1>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb">
-                            <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-                            <li class="breadcrumb-item active">Profile</li>
-                        </ol>
-                    </nav>
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h2"><i class="bi bi-person-circle me-2"></i>My Profile</h1>
+                <div class="d-flex gap-2">
+                    <a href="users/edit.php?id=<?php echo $_SESSION['user_id']; ?>" class="btn btn-outline-primary">
+                        <i class="bi bi-pencil"></i> Edit Profile
+                    </a>
+                    <a href="users/edit.php?id=<?php echo $_SESSION['user_id']; ?>" class="btn btn-outline-secondary">
+                        <i class="bi bi-key"></i> Change Password
+                    </a>
                 </div>
             </div>
 
@@ -125,28 +144,22 @@ $currentPage = 'profile';
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="card-title">Profile Picture</h5>
+                            <h5 class="card-title mb-0"><i class="bi bi-image me-2"></i>Profile Picture</h5>
                         </div>
                         <div class="card-body text-center">
                             <div class="profile-picture-container mb-3">
-                            <img src="<?php echo htmlspecialchars($profile_pic); ?>?v=<?php echo time(); ?>" 
-                                alt="Profile Picture" class="img-fluid rounded-circle profile-img">
-                                <?php if (isset($debug_info)): ?>
-                                <small class="text-muted d-block mt-2">
-                                    <!-- Debug info - remove in production -->
-                                    <?php foreach($debug_info as $key => $value): ?>
-                                        <?php echo $key; ?>: <?php echo htmlspecialchars($value); ?><br>
-                                    <?php endforeach; ?>
-                                </small>
-                                <?php endif; ?>
+                                <img src="<?php echo htmlspecialchars($profile_pic); ?>?v=<?php echo time(); ?>" 
+                                    alt="Profile Picture" class="img-fluid rounded-circle profile-img">
                             </div>        
                             <form action="update_profile.php" method="post" enctype="multipart/form-data">
                                 <div class="mb-3">
                                     <label for="user_profile_picture" class="form-label">Change Profile Picture</label>
-                                    <input class="form-control" type="file" id="user_profile_picture" name="profile_picture" accept="image/*">
-                                    <small class="text-muted">Recommended size: 300x300 pixels</small>
+                                    <input class="form-control" type="file" id="user_profile_picture" name="profile_picture" accept="image/*" required>
+                                    <small class="text-muted">Recommended size: 300x300 pixels. Max file size: 5MB</small>
                                 </div>
-                                <button type="submit" name="update_picture" class="btn btn-primary">Update Picture</button>
+                                <button type="submit" name="update_picture" class="btn btn-primary">
+                                    <i class="bi bi-upload"></i> Update Picture
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -155,39 +168,67 @@ $currentPage = 'profile';
                 <div class="col-md-8">
                     <div class="card">
                         <div class="card-header">
-                            <h5 class="card-title">Profile Information</h5>
+                            <h5 class="card-title mb-0"><i class="bi bi-person-badge me-2"></i>Profile Information</h5>
                         </div>
                         <div class="card-body">
-                            <form action="update_profile.php" method="post">
-                            <div class="mb-3">
-                            <label for="username" class="form-label">Username</label>
-                            <input type="text" class="form-control" id="username" name="username" 
-                                    value="<?php echo htmlspecialchars($user['user_username'] ?? ''); ?>" required>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="username" class="form-label">Username</label>
+                                    <input type="text" class="form-control" id="username" 
+                                        value="<?php echo htmlspecialchars($user['user_username'] ?? ''); ?>" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" 
+                                        value="<?php echo htmlspecialchars($user['user_email'] ?? ''); ?>" readonly>
+                                </div>
                             </div>
-                                
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="email" name="email" 
-                                    value="<?php echo htmlspecialchars($user['user_email'] ?? ''); ?>" required>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="role" class="form-label">Role</label>
+                                    <input type="text" class="form-control" id="role" value="<?php echo htmlspecialchars($user['user_role'] ?? 'USER'); ?>" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="timezone" class="form-label">Timezone</label>
+                                    <input type="text" class="form-control" id="timezone" value="<?php echo htmlspecialchars($user['user_timezone'] ?? 'Asia/Manila'); ?>" readonly>
+                                </div>
                             </div>
-                                
-                                <div class="mb-3">
-                                    <label for="current_password" class="form-label">Current Password (required to save changes)</label>
-                                    <input type="password" class="form-control" id="current_password" name="current_password" required>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="created" class="form-label">Member Since</label>
+                                    <input type="text" class="form-control" id="created" 
+                                        value="<?php 
+                                            if (isset($user['user_created'])) {
+                                                $timezone = new DateTimeZone($user['user_timezone'] ?? 'Asia/Manila');
+                                                $created_date = new DateTime($user['user_created']);
+                                                $created_date->setTimezone($timezone);
+                                                echo $created_date->format('F d, Y');
+                                            } else {
+                                                echo 'N/A';
+                                            }
+                                        ?>" readonly>
                                 </div>
-                                
-                                <div class="mb-3">
-                                    <label for="new_password" class="form-label">New Password (leave blank to keep current)</label>
-                                    <input type="password" class="form-control" id="new_password" name="new_password">
+                                <div class="col-md-6">
+                                    <label for="last_login" class="form-label">Last Login</label>
+                                    <input type="text" class="form-control" id="last_login" 
+                                        value="<?php 
+                                            if (isset($user['user_last_login']) && !empty($user['user_last_login'])) {
+                                                $timezone = new DateTimeZone($user['user_timezone'] ?? 'Asia/Manila');
+                                                $last_login = new DateTime($user['user_last_login']);
+                                                $last_login->setTimezone($timezone);
+                                                echo $last_login->format('M d, Y g:i A');
+                                            } else {
+                                                // Show current session login time if no previous login recorded
+                                                $timezone = new DateTimeZone($user['user_timezone'] ?? 'Asia/Manila');
+                                                $current_time = new DateTime();
+                                                $current_time->setTimezone($timezone);
+                                                echo $current_time->format('M d, Y g:i A') . ' (Current Session)';
+                                            }
+                                        ?>" readonly>
                                 </div>
-                                
-                                <div class="mb-3">
-                                    <label for="confirm_password" class="form-label">Confirm New Password</label>
-                                    <input type="password" class="form-control" id="confirm_password" name="confirm_password">
-                                </div>
-                                
-                                <button type="submit" name="update_profile" class="btn btn-primary">Save Changes</button>
-                            </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -196,7 +237,6 @@ $currentPage = 'profile';
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Toggle sidebar on mobile
@@ -213,6 +253,22 @@ $currentPage = 'profile';
                 profilePicInput.addEventListener('change', function() {
                     const file = this.files[0];
                     if (file) {
+                        // Validate file size (5MB limit)
+                        if (file.size > 5 * 1024 * 1024) {
+                            alert('File size must be less than 5MB');
+                            this.value = '';
+                            return;
+                        }
+                        
+                        // Validate file type
+                        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+                        if (!allowedTypes.includes(file.type)) {
+                            alert('Please select a valid image file (JPEG, PNG, GIF, WebP)');
+                            this.value = '';
+                            return;
+                        }
+                        
+                        // Show preview
                         const reader = new FileReader();
                         reader.onload = function(e) {
                             document.querySelector('.profile-img').src = e.target.result;
@@ -222,22 +278,16 @@ $currentPage = 'profile';
                 });
             }
             
-            // Password confirmation validation
-            const newPassword = document.getElementById('new_password');
-            const confirmPassword = document.getElementById('confirm_password');
-            
-            if (newPassword && confirmPassword) {
-                function validatePassword() {
-                    if (newPassword.value != confirmPassword.value) {
-                        confirmPassword.setCustomValidity("Passwords don't match");
-                    } else {
-                        confirmPassword.setCustomValidity('');
+            // Auto-dismiss alerts after 5 seconds
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(function(alert) {
+                setTimeout(function() {
+                    const closeButton = alert.querySelector('.btn-close');
+                    if (closeButton) {
+                        closeButton.click();
                     }
-                }
-                
-                newPassword.addEventListener('change', validatePassword);
-                confirmPassword.addEventListener('keyup', validatePassword);
-            }
+                }, 5000);
+            });
         });
     </script>
 </body>

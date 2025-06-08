@@ -1,4 +1,3 @@
-
 // Initialize map
 var map = L.map('map', {
     maxBounds: [
@@ -24,9 +23,11 @@ function hexToRgb(hex) {
         parseInt(hex.substring(4, 6), 16)
     ];
 }
+
 function rgbToHex(rgb) {
     return `#${rgb.map(val => val.toString(16).padStart(2, '0')).join('')}`;
 }
+
 function interpolateColor(color1, color2, factor) {
     let result = [];
     for (let i = 0; i < 3; i++) {
@@ -38,6 +39,13 @@ function interpolateColor(color1, color2, factor) {
 // Function to display selected data in table
 function displaySelectedData(item) {
     const tableContainer = document.getElementById('table-container');
+    const closeTableBtn = document.getElementById('close-table-btn');
+    
+    if (!tableContainer) {
+        console.error('Table container not found');
+        return;
+    }
+    
     tableContainer.innerHTML = `
         <table id="selected-data-table">
             <thead>
@@ -70,6 +78,11 @@ function displaySelectedData(item) {
             </tbody>
         </table>
     `;
+    
+    // Show the close button
+    if (closeTableBtn) {
+        closeTableBtn.style.display = 'block';
+    }
 }
 
 // Inject CSS for animation and panels
@@ -134,36 +147,72 @@ style.innerHTML = `
     font-size: 11px;
 }
 .leaflet-control.legend {
-    background: white;
-    padding: 10px;
+    background: white !important;
+    padding: 10px !important;
     line-height: 18px;
-    color: #333;
+    color: #333 !important;
     font-size: 13px;
     border-radius: 6px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2) !important;
+    border: 2px solid #999 !important;
+    max-width: 200px;
 }
-#info-panel {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    z-index: 1000;
-    max-width: 400px;
+.leaflet-control.legend strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #000 !important;
+    font-weight: bold;
 }
 `;
 document.head.appendChild(style);
 
 // Create IP summary panel
 const mapContainer = document.getElementById('map');
-const ipPanel = document.createElement('div');
-ipPanel.id = 'ip-summary-panel';
-ipPanel.innerHTML = `<h4>IP Group Summary</h4><div id="ip-summary-content">Loading...</div>`;
-mapContainer.appendChild(ipPanel);
+if (mapContainer) {
+    const ipPanel = document.createElement('div');
+    ipPanel.id = 'ip-summary-panel';
+    ipPanel.innerHTML = `<h4>IP Group Summary</h4><div id="ip-summary-content">Loading...</div>`;
+    mapContainer.appendChild(ipPanel);
+}
+
+// Legend Control Function
+function addLegend(map) {
+    const legend = L.control({ position: 'bottomright' });
+
+    legend.onAdd = function () {
+        const div = L.DomUtil.create('div', 'leaflet-control legend');
+        const ranges = [
+            { label: '≤ 100', color: '#0014FF' },
+            { label: '101 – 300', color: 'linear-gradient(to right, #00FF5B, #00FFFF)' },
+            { label: '301 – 600', color: 'linear-gradient(to right, #FFA500, #FF6666)' },
+            { label: '601 – 1000', color: 'linear-gradient(to right, #FFC300, #C70039)' },
+            { label: '> 1000', color: '#888888' }
+        ];
+
+        div.innerHTML = '<strong>Population Legend</strong><br>';
+        ranges.forEach(r => {
+            div.innerHTML += `
+                <div style="margin-bottom: 6px; display: flex; align-items: center;">
+                    <div style="
+                        width: 80px;
+                        height: 12px;
+                        background: ${r.color};
+                        margin-right: 8px;
+                        border: 1px solid #999;
+                        border-radius: 2px;
+                        display: inline-block;
+                    "></div>
+                    <span style="font-size: 12px; color: #333;">${r.label}</span>
+                </div>
+            `;
+        });
+
+        return div;
+    };
+
+    legend.addTo(map);
+    return legend;
+}
 
 // Fetch and display population data
 fetch('./get_population_data.php')
@@ -240,10 +289,13 @@ fetch('./get_population_data.php')
                     displaySelectedData(item);
                     
                     // Scroll to the data section
-                    document.getElementById('data-display-section').scrollIntoView({ 
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+                    const dataSection = document.getElementById('data-display-section');
+                    if (dataSection) {
+                        dataSection.scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
                 });
 
             // Update IP group stats
@@ -269,61 +321,22 @@ fetch('./get_population_data.php')
             }).join('');
 
         // Update summary panel
-        document.getElementById('ip-summary-content').innerHTML = `
-            ${summaryHtml}
-            <div class="ip-summary-total">
-                Total Population: ${allTotalPop.toLocaleString()}
-            </div>
-        `;
-    });
-
-// Legend Control
-function addLegend(map) {
-    const legend = L.control({ position: 'bottomright' });
-
-    legend.onAdd = function () {
-        const div = L.DomUtil.create('div', 'leaflet-control legend');
-        const ranges = [
-            { label: '≤ 100', color: '#0014FF' },
-            { label: '101 – 300', color: 'linear-gradient(to right, #00FF5B, #00FFFF)' },
-            { label: '301 – 600', color: 'linear-gradient(to right, #FFA500, #FF6666)' },
-            { label: '601 – 1000', color: 'linear-gradient(to right, #FFC300, #C70039)' },
-            { label: '> 1000', color: '#888888' }
-        ];
-
-        div.innerHTML = '<strong>Population Legend</strong><br>';
-        ranges.forEach(r => {
-            div.innerHTML += `
-                <div style="margin-bottom: 6px;">
-                    <div style="
-                        display: inline-block;
-                        width: 80px;
-                        height: 12px;
-                        background: ${r.color};
-                        margin-right: 6px;
-                        border: 1px solid #999;
-                        border-radius: 2px;
-                    "></div>${r.label}
+        const summaryContent = document.getElementById('ip-summary-content');
+        if (summaryContent) {
+            summaryContent.innerHTML = `
+                ${summaryHtml}
+                <div class="ip-summary-total">
+                    Total Population: ${allTotalPop.toLocaleString()}
                 </div>
             `;
-        });
+        }
 
-        return div;
-    };
-
-    legend.addTo(map);
-}
-
-// Close info panel on button click
-document.getElementById('close-btn').addEventListener('click', () => {
-    document.getElementById('info-panel').style.display = 'none';
-});
-
-// Close info panel on ESC key
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-        document.getElementById('info-panel').style.display = 'none';
-    }
-});
-
-addLegend(map);
+        // Add legend after data is loaded
+        addLegend(map);
+    })
+    .catch(error => {
+        console.error('Error fetching population data:', error);
+        
+        // Still add legend even if data fails to load
+        addLegend(map);
+    });

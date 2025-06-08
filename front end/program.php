@@ -1,3 +1,44 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Check if user is logged in and is an admin
+$is_admin = false;
+$show_admin_bar = false;
+
+if (isset($_SESSION["user_id"]) && isset($_SESSION["role"])) {
+    $is_admin = strtoupper($_SESSION["role"]) === 'ADMIN';
+    $show_admin_bar = $is_admin && !isset($_SESSION['temporary_role']);
+}
+
+if (isset($_SESSION["role"]) && strtoupper($_SESSION["role"]) === 'ADMIN' && !isset($_SESSION['temporary_role'])) {
+    // Show an admin-specific option
+    ?>
+    <div class="admin-actions">
+        <div class="admin-info">
+            <h3>Admin Mode</h3>
+            <p>You are viewing this page as an administrator</p>
+        </div>
+        <div class="admin-buttons">
+            <a href="../admin/index.php" class="btn">
+                <i class="bi bi-gear"></i> Return to Admin Panel
+            </a>
+        </div>
+    </div>
+    <?php
+}
+
+// Handle role switching if requested
+if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin) {
+    $_SESSION['temporary_role'] = true;
+    $_SESSION['original_role'] = 'ADMIN';
+    $_SESSION['temp_role'] = 'USER';
+    // Reload page without the parameter
+    header("Location: index.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en-US">
 <!-- START HEAD -->
@@ -31,9 +72,103 @@
     <link rel='stylesheet' id='revolution-slider-caption-css'  href='sliders/revolution-slider/rs-plugin/css/captions.css' type='text/css' media='all' />
     <link rel='stylesheet' id='revolution-slider-settings-css'  href='sliders/revolution-slider/rs-plugin/css/settings.css' type='text/css' media='all' />
     <link rel='stylesheet' id='ahortcodes-css'  href='css/shortcodes.css' type='text/css' media='all' />
+    <!-- Add Bootstrap Icons for admin buttons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
     <style type="text/css">
         body { background-color: #ffffff; background-image: url('images/bg-pattern.png'); background-repeat: repeat; background-position: top left; background-attachment: scroll; }
+        
+        /* Add these admin styles */
+        .admin-actions {
+            background: #152f49;
+            color: #fff;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            position: relative;
+            border-bottom: 3px solid #f8c301;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .admin-info {
+            display: flex;
+            flex-direction: column;
+            margin-right: 30px;
+        }
+
+        .admin-info h3 {
+            margin: 0 0 8px 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #f8c301;
+        }
+
+        .admin-info p {
+            margin: 0;
+            font-size: 15px;
+            color: #ffffff;
+        }
+
+        .admin-actions .admin-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .admin-actions .btn {
+            background-color: #ffffff;
+            color: #152f49;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            font-size: 15px;
+            white-space: nowrap;
+        }
+
+        .admin-actions .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+        }
+
+        .admin-actions .btn-primary {
+            background-color: #f8c301;
+            color: #ffffff;
+        }
+
+        .admin-actions .btn-primary:hover {
+            background-color: #e6b000 !important;
+            color: #ffffff !important;
+        }
+        
+        .admin-actions .btn i {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .admin-actions {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px;
+            }
+            
+            .admin-info {
+                margin-bottom: 15px;
+                margin-right: 0;
+            }
+            
+            .admin-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
     </style>
 
     <script type='text/javascript' src='js/jquery/jquery.js'></script>

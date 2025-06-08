@@ -132,17 +132,27 @@ $errors_json = json_encode($errors);
         body {
             background-color: #f8f9fa;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .login-container {
             max-width: 400px;
-            margin: 100px auto;
+            margin: 20px auto;
+            width: 100%;
+            padding: 0 20px;
+            box-sizing: border-box;
         }
         .login-logo {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
         .login-logo img {
-            max-width: 150px;
+            max-width: 120px;
+            height: auto;
         }
         .card {
             border: none;
@@ -154,10 +164,10 @@ $errors_json = json_encode($errors);
             color: white;
             font-weight: bold;
             border-radius: 10px 10px 0 0 !important;
-            padding: 15px;
+            padding: 12px 15px;
         }
         .card-body {
-            padding: 25px;
+            padding: 20px;
         }
         .btn-primary {
             background-color: #0d6efd;
@@ -179,8 +189,9 @@ $errors_json = json_encode($errors);
         }
         .register-link {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 15px;
         }
+
         /* Error Toast Styling */
         .toast-container {
             z-index: 1060;
@@ -219,6 +230,31 @@ $errors_json = json_encode($errors);
         .deleted-account-alert .alert-icon {
             font-size: 1.2em;
             margin-right: 8px;
+        }
+
+
+
+        /* Responsive adjustments */
+        @media (max-height: 700px) {
+            .login-container {
+                margin: 10px auto;
+            }
+            .login-logo {
+                margin-bottom: 15px;
+            }
+            .login-logo img {
+                max-width: 100px;
+            }
+            .card-body {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                max-width: 350px;
+                padding: 0 15px;
+            }
         }
     </style>
 </head>

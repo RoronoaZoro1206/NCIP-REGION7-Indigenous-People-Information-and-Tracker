@@ -96,100 +96,215 @@ $errors_json = json_encode($errors);
     <title>NCIP Admin - Registration</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .register-container {
+        max-width: 500px;
+        margin: 20px auto;
+        width: 100%;
+        padding: 0 20px;
+        box-sizing: border-box;
+    }
+    .register-logo {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .register-logo img {
+        max-width: 120px;
+        height: auto;
+    }
+    .card {
+        border: none;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        border-radius: 10px;
+    }
+    .card-header {
+        background-color: #0d6efd;
+        color: white;
+        font-weight: bold;
+        border-radius: 10px 10px 0 0 !important;
+        padding: 12px 15px;
+    }
+    .card-body {
+        padding: 20px;
+    }
+    .btn-primary {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        width: 100%;
+        padding: 8px;
+        font-weight: 500;
+    }
+    .input-group-text {
+        background-color: #e9ecef;
+        border-right: none;
+    }
+    .form-control {
+        border-left: none;
+    }
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+    .login-link {
+        text-align: center;
+        margin-top: 15px;
+    }
+    .login-link p {
+        margin-bottom: 0;
+        font-size: 14px;
+    }
+    .toast-container {
+        z-index: 1060;
+    }
+    .toast {
+        min-width: 300px;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border: none;
+        border-radius: 10px;
+        opacity: 1;
+    }
+    .toast-header {
+        border-radius: 10px 10px 0 0;
+        padding: 0.75rem 1rem;
+    }
+    .error-item {
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(0,0,0,.05);
+    }
+    .error-item:last-child {
+        border-bottom: none;
+    }
+    .error-field {
+        font-weight: 500;
+        color: #dc3545;
+    }
+    .password-requirements {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+    }
+    .verification-info {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+    }
+    .username-hint {
+        font-size: 0.875rem;
+        color: #6c757d;
+        margin-top: 0.25rem;
+    }
+    .mb-3 {
+        margin-bottom: 1rem !important;
+    }
+
+    /* Responsive adjustments for shorter screens */
+    @media (max-height: 800px) {
         .register-container {
-            max-width: 500px;
-            margin: 50px auto;
+            margin: 15px auto;
         }
         .register-logo {
-            text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
         }
         .register-logo img {
-            max-width: 150px;
-        }
-        .card {
-            border: none;
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
-            border-radius: 10px;
-        }
-        .card-header {
-            background-color: #0d6efd;
-            color: white;
-            font-weight: bold;
-            border-radius: 10px 10px 0 0 !important;
-            padding: 15px;
+            max-width: 100px;
         }
         .card-body {
-            padding: 25px;
+            padding: 15px;
+        }
+        .mb-3 {
+            margin-bottom: 0.75rem !important;
+        }
+        .password-requirements,
+        .verification-info,
+        .username-hint {
+            font-size: 0.8rem;
+        }
+    }
+
+    @media (max-height: 700px) {
+        .register-container {
+            margin: 10px auto;
+        }
+        .register-logo {
+            margin-bottom: 10px;
+        }
+        .register-logo img {
+            max-width: 80px;
+        }
+        .card-header {
+            padding: 10px 15px;
+        }
+        .card-body {
+            padding: 12px;
         }
         .btn-primary {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-            width: 100%;
+            padding: 6px;
+        }
+        .mb-3 {
+            margin-bottom: 0.5rem !important;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .register-container {
+            max-width: 450px;
+            padding: 0 15px;
+        }
+        .card-body {
+            padding: 15px;
+        }
+    }
+
+    @media (max-width: 400px) {
+        .register-container {
+            max-width: 380px;
+            padding: 0 10px;
+        }
+    }
+
+    /* Additional height optimization for very short screens */
+    @media (max-height: 600px) {
+        .register-container {
+            margin: 5px auto;
+        }
+        .register-logo {
+            display: none; /* Hide logo on very short screens */
+        }
+        .card-header {
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+        .card-body {
             padding: 10px;
-            font-weight: 500;
         }
-        .input-group-text {
-            background-color: #e9ecef;
-            border-right: none;
+        .form-label {
+            font-size: 14px;
+            margin-bottom: 0.25rem;
         }
-        .form-control {
-            border-left: none;
-        }
-        .form-control:focus {
-            border-color: #0d6efd;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        .password-requirements,
+        .verification-info,
+        .username-hint {
+            font-size: 0.75rem;
+            margin-top: 0.15rem;
         }
         .login-link {
-            text-align: center;
-            margin-top: 20px;
+            margin-top: 10px;
         }
-        .toast-container {
-            z-index: 1060;
+        .login-link p {
+            font-size: 12px;
         }
-        .toast {
-            min-width: 300px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-            border: none;
-            border-radius: 10px;
-            opacity: 1;
-        }
-        .toast-header {
-            border-radius: 10px 10px 0 0;
-            padding: 0.75rem 1rem;
-        }
-        .error-item {
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(0,0,0,.05);
-        }
-        .error-item:last-child {
-            border-bottom: none;
-        }
-        .error-field {
-            font-weight: 500;
-            color: #dc3545;
-        }
-        .password-requirements {
-            font-size: 0.875rem;
-            color: #6c757d;
-            margin-top: 0.25rem;
-        }
-        .verification-info {
-            font-size: 0.875rem;
-            color: #6c757d;
-            margin-top: 0.25rem;
-        }
-        .username-hint {
-            font-size: 0.875rem;
-            color: #6c757d;
-            margin-top: 0.25rem;
-        }
-    </style>
+    }
+</style>
 </head>
 <body>
     <div class="container register-container">

@@ -1,4 +1,5 @@
 <?php
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -53,63 +54,70 @@ try {
     // Include database connection
     include "../../config/database.php";
     
-    /**
-     * Ensure the contact_message table has soft delete columns
-     */
-    function ensureContactSoftDeleteColumns($pdo) {
-        try {
-            // Check if soft delete columns exist, if not, add them
-            $columns_to_add = [
-                'contm_deleted_at' => 'TIMESTAMP NULL',
-                'contm_deleted_by' => 'INTEGER'
-            ];
-            
-            foreach ($columns_to_add as $column => $definition) {
-                // Check if column exists
-                $stmt = $pdo->prepare("SELECT column_name FROM information_schema.columns 
-                                      WHERE table_name = 'contact_message' AND column_name = :column_name");
-                $stmt->execute([':column_name' => $column]);
-                
-                if (!$stmt->fetch()) {
-                    // Column doesn't exist, add it
-                    $pdo->exec("ALTER TABLE contact_message ADD COLUMN {$column} {$definition}");
-                    error_log("Added column {$column} to contact_message");
-                }
-            }
-        } catch (PDOException $e) {
-            error_log("Error ensuring soft delete columns for contact_message: " . $e->getMessage());
-        }
-    }
+    // Get the current status before updating
+    $current_status_query = "SELECT contm_status, contm_name, contm_email 
+                           FROM contact_message 
+                           WHERE contm_id = :message_id AND contm_deleted_at IS NULL";
+    $current_status_stmt = $pdo->prepare($current_status_query);
+    $current_status_stmt->bindParam(':message_id', $message_id, PDO::PARAM_INT);
+    $current_status_stmt->execute();
     
-    // Ensure soft delete columns exist
-    ensureContactSoftDeleteColumns($pdo);
-    
-    // Check if message exists and is not deleted - FIXED for PostgreSQL
-    $check_stmt = $pdo->prepare("SELECT contm_id, contm_name, contm_email FROM contact_message 
-                                WHERE contm_id = :message_id AND contm_deleted_at IS NULL");
-    $check_stmt->bindParam(':message_id', $message_id, PDO::PARAM_INT);
-    $check_stmt->execute();
-    
-    if ($check_stmt->rowCount() === 0) {
+    if ($current_status_stmt->rowCount() === 0) {
         echo json_encode(['success' => false, 'message' => 'Message not found or deleted']);
         exit;
     }
     
-    $message_data = $check_stmt->fetch(PDO::FETCH_ASSOC);
+    $message_data = $current_status_stmt->fetch(PDO::FETCH_ASSOC);
+    $old_status = $message_data['contm_status'] ?? 'Unread';
     
-    // Update status - PostgreSQL compatible (proper table/column names)
+    // Update status - PostgreSQL compatible
     $update_stmt = $pdo->prepare("UPDATE contact_message SET contm_status = :new_status WHERE contm_id = :message_id AND contm_deleted_at IS NULL");
     $update_stmt->bindParam(":new_status", $new_status, PDO::PARAM_STR);
     $update_stmt->bindParam(":message_id", $message_id, PDO::PARAM_INT);
     $result = $update_stmt->execute();
     
     if ($result && $update_stmt->rowCount() > 0) {
+        // Get updated status counts
+        $count_status_query = "SELECT contm_status, COUNT(*) as count
+                              FROM contact_message
+                              WHERE contm_deleted_at IS NULL
+                              GROUP BY contm_status";
+        $count_status_stmt = $pdo->query($count_status_query);
+        
+        $status_counts = [
+            'all' => 0,
+            'unread' => 0,
+            'read' => 0,
+            'replied' => 0,
+            'archived' => 0
+        ];
+        
+        $total_inbox_messages = 0; // All except archived
+        
+        while ($row = $count_status_stmt->fetch(PDO::FETCH_ASSOC)) {
+            $status = strtolower(trim($row['contm_status']));
+            $count = (int)$row['count'];
+            
+            // Set individual status counts
+            if (array_key_exists($status, $status_counts)) {
+                $status_counts[$status] = $count;
+            }
+            
+            // Add to inbox count (everything except archived)
+            if ($status !== 'archived') {
+                $total_inbox_messages += $count;
+            }
+        }
+        
+        // Set the "all" count to show inbox messages (excluding archived)
+        $status_counts['all'] = $total_inbox_messages;
+        
         // Log the status update activity
         try {
             $log_query = "INSERT INTO user_logs (user_id, log_type, log_details, log_timestamp) 
                          VALUES (:user_id, 'UPDATE_CONTACT_STATUS', :details, CURRENT_TIMESTAMP)";
             $log_stmt = $pdo->prepare($log_query);
-            $details = "Updated contact message status to {$new_status}: {$message_data['contm_name']} ({$message_data['contm_email']}) - ID: {$message_id}";
+            $details = "Updated contact message status from {$old_status} to {$new_status}: {$message_data['contm_name']} ({$message_data['contm_email']}) - ID: {$message_id}";
             $log_stmt->bindParam(":user_id", $_SESSION["user_id"], PDO::PARAM_INT);
             $log_stmt->bindParam(":details", $details, PDO::PARAM_STR);
             $log_stmt->execute();
@@ -120,9 +128,12 @@ try {
         
         echo json_encode([
             'success' => true, 
-            'message' => "Status updated to {$new_status} successfully",
+            'message' => "Status updated from {$old_status} to {$new_status} successfully",
+            'old_status' => $old_status,
             'new_status' => $new_status,
-            'message_name' => $message_data['contm_name']
+            'message_name' => $message_data['contm_name'],
+            'message_id' => $message_id,
+            'status_counts' => $status_counts
         ]);
     } else {
         echo json_encode(['success' => false, 'message' => 'Failed to update status or no changes made']);

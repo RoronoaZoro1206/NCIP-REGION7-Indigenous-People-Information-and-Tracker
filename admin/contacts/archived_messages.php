@@ -90,7 +90,7 @@ try {
     
     // Get messages for current page (excluding soft deleted) - FIXED FOR PostgreSQL
     $sql = "SELECT contm_id, contm_name, contm_email, contm_phone, contm_message, 
-                   contm_submission_date, contm_status, contm_reply, contm_reply_date 
+                   contm_submission_date, contm_status
             FROM contact_message 
             WHERE contm_status = 'Archived' 
             AND contm_deleted_at IS NULL" . $search_condition . " 
@@ -273,7 +273,7 @@ function safe_time_format($date_string, $format = 'g:i A') {
                         <div class="col-md-8">
                             <div class="input-group">
                                 <span class="input-group-text"><i class="bi bi-search"></i></span>
-                                <input type="text" class="form-control" placeholder="Search archived messages by name, email, or content..." name="search" value="<?php echo htmlspecialchars($search); ?>">
+                                <input type="text" class="form-control" placeholder="Search archived messages by name, email, or content..." name="search" autocomplete="off" value="<?php echo htmlspecialchars($search); ?>">
                                 <button class="btn btn-primary" type="submit">
                                     <i class="bi bi-search me-1"></i>Search
                                 </button>
@@ -585,9 +585,9 @@ function safe_time_format($date_string, $format = 'g:i A') {
                         // Check if table is now empty
                         const tableBody = document.querySelector('tbody');
                         if (tableBody && tableBody.children.length === 0) {
-                            location.reload(); // Reload to show empty state
+                            location.reload(); 
                         }
-                    }, 300);
+                    }, 5000);
                 }
                 
                 showAlert('success', 'Message unarchived successfully', 'bi-check-circle-fill');

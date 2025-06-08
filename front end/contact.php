@@ -4,6 +4,42 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Check if user is logged in and is an admin
+$is_admin = false;
+$show_admin_bar = false;
+
+if (isset($_SESSION["user_id"]) && isset($_SESSION["role"])) {
+    $is_admin = strtoupper($_SESSION["role"]) === 'ADMIN';
+    $show_admin_bar = $is_admin && !isset($_SESSION['temporary_role']);
+}
+
+if (isset($_SESSION["role"]) && strtoupper($_SESSION["role"]) === 'ADMIN' && !isset($_SESSION['temporary_role'])) {
+    // Show an admin-specific option
+    ?>
+    <div class="admin-actions">
+        <div class="admin-info">
+            <h3>Admin Mode</h3>
+            <p>You are viewing this page as an administrator</p>
+        </div>
+        <div class="admin-buttons">
+            <a href="../admin/index.php" class="btn">
+                <i class="bi bi-gear"></i> Return to Admin Panel
+            </a>
+        </div>
+    </div>
+    <?php
+}
+
+// Handle role switching if requested
+if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin) {
+    $_SESSION['temporary_role'] = true;
+    $_SESSION['original_role'] = 'ADMIN';
+    $_SESSION['temp_role'] = 'USER';
+    // Reload page without the parameter
+    header("Location: index.php");
+    exit();
+}
+
 // Include database connection for displaying contact statistics or recent messages
 require_once 'db.php';
 
@@ -67,6 +103,8 @@ unset($_SESSION['contact_error']);
     <link rel='stylesheet' id='contact-form-css'  href='css/contact_form.css' type='text/css' media='all' />
     <link rel='stylesheet' id='font-awesome-css'  href='css/font-awesome.css' type='text/css' media='all' />
     <link rel='stylesheet' id='custom-css'  href='css/custom.css' type='text/css' media='all' />
+    <!-- Add Bootstrap Icons for admin buttons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
     <style type="text/css">
         body { 
@@ -75,6 +113,79 @@ unset($_SESSION['contact_error']);
             background-repeat: repeat; 
             background-position: top left; 
             background-attachment: scroll; 
+        }
+
+        .admin-actions {
+            background: #152f49;
+            color: #fff;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            position: relative;
+            border-bottom: 3px solid #f8c301;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .admin-info {
+            display: flex;
+            flex-direction: column;
+            margin-right: 30px;
+        }
+
+        .admin-info h3 {
+            margin: 0 0 8px 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #f8c301;
+        }
+
+        .admin-info p {
+            margin: 0;
+            font-size: 15px;
+            color: #ffffff;
+        }
+
+        .admin-actions .admin-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .admin-actions .btn {
+            background-color: #ffffff;
+            color: #152f49;
+            padding: 10px 20px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border: none;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            font-size: 15px;
+            white-space: nowrap;
+        }
+
+        .admin-actions .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+        }
+
+        .admin-actions .btn-primary {
+            background-color: #f8c301;
+            color: #ffffff;
+        }
+
+        .admin-actions .btn-primary:hover {
+            background-color: #e6b000 !important;
+            color: #ffffff !important;
+        }
+        
+        .admin-actions .btn i {
+            margin-right: 8px;
+            font-size: 16px;
         }
         
         .contact-success {
@@ -129,6 +240,23 @@ unset($_SESSION['contact_error']);
             border-radius: 4px;
             margin-top: 15px;
             font-size: 14px;
+        }
+        @media (max-width: 768px) {
+            .admin-actions {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px;
+            }
+            
+            .admin-info {
+                margin-bottom: 15px;
+                margin-right: 0;
+            }
+            
+            .admin-buttons {
+                width: 100%;
+                justify-content: space-between;
+            }
         }
     </style>
 
@@ -462,7 +590,6 @@ unset($_SESSION['contact_error']);
                             <fieldset>
                         
                                 <ul>
-                        
                                     <li class="text-field with-icon span3">
                                         <label for="name-contact-form">
                                             <span class="mainlabel">Name <span style="color: red;">*</span></span>
@@ -473,8 +600,7 @@ unset($_SESSION['contact_error']);
                                                 <img src="images/contact-form/user.png" alt="" title="" />
                                             </span>
                                             <input type="text" name="yit_contact[name]" id="name-contact-form" 
-                                                   class="with-icon required" value="" maxlength="100" 
-                                                   placeholder="Enter your full name" />
+                                                   class="with-icon required" value="" maxlength="100"  />
                                         </div>
 
                                         <div class="msg-error"></div>
@@ -491,8 +617,7 @@ unset($_SESSION['contact_error']);
                                                 <img src="images/contact-form/envelope.png" alt="" title="" />
                                             </span>
                                             <input type="email" name="yit_contact[email]" id="email-contact-form" 
-                                                   class="with-icon required email-validate" value="" maxlength="100"
-                                                   placeholder="Enter your email address" />
+                                                   class="with-icon required email-validate" value="" maxlength="100"/>
                                         </div>
 
                                         <div class="msg-error"></div>
@@ -509,8 +634,7 @@ unset($_SESSION['contact_error']);
                                                 <img src="images/contact-form/phone.png" alt="" title="" />
                                             </span>
                                             <input type="tel" name="yit_contact[phone]" id="phone-contact-form" 
-                                                   class="with-icon" value="" maxlength="20"
-                                                   placeholder="Enter your phone number (optional)" />
+                                                   class="with-icon" value="" maxlength="20"/>
                                         </div>
 
                                         <div class="msg-error"></div>
@@ -527,8 +651,7 @@ unset($_SESSION['contact_error']);
                                                 <img src="images/contact-form/pencil.png" alt="" title="" />
                                             </span>
                                             <textarea name="yit_contact[message]" id="message-contact-form" 
-                                                      rows="8" cols="30" class="with-icon required"
-                                                      placeholder="Please describe your inquiry, question, or message. We appreciate your feedback and will respond as soon as possible."></textarea>
+                                                      rows="8" cols="30" class="with-icon required"></textarea>
                                         </div>
 
                                         <div class="msg-error"></div>
@@ -547,12 +670,6 @@ unset($_SESSION['contact_error']);
                                 </ul>
                             </fieldset>
                         </form>
-                        
-                        <!-- Response Time Notice -->
-                        <div class="response-time-notice">
-                            <strong>Response Time:</strong> We typically respond to messages within 24-48 hours during business days. 
-                            For urgent matters, please call our office directly at (032) 254 3630.
-                        </div>
 
                         <script type="text/javascript">
                             var messages_form_4 = {
@@ -629,22 +746,6 @@ unset($_SESSION['contact_error']);
                         </p>
                     </div>
                     <?php endif; ?>
-
-                    <!-- Social Media Widget -->
-                    <div class="widget-last widget last-tweets">
-                        <h3>Follow Us</h3>
-                        <div class="list-tweets-2"></div>
-                        <p id="follow-facebook">
-                            <a href="https://www.facebook.com/CebuPO" target="_blank">
-                                <i class="icon-facebook"></i> Follow us on Facebook &rarr;
-                            </a>
-                        </p>
-                        <p style="margin-top: 10px;">
-                            <a href="mailto:region67.cebupo@ncip.gov.ph">
-                                <i class="icon-envelope"></i> Email us directly &rarr;
-                            </a>
-                        </p>
-                    </div>
                 </div>
                 <!-- END SIDEBAR -->
             </div>
@@ -681,6 +782,32 @@ unset($_SESSION['contact_error']);
 <script type='text/javascript' src='js/jquery.cycle.min.js'></script>
 <script type='text/javascript' src='js/shortcodes.js'></script>
 <script type='text/javascript' src='js/jquery.custom.js'></script>
+<script type="text/javascript">
+// Add this before the closing </body> tag
+jQuery(document).ready(function($) {
+    // Handle label visibility for input fields
+    $('.contact-form input, .contact-form textarea').on('input focus blur', function() {
+        var $this = $(this);
+        var $li = $this.closest('li');
+        
+        if ($this.val().length > 0) {
+            $li.addClass('has-value');
+        } else {
+            $li.removeClass('has-value');
+        }
+    });
+    
+    // Check initial state on page load
+    $('.contact-form input, .contact-form textarea').each(function() {
+        var $this = $(this);
+        var $li = $this.closest('li');
+        
+        if ($this.val().length > 0) {
+            $li.addClass('has-value');
+        }
+    });
+});
+</script>
 
 </body>
 <!-- END BODY -->

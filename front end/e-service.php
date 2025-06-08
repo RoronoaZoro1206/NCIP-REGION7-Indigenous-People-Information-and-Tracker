@@ -16,9 +16,6 @@ if (!isset($_SESSION["user_id"])) {
             <p>You are viewing this page as an administrator</p>
         </div>
         <div class="admin-buttons">
-            <a href="?switch_role=USER" class="btn btn-primary">
-                <i class="bi bi-person"></i> Switch to User Mode
-            </a>
             <a href="../admin/index.php" class="btn">
                 <i class="bi bi-gear"></i> Return to Admin Panel
             </a>
@@ -84,7 +81,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         ");
         
         // Set current date for date of filing
+        date_default_timezone_set('Asia/Manila');
         $currentDate = date('Y-m-d');
+
+        $adminStmt->bindParam(':app_number', $_POST['app_number']);
+        $adminStmt->bindParam(':dof', $currentDate);
         
         $adminStmt->bindParam(':app_number', $_POST['app_number']);
         $adminStmt->bindParam(':dof', $currentDate);
@@ -229,26 +230,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $addressStmt->execute();
         
         // 4. Insert educational attainment records
-        $educationCategories = ['Elementary', 'High School', 'Vocational', 'College/Undergraduate', 'Post-Graduate', 'Masteral', 'Doctorate'];
-        
-        foreach ($educationCategories as $index => $category) {
-            // Skip if school name is empty (means no education at this level)
-            if (empty($_POST['school_name'][$index])) {
-                continue;
-            }
+        $educationCategories = [
+            1 => 'Elementary',
+            2 => 'High School', 
+            3 => 'Vocational',
+            4 => 'College/Undergraduate',
+            5 => 'Post-Graduate',
+            6 => 'Masteral',
+            7 => 'Doctorate'
+        ];
+
+        foreach ($educationCategories as $categoryId => $categoryName) {
+            $index = $categoryId - 1; // Convert to 0-based index for form fields
             
-            // Get category ID
-            $categoryId = $index + 1; 
-            
-            // Insert education attainment
+            // Always insert education attainment record (even if empty) for proper tracking
             $eduStmt = $pdo->prepare("
-                INSERT INTO EDUCATION_ATTAINMENT (
-                    EDUC_ID, 
-                    APP_CODE
+                INSERT INTO education_attainment (
+                    educ_id, 
+                    app_code
                 ) VALUES (
                     :category_id, 
                     :app_code
-                ) RETURNING EDUA_CODE
+                ) RETURNING edua_code
             ");
             
             $eduStmt->bindParam(':category_id', $categoryId);
@@ -256,26 +259,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $eduStmt->execute();
             
             $eduCode = null;
-
             if ($eduStmt->rowCount() > 0) {
                 $result = $eduStmt->fetch(PDO::FETCH_ASSOC);
                 $eduCode = $result['edua_code'];
             }
             
             if (!$eduCode) {
-                throw new Exception("Failed to get EDUA_CODE after insertion for category: " . $category);
+                throw new Exception("Failed to get edua_code after insertion for category: " . $categoryName);
             }
             
-            
-            // Insert school details - Updated to use EDUA_CODE instead of EDUC_CODE
+            // Insert school details (even if empty - store as NULL/empty for tracking)
             $schoolStmt = $pdo->prepare("
-                INSERT INTO SCHOOL (
-                    SCH_NAME, 
-                    SCH_ADDRESS, 
-                    SCH_YEAR_GRAD, 
-                    SCH_GRADE_AVG, 
-                    SCH_RANK, 
-                    EDUA_CODE
+                INSERT INTO school (
+                    sch_name, 
+                    sch_address, 
+                    sch_year_grad, 
+                    sch_grade_avg, 
+                    sch_rank, 
+                    edua_code
                 ) VALUES (
                     :name, 
                     :address, 
@@ -286,14 +287,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 )
             ");
             
-            $schoolStmt->bindParam(':name', $_POST['school_name'][$index]);
-            $schoolAddress = $_POST['school_address'][$index] ?? '';
-            $schoolStmt->bindParam(':address', $schoolAddress);
+            // Handle empty fields properly
+            $schoolName = !empty($_POST['school_name'][$index]) ? $_POST['school_name'][$index] : null;
+            $schoolAddress = !empty($_POST['school_address'][$index]) ? $_POST['school_address'][$index] : null;
             $yearGraduated = !empty($_POST['year_graduated'][$index]) ? (int)$_POST['year_graduated'][$index] : null;
-            $schoolStmt->bindParam(':year_grad', $yearGraduated);
             $gradeAverage = !empty($_POST['grade_average'][$index]) ? (float)$_POST['grade_average'][$index] : null;
+            $rank = !empty($_POST['rank'][$index]) ? $_POST['rank'][$index] : null;
+            
+            $schoolStmt->bindParam(':name', $schoolName);
+            $schoolStmt->bindParam(':address', $schoolAddress);
+            $schoolStmt->bindParam(':year_grad', $yearGraduated);
             $schoolStmt->bindParam(':grade_avg', $gradeAverage);
-            $schoolStmt->bindParam(':rank', $_POST['rank'][$index]);
+            $schoolStmt->bindParam(':rank', $rank);
             $schoolStmt->bindParam(':edua_code', $eduCode);
             
             $schoolStmt->execute();
@@ -561,6 +566,7 @@ try {
     <link rel='stylesheet' id='contact-form-css'  href='css/contact_form.css' type='text/css' media='all' />
     <link rel='stylesheet' id='custom-css'  href='css/custom.css' type='text/css' media='all' />
     <link rel="stylesheet" id="form-container" href="css/form.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 
     <style type="text/css">
         body { 
@@ -724,8 +730,8 @@ try {
         }
 
         .admin-actions .btn-primary:hover {
-            color: #ffffff;
-            background-color: #fff !important;
+            background-color: #e6b000 !important;
+            color: #ffffff !important;
         }
         
         .admin-actions .btn i {
@@ -864,6 +870,24 @@ try {
         .scholarship-form select option:checked {
             background-color: #f0f0f0;
             color: #333;
+        }
+
+        #signature_preview {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #signature_preview_img:hover {
+            transform: scale(1.05);
+            transition: transform 0.2s ease;
+        }
+
+        #remove_signature:hover {
+            background-color: #c82333 !important;
         }
                 
         @media (max-width: 768px) {
@@ -1451,7 +1475,6 @@ try {
                                 <?php foreach($educationCategories as $category): ?>
                                     <option value="<?php echo $category['EDUC_NAME']; ?>"><?php echo $category['EDUC_NAME']; ?></option>
                                 <?php endforeach; ?>
-                                <option value="None">None</option>
                             </select>
                         </div>
                         
@@ -1523,35 +1546,42 @@ try {
                 </div>
             </div>
             
-            <!-- CERTIFICATION Section -->
-            <div class="form-section">
-                <h3>Certification</h3>
-                
-                <div class="certification">
-                    <p>This is to certify that I am not availing of any other government scholarship and all data supplied in this application are true and correct. Any material misinterpretation or alteration made hereof shall be sufficient ground for this application to be denied. If chosen, I will abide by the rules and regulations set forth by the National Commission on Indigenous Peoples.</p>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="form_signed" name="form_signed">
-                            <label for="form_signed">Paper form has been signed by applicant</label>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="signature_date">Date signed by applicant:</label>
-                        <input type="date" id="signature_date" name="signature_date">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="signature_scan">Upload scan of e-signature:</label>
-                        <input type="file" id="signature_scan" name="signature_scan" accept="image/*">
+        <!-- CERTIFICATION Section -->
+        <div class="form-section">
+            <h3>Certification</h3>
+            
+            <div class="certification">
+                <p>This is to certify that I am not availing of any other government scholarship and all data supplied in this application are true and correct. Any material misinterpretation or alteration made hereof shall be sufficient ground for this application to be denied. If chosen, I will abide by the rules and regulations set forth by the National Commission on Indigenous Peoples.</p>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="form_signed" name="form_signed">
+                        <label for="form_signed">Paper form has been signed by applicant</label>
                     </div>
                 </div>
             </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="signature_date">Date signed by applicant:</label>
+                    <input type="date" id="signature_date" name="signature_date">
+                </div>
+                
+                <div class="form-group">
+                    <label for="signature_scan">Upload scan of e-signature:</label>
+                    <input type="file" id="signature_scan" name="signature_scan" accept="image/*">
+                    <div id="signature_preview" style="margin-top: 10px; display: none;">
+                        <img id="signature_preview_img" src="" alt="Signature Preview" style="max-width: 200px; max-height: 150px; border: 1px solid #ddd; border-radius: 4px; padding: 5px; background: #f9f9f9;">
+                        <div style="margin-top: 5px; font-size: 12px; color: #666;">
+                            <span id="file_info"></span>
+                            <button type="button" id="remove_signature" style="margin-left: 10px; background: #dc3545; color: white; border: none; padding: 2px 8px; border-radius: 3px; font-size: 11px; cursor: pointer;">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
             
             <!-- FORM SUBMISSION -->
             <div class="text-center mt-4">
@@ -1599,6 +1629,13 @@ try {
 document.addEventListener('DOMContentLoaded', function() {
     let siblingCount = 0;
     
+    // Date validation
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const currentDate = `${currentYear}-${month}-${day}`;
+    
     // Add sibling function
     function addSibling() {
         siblingCount++;
@@ -1616,15 +1653,15 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="form-row">
                 <div class="form-group">
                     <label>Last Name:</label>
-                    <input type="text" name="sib_last_name[${siblingCount-1}]" required>
+                    <input type="text" name="sib_last_name[${siblingCount-1}]" required autocomplete="off">
                 </div>
                 <div class="form-group">
                     <label>First Name:</label>
-                    <input type="text" name="sib_first_name[${siblingCount-1}]" required>
+                    <input type="text" name="sib_first_name[${siblingCount-1}]" required autocomplete="off">
                 </div>
                 <div class="form-group" style="flex: 0 0 100px;">
                     <label>M.I.:</label>
-                    <input type="text" name="sib_middle_initial[${siblingCount-1}]" maxlength="1" style="width: 100%;">
+                    <input type="text" name="sib_middle_initial[${siblingCount-1}]" maxlength="1" style="width: 100%;" autocomplete="off">
                 </div>
             </div>
             <div class="form-row">
@@ -1637,8 +1674,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     <input type="text" name="scholar_course[${siblingCount-1}]" placeholder="Course" style="width:95%" autocomplete="off">
                 </div>
                 <div class="form-group">
-                    <label>Year:</label>
-                    <input type="text" name="scholar_year[${siblingCount-1}]" placeholder="Year" style="width:95%" autocomplete="off">
+                    <label>Year Level:</label>
+                    <select name="scholar_year[${siblingCount-1}]" style="width:95%; height: 38px; padding: 8px 10px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;">
+                        <option value="">Select Year Level</option>
+                        <option value="1st Year">1st Year</option>
+                        <option value="2nd Year">2nd Year</option>
+                        <option value="3rd Year">3rd Year</option>
+                        <option value="4th Year">4th Year</option>
+                        <option value="5th Year">5th Year</option>
+                    </select>
                 </div>
             </div>
             <div class="form-row">
@@ -1649,6 +1693,8 @@ document.addEventListener('DOMContentLoaded', function() {
         container.appendChild(siblingDiv);
         document.getElementById('sibling_count').value = siblingCount;
         
+        // No need for year validation since we're using a dropdown now
+        
         // Add remove functionality
         siblingDiv.querySelector('.remove-sibling').addEventListener('click', function() {
             siblingDiv.remove();
@@ -1656,16 +1702,58 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('sibling_count').value = siblingCount;
         });
     }
+
+    // Add this new function to handle year validation for sibling year inputs
+    function addYearValidation(input) {
+        input.addEventListener('blur', function() {
+            const enteredValue = this.value.trim();
+            
+            if (enteredValue !== '') {
+                const enteredYear = parseInt(enteredValue);
+                
+                if (!isNaN(enteredYear)) {
+                    if (enteredYear > currentYear) {
+                        this.value = currentYear;
+                    } else if (enteredYear < 1900) {
+                        this.value = 1900;
+                    }
+                }
+            }
+        });
+        
+        input.addEventListener('change', function() {
+            const enteredValue = this.value.trim();
+            
+            if (enteredValue !== '') {
+                const enteredYear = parseInt(enteredValue);
+                
+                if (!isNaN(enteredYear)) {
+                    if (enteredYear > currentYear) {
+                        this.value = currentYear;
+                    } else if (enteredYear < 1900) {
+                        this.value = 1900;
+                    }
+                }
+            }
+        });
+        
+        // Allow only numeric input
+        input.addEventListener('keypress', function(e) {
+            if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
+                (e.keyCode === 65 && e.ctrlKey === true) ||
+                (e.keyCode === 67 && e.ctrlKey === true) ||
+                (e.keyCode === 86 && e.ctrlKey === true) ||
+                (e.keyCode === 88 && e.ctrlKey === true)) {
+                return;
+            }
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
+        });
+    }
     
     // Add sibling button event listener
     document.getElementById('add-sibling').addEventListener('click', addSibling);
-    
-    // Date validation
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0');
-    const day = String(today.getDate()).padStart(2, '0');
-    const currentDate = `${currentYear}-${month}-${day}`;
     
     // Set date limits
     const dobInput = document.getElementById('dob');
@@ -1678,7 +1766,114 @@ document.addEventListener('DOMContentLoaded', function() {
         signatureDateInput.setAttribute('max', currentDate);
     }
     
-    // Set year limits for all year inputs
+    // Enhanced year validation for year graduated fields
+    const yearGraduatedInputs = document.querySelectorAll('input[name^="year_graduated"]');
+    yearGraduatedInputs.forEach(function(input) {
+        input.setAttribute('max', currentYear);
+        input.setAttribute('min', '1900');
+        
+        // Only validate when user finishes typing (blur/change events)
+        input.addEventListener('blur', function() {
+            const enteredValue = this.value.trim();
+            
+            if (enteredValue !== '') {
+                const enteredYear = parseInt(enteredValue);
+                
+                if (!isNaN(enteredYear)) {
+                    if (enteredYear > currentYear) {
+                        this.value = currentYear;
+                    } else if (enteredYear < 1900) {
+                        this.value = 1900;
+                    }
+                }
+            }
+        });
+        
+        input.addEventListener('change', function() {
+            const enteredValue = this.value.trim();
+            
+            if (enteredValue !== '') {
+                const enteredYear = parseInt(enteredValue);
+                
+                if (!isNaN(enteredYear)) {
+                    if (enteredYear > currentYear) {
+                        this.value = currentYear;
+                    } else if (enteredYear < 1900) {
+                        this.value = 1900;
+                    }
+                }
+            }
+        });
+        
+        // Allow only numeric input
+        input.addEventListener('keypress', function(e) {
+            if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
+                (e.keyCode === 65 && e.ctrlKey === true) ||
+                (e.keyCode === 67 && e.ctrlKey === true) ||
+                (e.keyCode === 86 && e.ctrlKey === true) ||
+                (e.keyCode === 88 && e.ctrlKey === true)) {
+                return;
+            }
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
+        });
+    });
+    
+    // Apply same validation to family ITR year fields
+    const yearITRInputs = document.querySelectorAll('input[id*="fam_year_itr"]');
+    yearITRInputs.forEach(function(input) {
+        input.setAttribute('max', currentYear);
+        input.setAttribute('min', '1900');
+        
+        input.addEventListener('blur', function() {
+            const enteredValue = this.value.trim();
+            
+            if (enteredValue !== '') {
+                const enteredYear = parseInt(enteredValue);
+                
+                if (!isNaN(enteredYear)) {
+                    if (enteredYear > currentYear) {
+                        this.value = currentYear;
+                    } else if (enteredYear < 1900) {
+                        this.value = 1900;
+                    }
+                }
+            }
+        });
+        
+        input.addEventListener('change', function() {
+            const enteredValue = this.value.trim();
+            
+            if (enteredValue !== '') {
+                const enteredYear = parseInt(enteredValue);
+                
+                if (!isNaN(enteredYear)) {
+                    if (enteredYear > currentYear) {
+                        this.value = currentYear;
+                    } else if (enteredYear < 1900) {
+                        this.value = 1900;
+                    }
+                }
+            }
+        });
+        
+        // Allow only numeric input
+        input.addEventListener('keypress', function(e) {
+            if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
+                (e.keyCode === 65 && e.ctrlKey === true) ||
+                (e.keyCode === 67 && e.ctrlKey === true) ||
+                (e.keyCode === 86 && e.ctrlKey === true) ||
+                (e.keyCode === 88 && e.ctrlKey === true)) {
+                return;
+            }
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
+            }
+        });
+    });
+    
+    // Set year limits for all other year inputs
     const yearInputs = document.querySelectorAll('input[type="number"][id*="year"]');
     yearInputs.forEach(function(input) {
         if(input.getAttribute('max') === '<?php echo date("Y"); ?>') {
@@ -1690,6 +1885,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const form = document.querySelector('form');
     if(form) {
         form.addEventListener('submit', function(event) {
+            // Clean up income values before submission
+            const incomeFields = document.querySelectorAll('input[id*="annual_income"]');
+            incomeFields.forEach(function(input) {
+                // Remove commas for form submission
+                input.value = input.value.replace(/,/g, '');
+            });
+
             const requiredFields = form.querySelectorAll('[required]');
             let valid = true;
             
@@ -1701,6 +1903,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     field.classList.remove('is-invalid');
                     field.style.borderColor = '#ddd';
+                }
+            });
+            
+            // Additional validation for year fields before submission (UPDATED)
+            const allYearInputs = document.querySelectorAll('input[name^="year_graduated"], input[id*="fam_year_itr"], input[name^="scholar_year"]');
+            allYearInputs.forEach(input => {
+                if (input.value && parseInt(input.value) > currentYear) {
+                    input.value = currentYear;
                 }
             });
             
@@ -1770,20 +1980,143 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Income formatting (remove non-numeric characters except decimal point)
+    // Income formatting with automatic comma formatting
     const incomeInputs = document.querySelectorAll('input[id*="annual_income"]');
     incomeInputs.forEach(function(input) {
-        input.addEventListener('input', function() {
-            // Allow only numbers and decimal point
-            this.value = this.value.replace(/[^0-9.]/g, '');
-            
-            // Ensure only one decimal point
-            const parts = this.value.split('.');
-            if(parts.length > 2) {
-                this.value = parts[0] + '.' + parts.slice(1).join('');
+        // Allow only numeric input and decimal point while typing
+        input.addEventListener('keypress', function(e) {
+            // Allow backspace, delete, tab, escape, enter
+            if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
+                // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                (e.keyCode === 65 && e.ctrlKey === true) ||
+                (e.keyCode === 67 && e.ctrlKey === true) ||
+                (e.keyCode === 86 && e.ctrlKey === true) ||
+                (e.keyCode === 88 && e.ctrlKey === true) ||
+                // Allow decimal point
+                e.keyCode === 46 || e.keyCode === 190) {
+                return;
+            }
+            // Ensure that it is a number and stop the keypress
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
             }
         });
+        
+        // Clean input while typing (remove non-numeric except decimal)
+        input.addEventListener('input', function() {
+            // Remove all non-numeric characters except decimal point
+            let cleanValue = this.value.replace(/[^0-9.]/g, '');
+            
+            // Ensure only one decimal point
+            const parts = cleanValue.split('.');
+            if(parts.length > 2) {
+                cleanValue = parts[0] + '.' + parts.slice(1).join('');
+            }
+            
+            // Update without commas while typing
+            this.value = cleanValue;
+        });
+        
+        // Format with commas only when field loses focus
+        input.addEventListener('blur', function() {
+            const enteredValue = this.value.trim();
+            
+            if (enteredValue !== '') {
+                // Remove existing commas first
+                let cleanValue = enteredValue.replace(/,/g, '');
+                
+                // Ensure only one decimal point
+                const parts = cleanValue.split('.');
+                if(parts.length > 2) {
+                    cleanValue = parts[0] + '.' + parts.slice(1).join('');
+                }
+                
+                // Split into integer and decimal parts
+                const [integerPart, decimalPart] = cleanValue.split('.');
+                
+                // Add commas to integer part
+                let formattedInteger = '';
+                if(integerPart) {
+                    formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                }
+                
+                // Combine integer and decimal parts
+                let formattedValue = formattedInteger;
+                if(decimalPart !== undefined) {
+                    formattedValue += '.' + decimalPart;
+                }
+                
+                // Update the input value with formatting
+                this.value = formattedValue;
+            }
+            
+            // Store the clean value for form submission
+            const cleanValue = this.value.replace(/,/g, '');
+            this.setAttribute('data-clean-value', cleanValue);
+        });
     });
+
+    // Image preview functionality for signature upload
+    const signatureScanInput = document.getElementById('signature_scan');
+    const signaturePreview = document.getElementById('signature_preview');
+    const signaturePreviewImg = document.getElementById('signature_preview_img');
+    const fileInfo = document.getElementById('file_info');
+    const removeSignatureBtn = document.getElementById('remove_signature');
+
+    if (signatureScanInput) {
+        signatureScanInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            
+            if (file) {
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    alert('Please select an image file.');
+                    this.value = '';
+                    return;
+                }
+                
+                // Validate file size (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB.');
+                    this.value = '';
+                    return;
+                }
+                
+                // Create file reader
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    // Show preview
+                    signaturePreviewImg.src = e.target.result;
+                    signaturePreview.style.display = 'block';
+                    
+                    // Show file info
+                    const fileSize = (file.size / 1024).toFixed(1);
+                    fileInfo.textContent = `${file.name} (${fileSize} KB)`;
+                };
+                
+                reader.readAsDataURL(file);
+            } else {
+                // Hide preview if no file selected
+                signaturePreview.style.display = 'none';
+                signaturePreviewImg.src = '';
+                fileInfo.textContent = '';
+            }
+        });
+    }
+
+    // Remove signature functionality
+    if (removeSignatureBtn) {
+        removeSignatureBtn.addEventListener('click', function() {
+            // Clear the file input
+            signatureScanInput.value = '';
+            
+            // Hide preview
+            signaturePreview.style.display = 'none';
+            signaturePreviewImg.src = '';
+            fileInfo.textContent = '';
+        });
+    }
 });
 </script>
 

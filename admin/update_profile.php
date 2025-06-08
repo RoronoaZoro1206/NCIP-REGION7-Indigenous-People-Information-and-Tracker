@@ -52,91 +52,109 @@ if(isset($_FILES['profile_picture']) && !empty($_FILES['profile_picture']['name'
     exit();
 }
 
-// Handle profile information update
+// Handle profile information update (username and email only)
 if(isset($_POST['update_profile'])) {
     $username = sanitize_input($_POST['username']);
     $email = sanitize_input($_POST['email']);
-    $current_password = $_POST['current_password'];
-    $new_password = $_POST['new_password'] ?? '';
-    $confirm_password = $_POST['confirm_password'] ?? '';
     
-    try {
-        // Get current user data - using lowercase column names
-        $stmt = $pdo->prepare("SELECT user_pwd FROM users WHERE user_id = :user_id");
-        $stmt->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        // Verify current password - use lowercase key name
-        if (!$user || !password_verify($current_password, $user['user_pwd'])) {
-            $_SESSION['error_message'] = "Current password is incorrect.";
-            header("Location: profile.php");
-            exit();
-        }
-        
-        // Check if username already exists - using lowercase table and column names
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE user_username = :username AND user_id != :user_id");
-        $stmt->bindParam(':username', $username, PDO::PARAM_STR);
-        $stmt->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
-        $stmt->execute();
-        if ($stmt->fetchColumn() > 0) {
-            $_SESSION['error_message'] = "Username already taken. Please choose a different one.";
-            header("Location: profile.php");
-            exit();
-        }
-        
-        // Check if email already exists - using lowercase table and column names
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE user_email = :email AND user_id != :user_id");
-        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-        $stmt->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
-        $stmt->execute();
-        if ($stmt->fetchColumn() > 0) {
-            $_SESSION['error_message'] = "Email already in use. Please choose a different one.";
-            header("Location: profile.php");
-            exit();
-        }
-        
-        // Update profile information
-        if (!empty($new_password)) {
-            // Check if passwords match
-            if ($new_password != $confirm_password) {
-                $_SESSION['error_message'] = "New passwords do not match.";
+    // Validate input
+    $errors = [];
+    
+    // Username validation
+    if (empty($username)) {
+        $errors[] = 'Username is required';
+    } elseif (strlen($username) < 3) {
+        $errors[] = 'Username must be at least 3 characters';
+    } elseif (strlen($username) > 50) {
+        $errors[] = 'Username cannot exceed 50 characters';
+    } elseif (!preg_match('/^[a-zA-Z0-9_\s\-\.]+$/', $username)) {
+        $errors[] = 'Username can only contain letters, numbers, spaces, underscores, hyphens, and periods';
+    } elseif (preg_match('/^\s|\s$/', $username)) {
+        $errors[] = 'Username cannot start or end with spaces';
+    } elseif (preg_match('/\s{2,}/', $username)) {
+        $errors[] = 'Username cannot contain consecutive spaces';
+    }
+
+    // Email validation
+    if (empty($email)) {
+        $errors[] = 'Email is required';
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = 'Please enter a valid email address';
+    } elseif (strlen($email) > 100) {
+        $errors[] = 'Email cannot exceed 100 characters';
+    }
+
+    if (empty($errors)) {
+        try {
+            // Check if username already exists (excluding current user)
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE user_username = :username AND user_id != :user_id");
+            $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+            $stmt->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+            $stmt->execute();
+            if ($stmt->fetchColumn() > 0) {
+                $_SESSION['error_message'] = "Username already taken. Please choose a different one.";
                 header("Location: profile.php");
                 exit();
             }
             
-            // Update with new password
-            $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-            $stmt = $pdo->prepare("UPDATE users SET user_username = :username, user_email = :email, user_pwd = :password WHERE user_id = :user_id");
-            $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+            // Check if email already exists (excluding current user)
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE user_email = :email AND user_id != :user_id");
             $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-            $stmt->bindParam(':password', $hashed_password, PDO::PARAM_STR);
+            $stmt->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+            $stmt->execute();
+            if ($stmt->fetchColumn() > 0) {
+                $_SESSION['error_message'] = "Email already in use. Please choose a different one.";
+                header("Location: profile.php");
+                exit();
+            }
+            
+            // Get current user data for logging changes
+            $stmt = $pdo->prepare("SELECT user_username, user_email FROM users WHERE user_id = :user_id");
+            $stmt->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+            $stmt->execute();
+            $current_user = $stmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Clean the username by trimming and normalizing spaces
+            $clean_username = preg_replace('/\s+/', ' ', trim($username));
+            
+            // Update profile information (username and email only)
+            $stmt = $pdo->prepare("UPDATE users SET user_username = :username, user_email = :email WHERE user_id = :user_id");
+            $stmt->bindParam(':username', $clean_username, PDO::PARAM_STR);
+            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
             $stmt->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
             $stmt->execute();
             
-            // Log password change
-            log_user_activity($pdo, $_SESSION['user_id'], 'PASSWORD_CHANGE', 'Password changed during profile update');
-        } else {
-            // Update without changing password
-            $stmt = $pdo->prepare("UPDATE users SET user_username = :username, user_email = :email WHERE user_id = :user_id");
-            $stmt->bindParam(':username', $username, PDO::PARAM_STR);
-            $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-            $stmt->bindParam(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
-            $stmt->execute();
+            // Update session variables
+            $_SESSION['username'] = $clean_username;
+            $_SESSION['email'] = $email;
+            
+            // Log the profile update activity
+            try {
+                $changes = [];
+                if ($clean_username !== $current_user['user_username']) {
+                    $changes[] = "Username: {$current_user['user_username']} → {$clean_username}";
+                }
+                if ($email !== $current_user['user_email']) {
+                    $changes[] = "Email: {$current_user['user_email']} → {$email}";
+                }
+
+                if (!empty($changes)) {
+                    $activity_details = "Updated profile information (ID: {$_SESSION['user_id']}): " . implode(", ", $changes);
+                    log_user_activity($pdo, $_SESSION['user_id'], 'PROFILE_UPDATE', $activity_details);
+                }
+            } catch (Exception $log_error) {
+                // Log error but don't fail the profile update
+                error_log("Failed to log profile update activity: " . $log_error->getMessage());
+            }
+            
+            $_SESSION['success_message'] = "Profile information updated successfully!";
+            
+        } catch(PDOException $e) {
+            error_log("Profile update error: " . $e->getMessage());
+            $_SESSION['error_message'] = "Database error: " . $e->getMessage();
         }
-        
-        // Update session variables
-        $_SESSION['username'] = $username;
-        $_SESSION['email'] = $email;
-        
-        // Log the profile update
-        log_user_activity($pdo, $_SESSION['user_id'], 'PROFILE_UPDATE', 'Profile information updated');
-        
-        $_SESSION['success_message'] = "Profile updated successfully!";
-        
-    } catch(PDOException $e) {
-        error_log("Profile update error: " . $e->getMessage());
-        $_SESSION['error_message'] = "Database error: " . $e->getMessage();
+    } else {
+        $_SESSION['error_message'] = implode('<br>', $errors);
     }
     
     // Always redirect back to profile page after processing

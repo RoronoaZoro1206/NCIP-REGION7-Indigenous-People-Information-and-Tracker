@@ -30,21 +30,21 @@ if (!isset($_SESSION["user_id"])) {
 $status_filter = isset($_GET['status']) ? $_GET['status'] : '';
 $status_condition = "";
 if (!empty($status_filter)) {
-    $status_condition = "AND ss.STATUS_CODE = :status_filter";
+    $status_condition = "AND ss.status_code = :status_filter";
 }
 
 // Handle search query
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $search_condition = "";
 if (!empty($search)) {
-    $search_condition = "AND (a.APP_LAST_NAME ILIKE :search_term OR a.APP_FIRST_NAME ILIKE :search_term OR 
-                        a.APP_ETHNO_GROUP ILIKE :search_term OR a.APP_EMAIL ILIKE :search_term)";
+    $search_condition = "AND (a.app_last_name ILIKE :search_term OR a.app_first_name ILIKE :search_term OR 
+                        a.app_ethno_group ILIKE :search_term OR a.app_email ILIKE :search_term)";
 }
 
 // Count total applications for pagination
-$count_query = "SELECT COUNT(DISTINCT a.APP_CODE) as total 
-               FROM APPLICANT a 
-               LEFT JOIN SCHOLARSHIP_STATUS ss ON a.APP_CODE = ss.APP_CODE AND ss.STATUS_IS_ACTIVE = TRUE
+$count_query = "SELECT COUNT(DISTINCT a.app_code) as total 
+               FROM applicant a 
+               LEFT JOIN scholarship_status ss ON a.app_code = ss.app_code AND ss.status_is_active = TRUE
                WHERE 1=1 $status_condition $search_condition";
                
 $count_stmt = $pdo->prepare($count_query);
@@ -67,192 +67,263 @@ $offset = ($page - 1) * $records_per_page;
 // Enhanced comprehensive query - includes ALL fields from e-service.php
 $detailed_query = "
     SELECT 
-        a.APP_CODE,
-        a.APP_LAST_NAME,
-        a.APP_FIRST_NAME,
-        a.APP_MIDDLE_INITIAL,
-        a.APP_DATE_OF_BIRTH,
-        a.APP_PLACE_OF_BIRTH,
-        a.APP_GENDER,
-        a.APP_CIVIL_STATUS,
-        a.APP_ETHNO_GROUP,
-        a.APP_PHONE_NUMBER,
-        a.APP_EMAIL,
-        a.APP_FORM_SIGNED,
-        a.APP_SIGNATURE_DATE,
+        a.app_code,
+        a.app_last_name,
+        a.app_first_name,
+        a.app_middle_initial,
+        a.app_date_of_birth,
+        a.app_place_of_birth,
+        a.app_gender,
+        a.app_civil_status,
+        a.app_ethno_group,
+        a.app_phone_number,
+        a.app_email,
+        a.app_form_signed,
+        a.app_signature_date,
         
-        adm.ADMIN_APP_NUMBER,
-        adm.ADMIN_DOF,
-        adm.ADMIN_ACTION_TAKEN_CSC_PO,
-        adm.ADMIN_ACTION_TAKEN_RO,
-        adm.ADMIN_CADT,
-        adm.ADMIN_CONG_DISTRICT,
-        adm.ADMIN_ADD_REMARKS,
-        adm.ADMIN_ASSISTANCE_TYPE,
+        adm.admin_app_number,
+        adm.admin_dof,
+        adm.admin_action_taken_csc_po,
+        adm.admin_action_taken_ro,
+        adm.admin_cadt,
+        adm.admin_cong_district,
+        adm.admin_add_remarks,
+        adm.admin_assistance_type,
         
-        addr.ADDR_MAIL,
-        addr.ADDR_PERMANENT,
-        addr.ADDR_HOUSE_AND_STREET,
-        addr.ADDR_BARANGAY,
-        addr.ADDR_MUNICIPALITY,
-        addr.ADDR_PROVINCE,
+        addr.addr_mail,
+        addr.addr_permanent,
+        addr.addr_house_and_street,
+        addr.addr_barangay,
+        addr.addr_municipality,
+        addr.addr_province,
         
-        (SELECT string_agg(CONCAT(
-            ec.EDUC_NAME, ':', 
-            ' School: ', s.SCH_NAME,
-            ' Address: ', s.SCH_ADDRESS, 
-            ' Year: ', s.SCH_YEAR_GRAD::text, 
-            ' Grade: ', s.SCH_GRADE_AVG::text, 
-            ' Rank: ', s.SCH_RANK
-        ), '||') 
-         FROM EDUCATION_ATTAINMENT ea 
-         JOIN EDUCATION_CATEGORY ec ON ea.EDUC_ID = ec.EDUC_ID 
-         JOIN SCHOOL s ON ea.EDUA_CODE = s.EDUC_CODE 
-         WHERE ea.APP_CODE = a.APP_CODE) as EDUCATION_DETAIL,
+        (SELECT CONCAT(
+            'School: ', COALESCE(s.sch_name, 'N/A'),
+            ' Address: ', COALESCE(s.sch_address, 'N/A'), 
+            ' Year: ', COALESCE(s.sch_year_grad::text, 'N/A'), 
+            ' Grade: ', COALESCE(s.sch_grade_avg::text, 'N/A'), 
+            ' Rank: ', COALESCE(s.sch_rank, 'N/A')
+        ) 
+        FROM education_attainment ea 
+        JOIN education_category ec ON ea.educ_id = ec.educ_id 
+        LEFT JOIN school s ON ea.edua_code = s.edua_code
+        WHERE ea.app_code = a.app_code AND ec.educ_name = 'Elementary' LIMIT 1) as elementary_education,
+
+        (SELECT CONCAT(
+            'School: ', COALESCE(s.sch_name, 'N/A'),
+            ' Address: ', COALESCE(s.sch_address, 'N/A'), 
+            ' Year: ', COALESCE(s.sch_year_grad::text, 'N/A'), 
+            ' Grade: ', COALESCE(s.sch_grade_avg::text, 'N/A'), 
+            ' Rank: ', COALESCE(s.sch_rank, 'N/A')
+        ) 
+        FROM education_attainment ea 
+        JOIN education_category ec ON ea.educ_id = ec.educ_id 
+        LEFT JOIN school s ON ea.edua_code = s.edua_code
+        WHERE ea.app_code = a.app_code AND ec.educ_name = 'High School' LIMIT 1) as high_school_education,
+
+        (SELECT CONCAT(
+            'School: ', COALESCE(s.sch_name, 'N/A'),
+            ' Address: ', COALESCE(s.sch_address, 'N/A'), 
+            ' Year: ', COALESCE(s.sch_year_grad::text, 'N/A'), 
+            ' Grade: ', COALESCE(s.sch_grade_avg::text, 'N/A'), 
+            ' Rank: ', COALESCE(s.sch_rank, 'N/A')
+        ) 
+        FROM education_attainment ea 
+        JOIN education_category ec ON ea.educ_id = ec.educ_id 
+        LEFT JOIN school s ON ea.edua_code = s.edua_code
+        WHERE ea.app_code = a.app_code AND ec.educ_name = 'Vocational' LIMIT 1) as vocational_education,
+
+        (SELECT CONCAT(
+            'School: ', COALESCE(s.sch_name, 'N/A'),
+            ' Address: ', COALESCE(s.sch_address, 'N/A'), 
+            ' Year: ', COALESCE(s.sch_year_grad::text, 'N/A'), 
+            ' Grade: ', COALESCE(s.sch_grade_avg::text, 'N/A'), 
+            ' Rank: ', COALESCE(s.sch_rank, 'N/A')
+        ) 
+        FROM education_attainment ea 
+        JOIN education_category ec ON ea.educ_id = ec.educ_id 
+        LEFT JOIN school s ON ea.edua_code = s.edua_code
+        WHERE ea.app_code = a.app_code AND ec.educ_name = 'College/Undergraduate' LIMIT 1) as college_education,
+
+        (SELECT CONCAT(
+            'School: ', COALESCE(s.sch_name, 'N/A'),
+            ' Address: ', COALESCE(s.sch_address, 'N/A'), 
+            ' Year: ', COALESCE(s.sch_year_grad::text, 'N/A'), 
+            ' Grade: ', COALESCE(s.sch_grade_avg::text, 'N/A'), 
+            ' Rank: ', COALESCE(s.sch_rank, 'N/A')
+        ) 
+        FROM education_attainment ea 
+        JOIN education_category ec ON ea.educ_id = ec.educ_id 
+        LEFT JOIN school s ON ea.edua_code = s.edua_code
+        WHERE ea.app_code = a.app_code AND ec.educ_name = 'Post-Graduate' LIMIT 1) as post_graduate_education,
+
+        (SELECT CONCAT(
+            'School: ', COALESCE(s.sch_name, 'N/A'),
+            ' Address: ', COALESCE(s.sch_address, 'N/A'), 
+            ' Year: ', COALESCE(s.sch_year_grad::text, 'N/A'), 
+            ' Grade: ', COALESCE(s.sch_grade_avg::text, 'N/A'), 
+            ' Rank: ', COALESCE(s.sch_rank, 'N/A')
+        ) 
+        FROM education_attainment ea 
+        JOIN education_category ec ON ea.educ_id = ec.educ_id 
+        LEFT JOIN school s ON ea.edua_code = s.edua_code
+        WHERE ea.app_code = a.app_code AND ec.educ_name = 'Masteral' LIMIT 1) as masteral_education,
+
+        (SELECT CONCAT(
+            'School: ', COALESCE(s.sch_name, 'N/A'),
+            ' Address: ', COALESCE(s.sch_address, 'N/A'), 
+            ' Year: ', COALESCE(s.sch_year_grad::text, 'N/A'), 
+            ' Grade: ', COALESCE(s.sch_grade_avg::text, 'N/A'), 
+            ' Rank: ', COALESCE(s.sch_rank, 'N/A')
+        ) 
+        FROM education_attainment ea 
+        JOIN education_category ec ON ea.educ_id = ec.educ_id 
+        LEFT JOIN school s ON ea.edua_code = s.edua_code
+        WHERE ea.app_code = a.app_code AND ec.educ_name = 'Doctorate' LIMIT 1) as doctorate_education,
          
         (SELECT string_agg(CONCAT(
-            fb.FAM_RELATION, ':', 
-            ' Name: ', fb.FAM_NAME, 
-            ', Status: ', CASE WHEN fb.FAM_IS_ALIVE THEN 'Living' ELSE 'Deceased' END,
-            ', Address: ', fb.FAM_ADDR, 
-            ', Occupation: ', fb.FAM_OCCUP, 
-            ', Office Address: ', fb.FAM_OFFICE_ADDR, 
-            ', Education: ', fb.FAM_EDUC_ATTAIN, 
-            ', Ethnic Group: ', fb.FAM_ETHNO_GROUP, 
-            ', Annual Income: ₱', fb.FAM_ANNUAL_INCOME::text, 
-            ', ITR Year: ', fb.FAM_YEAR_ITR::text
+            fb.fam_relation, ':', 
+            ' Name: ', fb.fam_name, 
+            ', Status: ', CASE WHEN fb.fam_is_alive THEN 'Living' ELSE 'Deceased' END,
+            ', Address: ', fb.fam_addr, 
+            ', Occupation: ', fb.fam_occup, 
+            ', Office Address: ', fb.fam_office_addr, 
+            ', Education: ', fb.fam_educ_attain, 
+            ', Ethnic Group: ', fb.fam_ethno_group, 
+            ', Annual Income: ₱', fb.fam_annual_income::text, 
+            ', ITR Year: ', fb.fam_year_itr::text
         ), '||') 
-         FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE) as FAMILY_DETAIL,
+         FROM family_background fb 
+         WHERE fb.app_code = a.app_code) as family_detail,
          
         /* Father specific fields */
-        (SELECT fb.FAM_NAME FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Father' LIMIT 1) as FATHER_NAME,
+        (SELECT fb.fam_name FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Father' LIMIT 1) as father_name,
         
-        (SELECT fb.FAM_IS_ALIVE FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Father' LIMIT 1) as FATHER_IS_ALIVE,
+        (SELECT fb.fam_is_alive FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Father' LIMIT 1) as father_is_alive,
         
-        (SELECT fb.FAM_ADDR FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Father' LIMIT 1) as FATHER_ADDRESS,
+        (SELECT fb.fam_addr FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Father' LIMIT 1) as father_address,
         
-        (SELECT fb.FAM_OCCUP FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Father' LIMIT 1) as FATHER_OCCUPATION,
+        (SELECT fb.fam_occup FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Father' LIMIT 1) as father_occupation,
         
-        (SELECT fb.FAM_OFFICE_ADDR FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Father' LIMIT 1) as FATHER_OFFICE_ADDR,
+        (SELECT fb.fam_office_addr FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Father' LIMIT 1) as father_office_addr,
         
-        (SELECT fb.FAM_EDUC_ATTAIN FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Father' LIMIT 1) as FATHER_EDUCATION,
+        (SELECT fb.fam_educ_attain FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Father' LIMIT 1) as father_education,
         
-        (SELECT fb.FAM_ETHNO_GROUP FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Father' LIMIT 1) as FATHER_ETHNICITY,
+        (SELECT fb.fam_ethno_group FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Father' LIMIT 1) as father_ethnicity,
         
-        (SELECT fb.FAM_ANNUAL_INCOME FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Father' LIMIT 1) as FATHER_INCOME,
+        (SELECT fb.fam_annual_income FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Father' LIMIT 1) as father_income,
         
-        (SELECT fb.FAM_YEAR_ITR FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Father' LIMIT 1) as FATHER_ITR_YEAR,
+        (SELECT fb.fam_year_itr FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Father' LIMIT 1) as father_itr_year,
 
         /* Mother specific fields */
-        (SELECT fb.FAM_NAME FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Mother' LIMIT 1) as MOTHER_NAME,
+        (SELECT fb.fam_name FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Mother' LIMIT 1) as mother_name,
         
-        (SELECT fb.FAM_IS_ALIVE FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Mother' LIMIT 1) as MOTHER_IS_ALIVE,
+        (SELECT fb.fam_is_alive FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Mother' LIMIT 1) as mother_is_alive,
         
-        (SELECT fb.FAM_ADDR FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Mother' LIMIT 1) as MOTHER_ADDRESS,
+        (SELECT fb.fam_addr FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Mother' LIMIT 1) as mother_address,
         
-        (SELECT fb.FAM_OCCUP FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Mother' LIMIT 1) as MOTHER_OCCUPATION,
+        (SELECT fb.fam_occup FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Mother' LIMIT 1) as mother_occupation,
         
-        (SELECT fb.FAM_OFFICE_ADDR FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Mother' LIMIT 1) as MOTHER_OFFICE_ADDR,
+        (SELECT fb.fam_office_addr FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Mother' LIMIT 1) as mother_office_addr,
         
-        (SELECT fb.FAM_EDUC_ATTAIN FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Mother' LIMIT 1) as MOTHER_EDUCATION,
+        (SELECT fb.fam_educ_attain FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Mother' LIMIT 1) as mother_education,
         
-        (SELECT fb.FAM_ETHNO_GROUP FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Mother' LIMIT 1) as MOTHER_ETHNICITY,
+        (SELECT fb.fam_ethno_group FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Mother' LIMIT 1) as mother_ethnicity,
         
-        (SELECT fb.FAM_ANNUAL_INCOME FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Mother' LIMIT 1) as MOTHER_INCOME,
+        (SELECT fb.fam_annual_income FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Mother' LIMIT 1) as mother_income,
         
-        (SELECT fb.FAM_YEAR_ITR FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Mother' LIMIT 1) as MOTHER_ITR_YEAR,
+        (SELECT fb.fam_year_itr FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Mother' LIMIT 1) as mother_itr_year,
 
         /* Guardian specific fields */
-        (SELECT fb.FAM_NAME FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Guardian' LIMIT 1) as GUARDIAN_NAME,
+        (SELECT fb.fam_name FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Guardian' LIMIT 1) as guardian_name,
         
-        (SELECT fb.FAM_IS_ALIVE FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Guardian' LIMIT 1) as GUARDIAN_IS_ALIVE,
+        (SELECT fb.fam_is_alive FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Guardian' LIMIT 1) as guardian_is_alive,
         
-        (SELECT fb.FAM_ADDR FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Guardian' LIMIT 1) as GUARDIAN_ADDRESS,
+        (SELECT fb.fam_addr FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Guardian' LIMIT 1) as guardian_address,
         
-        (SELECT fb.FAM_OCCUP FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Guardian' LIMIT 1) as GUARDIAN_OCCUPATION,
+        (SELECT fb.fam_occup FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Guardian' LIMIT 1) as guardian_occupation,
         
-        (SELECT fb.FAM_OFFICE_ADDR FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Guardian' LIMIT 1) as GUARDIAN_OFFICE_ADDR,
+        (SELECT fb.fam_office_addr FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Guardian' LIMIT 1) as guardian_office_addr,
         
-        (SELECT fb.FAM_EDUC_ATTAIN FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Guardian' LIMIT 1) as GUARDIAN_EDUCATION,
+        (SELECT fb.fam_educ_attain FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Guardian' LIMIT 1) as guardian_education,
         
-        (SELECT fb.FAM_ETHNO_GROUP FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Guardian' LIMIT 1) as GUARDIAN_ETHNICITY,
+        (SELECT fb.fam_ethno_group FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Guardian' LIMIT 1) as guardian_ethnicity,
         
-        (SELECT fb.FAM_ANNUAL_INCOME FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Guardian' LIMIT 1) as GUARDIAN_INCOME,
+        (SELECT fb.fam_annual_income FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Guardian' LIMIT 1) as guardian_income,
         
-        (SELECT fb.FAM_YEAR_ITR FROM FAMILY_BACKGROUND fb 
-         WHERE fb.APP_CODE = a.APP_CODE AND fb.FAM_RELATION = 'Guardian' LIMIT 1) as GUARDIAN_ITR_YEAR,
+        (SELECT fb.fam_year_itr FROM family_background fb 
+         WHERE fb.app_code = a.app_code AND fb.fam_relation = 'Guardian' LIMIT 1) as guardian_itr_year,
          
         (SELECT string_agg(CONCAT(
-            sib.SIB_LAST_NAME, ', ', sib.SIB_FIRST_NAME, ' ', sib.SIB_MIDDLE_INITIAL,
-            CASE WHEN sch.SCHOLAR_NAME IS NOT NULL 
-                THEN CONCAT(' (Scholarship: ', sch.SCHOLAR_NAME, 
-                           ', Course: ', sch.SCHOLAR_COURSE, 
-                           ', Year: ', sch.SCHOLAR_YEAR, ')')
+            sib.sib_last_name, ', ', sib.sib_first_name, ' ', sib.sib_middle_initial,
+            CASE WHEN sch.scholar_name IS NOT NULL 
+                THEN CONCAT(' (Scholarship: ', sch.scholar_name, 
+                           ', Course: ', sch.scholar_course, 
+                           ', Year: ', sch.scholar_year, ')')
                 ELSE ''
             END
         ), '||') 
-         FROM SIBLING sib 
-         LEFT JOIN SCHOLARSHIP sch ON sib.SIB_CODE = sch.SIB_CODE 
-         WHERE sib.APP_CODE = a.APP_CODE) as SIBLING_DETAIL,
+         FROM sibling sib 
+         LEFT JOIN scholarship sch ON sib.sib_code = sch.sib_code 
+         WHERE sib.app_code = a.app_code) as sibling_detail,
          
-        pref.PREF_NAME,
-        pref.PREF_ADDR,
-        pref.PREF_DEGREE,
-        pref.PREF_REMARKS,
+        pref.pref_name,
+        pref.pref_addr,
+        pref.pref_degree,
+        pref.pref_remarks,
         
         (SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END 
-         FROM SIGNATURE_SCAN scan 
-         WHERE scan.APP_CODE = a.APP_CODE) as HAS_SIGNATURE,
-         
-        (SELECT scan.SCAN_FILENAME 
-         FROM SIGNATURE_SCAN scan 
-         WHERE scan.APP_CODE = a.APP_CODE LIMIT 1) as SIGNATURE_FILENAME,
-         
-        (SELECT scan.SCAN_FILETYPE 
-         FROM SIGNATURE_SCAN scan 
-         WHERE scan.APP_CODE = a.APP_CODE LIMIT 1) as SIGNATURE_FILETYPE,
+        FROM signature_scan scan 
+        WHERE scan.app_code = a.app_code) as has_signature,
         
-        (SELECT ss.STATUS_CODE FROM SCHOLARSHIP_STATUS ss 
-         WHERE ss.APP_CODE = a.APP_CODE AND ss.STATUS_IS_ACTIVE = TRUE LIMIT 1) as STATUS,
-         
-        (SELECT ss.STATUS_DATE FROM SCHOLARSHIP_STATUS ss 
-         WHERE ss.APP_CODE = a.APP_CODE AND ss.STATUS_IS_ACTIVE = TRUE LIMIT 1) as STATUS_DATE
+        (SELECT scan.scan_filename 
+        FROM signature_scan scan 
+        WHERE scan.app_code = a.app_code LIMIT 1) as signature_filename,
         
-    FROM APPLICANT a
-    LEFT JOIN ADMINISTRATOR adm ON a.ADMIN_CODE = adm.ADMIN_CODE
-    LEFT JOIN ADDRESS addr ON a.APP_CODE = addr.APP_CODE
-    LEFT JOIN SCHOOL_PREFERENCE pref ON a.APP_CODE = pref.APP_CODE
-    LEFT JOIN SCHOLARSHIP_STATUS ss ON a.APP_CODE = ss.APP_CODE AND ss.STATUS_IS_ACTIVE = TRUE
+        (SELECT scan.scan_filetype 
+        FROM signature_scan scan 
+        WHERE scan.app_code = a.app_code LIMIT 1) as signature_filetype,
+        
+        (SELECT ss.status_code FROM scholarship_status ss 
+         WHERE ss.app_code = a.app_code AND ss.status_is_active = TRUE LIMIT 1) as status,
+         
+        (SELECT ss.status_date FROM scholarship_status ss 
+         WHERE ss.app_code = a.app_code AND ss.status_is_active = TRUE LIMIT 1) as status_date
+        
+    FROM applicant a
+    LEFT JOIN administrator adm ON a.admin_code = adm.admin_code
+    LEFT JOIN address addr ON a.app_code = addr.app_code
+    LEFT JOIN school_preference pref ON a.app_code = pref.app_code
+    LEFT JOIN scholarship_status ss ON a.app_code = ss.app_code AND ss.status_is_active = TRUE
     WHERE 1=1 $status_condition $search_condition
-    GROUP BY a.APP_CODE, adm.ADMIN_CODE, addr.ADDR_CODE, pref.PREF_CODE
-    ORDER BY a.APP_CODE DESC
+    GROUP BY a.app_code, adm.admin_code, addr.addr_code, pref.pref_code
+    ORDER BY a.app_code DESC
     LIMIT :limit OFFSET :offset";
 
 // Prepare and execute the detailed query
@@ -266,24 +337,35 @@ if (!empty($search)) {
     $search_param = "%$search%";
     $detailed_stmt->bindParam(':search_term', $search_param);
 }
+
+// Around line 280-290
 $detailed_stmt->execute();
 
+// Initialize applications array
 $applications = [];
+
 while ($row = $detailed_stmt->fetch(PDO::FETCH_ASSOC)) {
-    // Assign a default status if null
-    if (empty($row['status'])) {
-        $row['status'] = 'PENDING';
+    // Normalize status - treat any unknown status as PENDING
+    $status = strtoupper($row['status'] ?? 'PENDING');
+    if (!in_array($status, ['PENDING', 'APPROVED', 'REJECTED'])) {
+        $status = 'PENDING';
     }
     
-    // Add status class for badges
-    if (strtoupper($row['status']) == 'APPROVED') {
-        $row['status_class'] = 'bg-success';
-    } elseif (strtoupper($row['status']) == 'REJECTED') {
-        $row['status_class'] = 'bg-danger';
-    } else {
-        $row['status_class'] = 'bg-warning';
+    // Set status class for badge display
+    switch($status) {
+        case 'PENDING':
+            $status_class = 'bg-warning text-dark';
+            break;
+        case 'APPROVED':
+            $status_class = 'bg-success';
+            break;
+        case 'REJECTED':
+            $status_class = 'bg-danger';
+            break;
+        default:
+            $status_class = 'bg-warning text-dark'; // Default to PENDING styling
     }
-    
+
     // Split concatenated detailed fields into arrays
     if (!empty($row['education_detail'])) {
         $row['education_array'] = explode('||', $row['education_detail']);
@@ -303,25 +385,43 @@ while ($row = $detailed_stmt->fetch(PDO::FETCH_ASSOC)) {
         $row['sibling_array'] = [];
     }
     
+    $row['status'] = $status;
+    $row['status_class'] = $status_class;
     $applications[] = $row;
 }
 
-// Get status counts for filters
+// Also fix the status counts initialization
 $status_counts = [
-    'all' => $total_records,
+    'all' => 0,
     'pending' => 0,
     'approved' => 0,
     'rejected' => 0
 ];
 
-$count_status_query = "SELECT ss.STATUS_CODE, COUNT(DISTINCT a.APP_CODE) as count
-                      FROM APPLICANT a
-                      LEFT JOIN SCHOLARSHIP_STATUS ss ON a.APP_CODE = ss.APP_CODE AND ss.STATUS_IS_ACTIVE = TRUE
-                      GROUP BY ss.STATUS_CODE";
+// Update status counts with normalization
+$count_status_query = "SELECT 
+    CASE 
+        WHEN ss.STATUS_CODE IS NULL OR ss.STATUS_CODE NOT IN ('PENDING', 'APPROVED', 'REJECTED') 
+        THEN 'PENDING' 
+        ELSE UPPER(ss.STATUS_CODE) 
+    END as normalized_status,
+    COUNT(DISTINCT a.APP_CODE) as count
+    FROM APPLICANT a
+    LEFT JOIN SCHOLARSHIP_STATUS ss ON a.APP_CODE = ss.APP_CODE AND ss.STATUS_IS_ACTIVE = TRUE
+    GROUP BY 
+    CASE 
+        WHEN ss.STATUS_CODE IS NULL OR ss.STATUS_CODE NOT IN ('PENDING', 'APPROVED', 'REJECTED') 
+        THEN 'PENDING' 
+        ELSE UPPER(ss.STATUS_CODE) 
+    END";
+
 $count_status_stmt = $pdo->query($count_status_query);
 while ($row = $count_status_stmt->fetch(PDO::FETCH_ASSOC)) {
-    $status = strtolower($row['status_code'] ?: 'pending');
-    $status_counts[$status] = $row['count'];
+    $normalized_status = strtolower($row['normalized_status']);
+    if (array_key_exists($normalized_status, $status_counts)) {
+        $status_counts[$normalized_status] = $row['count'];
+        $status_counts['all'] += $row['count'];
+    }
 }
 
 // Handle delete request (fallback for non-JS)
@@ -428,7 +528,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
             overflow-y: auto; /* Enable vertical scrolling */
         }
         .comprehensive-table {
-            min-width: 4500px; /* Even wider to accommodate ALL fields */
+            min-width: 5200px; 
             margin-bottom: 0;
         }
         .comprehensive-table th {
@@ -489,6 +589,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
         .comprehensive-table::-webkit-scrollbar-thumb:hover {
             background: #555;
         }
+            .family-details-section {
+        border-top: 1px solid #dee2e6;
+        padding-top: 15px;
+        margin-top: 15px;
+    }
+    
+    .family-member-card {
+        margin-bottom: 15px;
+        border-left: 4px solid #007bff;
+    }
+    
+    .family-member-header {
+        font-weight: bold;
+        color: #007bff;
+    }
+    
+    .detailed-cell.expanded {
+        white-space: normal !important;
+        max-width: none !important;
+        overflow: visible !important;
+        background-color: #f8f9fa;
+        position: relative;
+        z-index: 5;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        padding: 10px !important;
+    }
+    
+
+    .comprehensive-table th[class*="section-header"] {
+        background-color: #e6f2ff !important;
+        font-weight: bold;
+        text-align: center;
+    }
+    
+
+    @media (max-width: 768px) {
+        .mobile-family-details {
+            display: none;
+        }
+        
+        .mobile-family-details.show {
+            display: block;
+        }
+        
+        .toggle-family-details {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    }
     </style>
 </head>
 <body>
@@ -503,9 +652,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
             <div>
                 <a href="export.php" class="btn btn-success me-2">
                     <i class="bi bi-file-earmark-excel"></i> Export to Excel
-                </a>
-                <a href="add.php" class="btn btn-primary">
-                    <i class="bi bi-plus-circle"></i> Add New Application
                 </a>
             </div>
         </div>
@@ -578,7 +724,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                                 <th class="section-header" colspan="6">Admin Information</th>
                                 <th class="section-header" colspan="10">Applicant Information</th>
                                 <th class="section-header" colspan="6">Address</th>
-                                <th class="section-header" colspan="4">Education</th>
+                                <th class="section-header" colspan="7">Education</th>
                                 <th class="section-header" colspan="27">Family Background</th>
                                 <th class="section-header" colspan="3">Siblings</th>
                                 <th class="section-header" colspan="4">Preferred School</th>
@@ -625,6 +771,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                                 <th>High School</th>
                                 <th>Vocational</th>
                                 <th>College</th>
+                                <th>Post-Graduate</th>
+                                <th>Masteral</th>
+                                <th>Doctorate</th>
                                 
                                 <!-- Family Background - Father -->
                                 <th>Father Name</th>
@@ -733,7 +882,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                                                 }
                                             }
                                         }
-                                        echo $found ? '' : 'N/A';
+                                        if (!$found) {
+                                            echo htmlspecialchars($app['elementary_education'] ?? 'N/A');
+                                        }
                                         ?>
                                     </td>
                                     <td class="detailed-cell">
@@ -748,7 +899,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                                                 }
                                             }
                                         }
-                                        echo $found ? '' : 'N/A';
+                                        if (!$found) {
+                                            echo htmlspecialchars($app['high_school_education'] ?? 'N/A');
+                                        }
                                         ?>
                                     </td>
                                     <td class="detailed-cell">
@@ -763,7 +916,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                                                 }
                                             }
                                         }
-                                        echo $found ? '' : 'N/A';
+                                        if (!$found) {
+                                            echo htmlspecialchars($app['vocational_education'] ?? 'N/A');
+                                        }
                                         ?>
                                     </td>
                                     <td class="detailed-cell">
@@ -778,7 +933,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                                                 }
                                             }
                                         }
-                                        echo $found ? '' : 'N/A';
+                                        if (!$found) {
+                                            echo htmlspecialchars($app['college_education'] ?? 'N/A');
+                                        }
+                                        ?>
+                                    </td>
+                                    <td class="detailed-cell">
+                                        <?php
+                                        $found = false;
+                                        if (!empty($app['education_array'])) {
+                                            foreach ($app['education_array'] as $edu) {
+                                                if (strpos($edu, 'Post-Graduate:') === 0) {
+                                                    echo htmlspecialchars(str_replace('Post-Graduate:', '', $edu));
+                                                    $found = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        if (!$found) {
+                                            echo htmlspecialchars($app['post_graduate_education'] ?? 'N/A');
+                                        }
+                                        ?>
+                                    </td>
+                                    <td class="detailed-cell">
+                                        <?php
+                                        $found = false;
+                                        if (!empty($app['education_array'])) {
+                                            foreach ($app['education_array'] as $edu) {
+                                                if (strpos($edu, 'Masteral:') === 0) {
+                                                    echo htmlspecialchars(str_replace('Masteral:', '', $edu));
+                                                    $found = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        if (!$found) {
+                                            echo htmlspecialchars($app['masteral_education'] ?? 'N/A');
+                                        }
+                                        ?>
+                                    </td>
+                                    <td class="detailed-cell">
+                                        <?php
+                                        $found = false;
+                                        if (!empty($app['education_array'])) {
+                                            foreach ($app['education_array'] as $edu) {
+                                                if (strpos($edu, 'Doctorate:') === 0) {
+                                                    echo htmlspecialchars(str_replace('Doctorate:', '', $edu));
+                                                    $found = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        if (!$found) {
+                                            echo htmlspecialchars($app['doctorate_education'] ?? 'N/A');
+                                        }
                                         ?>
                                     </td>
                                     
@@ -881,11 +1089,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                                                 <div class="modal-dialog">
                                                     <div class="modal-content signature-modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title">Signature</h5>
+                                                            <h5 class="modal-title">E-Signature</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body text-center">
-                                                            <img src="get_signature.php?id=<?php echo $app['app_code']; ?>" class="img-fluid" alt="Signature">
+                                                        <img src="get_signature.php?id=<?php echo $app['app_code']; ?>" class="img-fluid" alt="Signature" style="max-width: 100%; max-height: 400px;">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -912,9 +1120,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                                             </a>
                                             <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#statusModal<?php echo $app['app_code']; ?>" title="Change Status">
                                                 <i class="bi bi-check2-circle"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal<?php echo $app['app_code']; ?>" title="Delete">
-                                                <i class="bi bi-trash"></i>
                                             </button>
                                         </div>
                                         
@@ -1033,12 +1238,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
             }, 5000);
         });
 
-        // AJAX for status updates
+        document.querySelectorAll('[id^="signatureModal"] img').forEach(img => {
+            img.addEventListener('error', function() {
+                console.error('Failed to load signature image:', this.src);
+                this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2Y4ZjlmYSIgc3Ryb2tlPSIjZGVlMmU2Ii8+CiAgPHRleHQgeD0iMTAwIiB5PSI1MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9IjAuM2VtIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM2Yzc1N2QiPk5vIFNpZ25hdHVyZTwvdGV4dD4KICA8L3N2Zz4K';
+                this.alt = "Signature not available";
+                this.style.border = "2px dashed #dc3545";
+            });
+            
+            img.addEventListener('load', function() {
+                console.log('Signature loaded successfully for:', this.src);
+            });
+            
+            // Add loading indicator
+            img.addEventListener('loadstart', function() {
+                this.style.opacity = '0.5';
+                console.log('Starting to load signature from:', this.src);
+            });
+            
+            img.addEventListener('loadend', function() {
+                this.style.opacity = '1';
+            });
+        });
+
         document.querySelectorAll('.update-status-form').forEach(form => {
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const formData = new FormData(this);
                 const appCode = formData.get('app_code');
+                const newStatus = formData.get('new_status');
+                
+                // Get current URL parameters to check if we're in a filtered view
+                const urlParams = new URLSearchParams(window.location.search);
+                const currentStatusFilter = urlParams.get('status');
                 
                 fetch('ajax/update_status.php', {
                     method: 'POST',
@@ -1048,19 +1280,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                 .then(data => {
                     if (data.success) {
                         // Update the status badge
-                        document.querySelector(`#status-badge-${appCode}`).textContent = data.status;
-                        document.querySelector(`#status-badge-${appCode}`).className = `badge ${data.badge_class}`;
+                        const statusBadge = document.querySelector(`#status-badge-${appCode}`);
+                        const statusDate = document.querySelector(`#status-date-${appCode}`);
                         
-                        // Update the status date
-                        document.querySelector(`#status-date-${appCode}`).textContent = data.date;
+                        if (statusBadge && statusDate) {
+                            statusBadge.textContent = data.new_status;
+                            statusBadge.className = `badge ${data.badge_class}`;
+                            statusDate.textContent = data.date;
+                        }
+                        
+                        // Update status counts in navigation buttons
+                        updateStatusCounts(data.status_counts);
+                        
+                        // Handle row visibility based on current filter
+                        const appRow = document.querySelector(`#app-row-${appCode}`);
+                        if (appRow) {
+                            // If we're in a filtered view and the new status doesn't match the filter, hide the row
+                            if (currentStatusFilter && currentStatusFilter.toUpperCase() !== data.new_status.toUpperCase()) {
+                                // Add fade out animation
+                                appRow.style.transition = 'opacity 0.5s ease-out';
+                                appRow.style.opacity = '0';
+                                
+                                setTimeout(() => {
+                                    appRow.style.display = 'none';
+                                   
+                                }, 500);
+                            } else {
+                                // If we're not in a filtered view or the status matches, just update the row
+                                appRow.style.transition = 'background-color 0.3s ease';
+                                appRow.style.backgroundColor = '#d4edda'; // Light green highlight
+                                
+                                setTimeout(() => {
+                                    appRow.style.backgroundColor = '';
+                                }, 2000);
+                            }
+                        }
                         
                         // Close the modal
-                        bootstrap.Modal.getInstance(document.querySelector(`#statusModal${appCode}`)).hide();
+                        const modal = document.querySelector(`#statusModal${appCode}`);
+                        if (modal) {
+                            bootstrap.Modal.getInstance(modal).hide();
+                        }
                         
-                        // Show success message
-                        showAlert('success', data.message);
+                        // Show success message with more details
+                        let successMessage = `Status updated from ${data.old_status} to ${data.new_status}`;
+                        if (currentStatusFilter && currentStatusFilter.toUpperCase() !== data.new_status.toUpperCase()) {
+                            successMessage += `. Application moved to ${data.new_status.toLowerCase()} section.`;
+                        }
+                        showAlert('success', successMessage);
+                        
                     } else {
-                        showAlert('danger', data.message);
+                        showAlert('danger', data.message || 'Failed to update status');
                     }
                 })
                 .catch(error => {
@@ -1069,6 +1339,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                 });
             });
         });
+
+        // Function to update status counts in navigation buttons
+        function updateStatusCounts(counts) {
+            // Update count badges in navigation buttons
+            const buttons = {
+                'all': document.querySelector('a[href="index.php"] .badge'),
+                'pending': document.querySelector('a[href*="status=PENDING"] .badge'),
+                'approved': document.querySelector('a[href*="status=APPROVED"] .badge'),
+                'rejected': document.querySelector('a[href*="status=REJECTED"] .badge')
+            };
+            
+            Object.keys(buttons).forEach(status => {
+                const badge = buttons[status];
+                if (badge && counts[status] !== undefined) {
+                    badge.textContent = counts[status];
+                    
+                    // Add pulse animation to show the count has changed
+                    badge.style.animation = 'pulse 0.6s ease-in-out';
+                    setTimeout(() => {
+                        badge.style.animation = '';
+                    }, 600);
+                }
+            });
+            
+            // If we're on a filtered page and the count for that filter is 0, show a message
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentStatusFilter = urlParams.get('status');
+            
+            if (currentStatusFilter) {
+                const filterStatus = currentStatusFilter.toLowerCase();
+                if (counts[filterStatus] === 0) {
+                    // Check if there are any visible rows left
+                    const visibleRows = document.querySelectorAll('tbody tr[id^="app-row-"]:not([style*="display: none"])');
+                    if (visibleRows.length === 0) {
+                        // Replace table content with "no applications" message
+                        const tbody = document.querySelector('.comprehensive-table tbody');
+                        if (tbody) {
+                            tbody.innerHTML = `
+                                <tr>
+                                    <td colspan="69" class="text-center py-5">
+                                        <i class="bi bi-inbox display-1 text-muted"></i>
+                                        <h3 class="mt-3">No ${currentStatusFilter.charAt(0).toUpperCase() + currentStatusFilter.slice(1).toLowerCase()} Applications</h3>
+                                        <p class="text-muted">All applications have been processed or moved to other statuses.</p>
+                                        <a href="index.php" class="btn btn-primary">View All Applications</a>
+                                    </td>
+                                </tr>
+                            `;
+                        }
+                    }
+                }
+            }
+        }
         
         // AJAX for application deletion
         document.querySelectorAll('.delete-app-form').forEach(form => {
@@ -1171,59 +1493,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
         });
     });
 </script>
-
-<style>
-    .family-details-section {
-        border-top: 1px solid #dee2e6;
-        padding-top: 15px;
-        margin-top: 15px;
-    }
-    
-    .family-member-card {
-        margin-bottom: 15px;
-        border-left: 4px solid #007bff;
-    }
-    
-    .family-member-header {
-        font-weight: bold;
-        color: #007bff;
-    }
-    
-    .detailed-cell.expanded {
-        white-space: normal !important;
-        max-width: none !important;
-        overflow: visible !important;
-        background-color: #f8f9fa;
-        position: relative;
-        z-index: 5;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        padding: 10px !important;
-    }
-    
-
-    .comprehensive-table th[class*="section-header"] {
-        background-color: #e6f2ff !important;
-        font-weight: bold;
-        text-align: center;
-    }
-    
-
-    @media (max-width: 768px) {
-        .mobile-family-details {
-            display: none;
-        }
-        
-        .mobile-family-details.show {
-            display: block;
-        }
-        
-        .toggle-family-details {
-            width: 100%;
-            margin-bottom: 10px;
-        }
-    }
-</style>
 </body>
 </html>
-                        
- 

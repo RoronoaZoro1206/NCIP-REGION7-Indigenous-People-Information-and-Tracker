@@ -142,7 +142,7 @@ $currentPage = 'profile';
 
             <div class="row">
                 <div class="col-md-4">
-                    <div class="card">
+                    <div class="card h-100">
                         <div class="card-header">
                             <h5 class="card-title mb-0"><i class="bi bi-image me-2"></i>Profile Picture</h5>
                         </div>
@@ -166,7 +166,7 @@ $currentPage = 'profile';
                 </div>
                 
                 <div class="col-md-8">
-                    <div class="card">
+                    <div class="card h-100">
                         <div class="card-header">
                             <h5 class="card-title mb-0"><i class="bi bi-person-badge me-2"></i>Profile Information</h5>
                         </div>

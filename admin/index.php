@@ -365,7 +365,7 @@ try {
             <!-- Statistics -->
             <div class="row">
                 <div class="col-xl-3 col-md-6">
-                    <div class="card card-dashboard card-stats bg-primary text-white">
+                    <div class="card card-dashboard card-stats bg-primary text-white h-100">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-5">
@@ -388,7 +388,7 @@ try {
                 </div>
                 
                 <div class="col-xl-3 col-md-6">
-                    <div class="card card-dashboard card-stats bg-warning text-white">
+                    <div class="card card-dashboard card-stats bg-warning text-white h-100">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-5">
@@ -411,7 +411,7 @@ try {
                 </div>
                 
                 <div class="col-xl-3 col-md-6">
-                    <div class="card card-dashboard card-stats bg-success text-white">
+                    <div class="card card-dashboard card-stats bg-success text-white h-100">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-5">
@@ -434,7 +434,7 @@ try {
                 </div>
                 
                 <div class="col-xl-3 col-md-6">
-                    <div class="card card-dashboard card-stats bg-info text-white">
+                    <div class="card card-dashboard card-stats bg-info text-white h-100">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-5">
@@ -460,7 +460,7 @@ try {
             <!-- Charts & Analytics -->
             <div class="row mt-4">
                 <div class="col-lg-3">
-                    <div class="card card-dashboard">
+                    <div class="card card-dashboard h-100">
                         <div class="card-header bg-white">
                             <h5 class="card-title mb-0">Application Status</h5>
                         </div>
@@ -473,7 +473,7 @@ try {
                 </div>
                 
                 <div class="col-lg-3">
-                    <div class="card card-dashboard">
+                    <div class="card card-dashboard h-100">
                         <div class="card-header bg-white">
                             <h5 class="card-title mb-0">IP Population by Group</h5>
                         </div>
@@ -486,7 +486,7 @@ try {
                 </div>
                 
                 <div class="col-lg-3">
-                    <div class="card card-dashboard">
+                    <div class="card card-dashboard h-100">
                         <div class="card-header bg-white">
                             <h5 class="card-title mb-0">Applicant Ethnic Groups</h5>
                         </div>
@@ -499,7 +499,7 @@ try {
                 </div>
                 
                 <div class="col-lg-3">
-                    <div class="card card-dashboard">
+                    <div class="card card-dashboard h-100">
                         <div class="card-header bg-white d-flex justify-content-between align-items-center">
                             <h5 class="card-title mb-0">Recycle Bin Overview</h5>
                         </div>
@@ -515,7 +515,7 @@ try {
             <!-- Population Analytics -->
             <div class="row mt-4">
                 <div class="col-lg-8">
-                    <div class="card card-dashboard">
+                    <div class="card card-dashboard h-100">
                         <div class="card-header bg-white">
                             <h5 class="card-title mb-0">Indigenous People Population Comparison</h5>
                         </div>
@@ -528,7 +528,7 @@ try {
                 </div>
                 
                 <div class="col-lg-4">
-                    <div class="card card-dashboard">
+                    <div class="card card-dashboard h-100">
                         <div class="card-header bg-white">
                             <h5 class="card-title mb-0">Population Summary</h5>
                         </div>

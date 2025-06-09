@@ -136,8 +136,8 @@ class LoginValidator {
         // Log successful login
         if ($user) {
             try {
-                $log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
-                             VALUES (?, 'LOGIN', ?, CURRENT_TIMESTAMP)";
+                $log_query = "insert into user_logs (user_id, log_type, log_details, log_timestamp) 
+                             values (?, 'LOGIN', ?, current_timestamp)";
                 $log_stmt = $this->pdo->prepare($log_query);
                 $details = "Successful login by " . $user["user_username"] . " with " . $user["user_role"] . " role";
                 $log_stmt->execute([$user["user_id"], $details]);
@@ -262,8 +262,8 @@ function require_admin($pdo = null) {
         $user_id = get_current_user_id();
         if ($user_id && $pdo) {
             try {
-                $log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
-                             VALUES (?, 'UNAUTHORIZED_ACCESS', ?, CURRENT_TIMESTAMP)";
+                $log_query = "insert into user_logs (user_id, log_type, log_details, log_timestamp) 
+                             values (?, 'UNAUTHORIZED_ACCESS', ?, current_timestamp)";
                 $log_stmt = $pdo->prepare($log_query);
                 $details = "Non-admin user attempted to access admin area: " . $_SERVER['REQUEST_URI'];
                 $log_stmt->execute([$user_id, $details]);

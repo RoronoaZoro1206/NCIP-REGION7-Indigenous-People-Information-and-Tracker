@@ -1525,17 +1525,16 @@ if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin)
     </div>
     <!-- END PRIMARY -->
 
-    <!-- START SLOGAN -->
+    <!-- START SLOGAN 
     <div class="slogan" style="margin-bottom: 20px; margin-top: -30px;">
         <h2>PROVINCIAL OFFICE EMPLOYEES</h2>
     </div>
-    <!-- END SLOGAN  -->
+     END SLOGAN  -->
      
     <!-- START PRIMARY -->
-    <div id="primary" class="sidebar-no" style="margin-top: -20px;">
+    <!-- <div id="primary" class="sidebar-no" style="margin-top: -20px;">
             <div class="container group">
                 <div class="row">
-                                <!-- START CONTENT -->
                     <div id="content-page" class="span12 content group">
                             <div class="page type-page status-publish  group">
 
@@ -1556,16 +1555,13 @@ if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin)
 
                                                     <div class="clear"></div>
                                                 </div>
-                                                <!-- usquare_square_wrapper -->
                                             </div>
-                                            <!--div usquare_square -->
                                             <div class="usquare_block_extended" style="background-color: #fff">
                                                 <a href="#" class="close">
                                                     <img src="sliders/usquare/images/close.png" alt="close"/>
                                                 </a>
                                                 <ul class="social_background"></ul>
                                                 <div class="clear"></div>
-                                                <!--span class="bold">info:</span-->
                                                 <div class="usquare_about">
                                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec magna lacus.
                                                     Sed sed mi est. Nulla in tristique tortor. Curabitur ipsum orci, bibendum in
@@ -1575,7 +1571,6 @@ if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin)
                                                     tempus massa sagittis at.
                                                 </div>
                                             </div>
-                                            <!-- usquare_block_extended -->
                                         </div>
 
                                         <div class="usquare_block">
@@ -1590,16 +1585,13 @@ if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin)
 
                                                     <div class="clear"></div>
                                                 </div>
-                                                <!-- usquare_square_wrapper -->
                                             </div>
-                                            <!--div usquare_square -->
                                             <div class="usquare_block_extended" style="background-color: #fff">
                                                 <a href="#" class="close">
                                                     <img src="sliders/usquare/images/close.png" alt="close"/>
                                                 </a>
                                                 <ul class="social_background"></ul>
                                                 <div class="clear"></div>
-                                                <!--span class="bold">info:</span-->
                                                 <div class="usquare_about">
                                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec magna lacus.
                                                     Sed sed mi est. Nulla in tristique tortor. Curabitur ipsum orci, bibendum in
@@ -1609,7 +1601,6 @@ if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin)
                                                     tempus massa sagittis at.
                                                 </div>
                                             </div>
-                                            <!-- usquare_block_extended -->
                                         </div>
                                         <div class="usquare_block">
                                             <img src="images/slider/usquare/00312.jpg" class="usquare_square" alt="" style="background-color: transparent; width: 195px; height: 195px;"/>
@@ -1624,14 +1615,11 @@ if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin)
 
                                                     <div class="clear"></div>
                                                 </div>
-                                                <!-- usquare_square_wrapper -->
                                             </div>
-                                            <!--div usquare_square -->
                                             <div class="usquare_block_extended" style="background-color: #fff">
                                                 <a href="#" class="close"><img src="sliders/usquare/images/close.png" alt="close"/></a>
                                                 <ul class="social_background"></ul>
                                                 <div class="clear"></div>
-                                                <!--span class="bold">info:</span-->
                                                 <div class="usquare_about">
                                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec magna lacus.
                                                     Sed sed mi est. Nulla in tristique tortor. Curabitur ipsum orci, bibendum in
@@ -1641,7 +1629,6 @@ if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin)
                                                     tempus massa sagittis at.
                                                 </div>
                                             </div>
-                                            <!-- usquare_block_extended -->
                                         </div>
                                         <div class="usquare_block">
                                             <div class="usquare_square" style="background-color: transparent; width: 195px; height: 195px;">
@@ -1654,9 +1641,7 @@ if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin)
 
                                                     <div class="clear"></div>
                                                 </div>
-                                                <!-- usquare_square_wrapper -->
                                             </div>
-                                            <!--div usquare_square -->
                                             <img src="images/slider/usquare/0049.jpg" class="usquare_square" alt="" style="background-color: transparent; width: 195px; height: 195px;"/>
 
                                             <div class="usquare_block_extended" style="background-color: #fff">
@@ -1665,7 +1650,6 @@ if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin)
                                                 </a>
                                                 <ul class="social_background"></ul>
                                                 <div class="clear"></div>
-                                                <!--span class="bold">info:</span-->
                                                 <div class="usquare_about">
                                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec magna lacus.
                                                     Sed sed mi est. Nulla in tristique tortor. Curabitur ipsum orci, bibendum in
@@ -1675,7 +1659,6 @@ if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin)
                                                     tempus massa sagittis at.
                                                 </div>
                                             </div>
-                                            <!-- usquare_block_extended -->
                                         </div>
                                         <div class="usquare_block">
                                             <div class="usquare_square" style="background-color: transparent; width: 195px; height: 195px;">
@@ -1688,9 +1671,7 @@ if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin)
 
                                                     <div class="clear"></div>
                                                 </div>
-                                                <!-- usquare_square_wrapper -->
                                             </div>
-                                            <!--div usquare_square -->
                                             <img src="images/slider/usquare/0058.jpg" class="usquare_square" alt="" style="background-color: transparent; width: 195px; height: 195px;"/>
 
                                             <div class="usquare_block_extended" style="background-color: #fff">
@@ -1699,7 +1680,6 @@ if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin)
                                                 </a>
                                                 <ul class="social_background"></ul>
                                                 <div class="clear"></div>
-                                                <!--span class="bold">info:</span-->
                                                 <div class="usquare_about">Lorem ipsum dolor sit amet, consectetur adipiscing
                                                     elit. In nec magna lacus.
                                                     Sed sed mi est. Nulla in tristique tortor. Curabitur ipsum orci, bibendum in
@@ -1709,7 +1689,6 @@ if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin)
                                                     tempus massa sagittis at.
                                                 </div>
                                             </div>
-                                            <!-- usquare_block_extended -->
                                         </div>
                                         <div class="usquare_block">
                                             <div class="usquare_square" style="background-color: transparent; width: 195px; height: 195px;">
@@ -1722,9 +1701,7 @@ if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin)
 
                                                     <div class="clear"></div>
                                                 </div>
-                                                <!-- usquare_square_wrapper -->
                                             </div>
-                                            <!--div usquare_square -->
                                             <img src="images/slider/usquare/0066.jpg" class="usquare_square" alt="" style="background-color: transparent; width: 195px; height: 195px;"/>
 
                                             <div class="usquare_block_extended" style="background-color: #fff">
@@ -1733,7 +1710,6 @@ if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin)
                                                 </a>
                                                 <ul class="social_background"></ul>
                                                 <div class="clear"></div>
-                                                <!--span class="bold">info:</span-->
                                                 <div class="usquare_about">
                                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. In nec magna lacus.
                                                     Sed sed mi est. Nulla in tristique tortor. Curabitur ipsum orci, bibendum in
@@ -1743,7 +1719,6 @@ if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin)
                                                     tempus massa sagittis at.
                                                 </div>
                                             </div>
-                                            <!-- usquare_block_extended -->
                                         </div>
                                     </div>
                                     <script> (function ($) {
@@ -1754,19 +1729,12 @@ if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin)
                                 </div>
 
                             </div>
-                        <!-- START COMMENTS -->
                         <div id="comments">
                         </div>
-                        <!-- END COMMENTS -->
                     </div>
-                                <!-- END CONTENT -->
-
-
-                                <!-- START EXTRA CONTENT -->
-                                <!-- END EXTRA CONTENT -->
                 </div>
             </div>
-    </div>
+    </div>  -->
     <!-- END PRIMARY -->
 
     <!-- FOOTER -->

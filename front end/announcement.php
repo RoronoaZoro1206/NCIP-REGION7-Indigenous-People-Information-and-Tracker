@@ -44,6 +44,7 @@ require_once 'google_auth.php';
 require_once 'comments.php';
 require_once 'pagination_functions.php';
 require_once 'announcement_data.php';
+require_once 'profile_image_helper.php';
 
 // Handle Google OAuth logout
 if (isset($_GET['action']) && $_GET['action'] === 'logout') {
@@ -552,10 +553,19 @@ try {
                     <!-- Google Authentication Section -->
                     <?php if (isUserLoggedIn()): ?>
                         <div class="login-info">
-                            <img src="<?php echo htmlspecialchars($_SESSION['google_user']['picture'] ?? 'images/gavatar.png'); ?>" 
-                            class="avatar photo" height="33" width="33" style="border-radius: 50%;" 
-                            alt="User Avatar">
-                            <p>Signed in as <strong><?php echo htmlspecialchars($_SESSION['google_user']['name']); ?></strong></p>
+                            <?php 
+                            $profile_pic = $_SESSION['google_user']['picture'] ?? 'images/gavatar.png';
+                            $user_name = htmlspecialchars($_SESSION['google_user']['name'] ?? 'Unknown User');
+                            $cache_buster = time(); // Force refresh
+                            ?>
+                            <img src="<?php echo htmlspecialchars($profile_pic); ?>" 
+                                class="avatar photo google-profile-pic" 
+                                height="33" width="33" 
+                                style="border-radius: 50%; object-fit: cover;" 
+                                alt="<?php echo $user_name; ?> Avatar"
+                                onerror="this.src='images/gavatar.png'; this.onerror=null;"
+                                crossorigin="anonymous">
+                            <p>Signed in as <strong><?php echo $user_name; ?></strong></p>
                             <a href="?action=logout" class="logout-link">
                                 <i class="icon-signout"></i> Logout
                             </a>

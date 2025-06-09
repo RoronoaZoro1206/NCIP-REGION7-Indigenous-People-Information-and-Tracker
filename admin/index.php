@@ -53,14 +53,14 @@ $stats = [
 ];
 
 try {
-    // Count total applicants (using lowercase)
-    $stmt = $pdo->query("SELECT COUNT(*) as total FROM applicant WHERE app_deleted_at IS NULL");
+    // Count total applicants (REMOVED app_deleted_at condition)
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM applicant");
     if ($stmt) {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stats['applicants'] = $row['total'] ?? 0;
     }
 
-    // Count status applications with proper status normalization (using lowercase)
+    // Count status applications with proper status normalization (REMOVED app_deleted_at condition)
     $count_status_query = "SELECT 
         CASE 
             WHEN ss.status_code IS NULL OR ss.status_code NOT IN ('PENDING', 'APPROVED', 'REJECTED') 
@@ -70,7 +70,6 @@ try {
         COUNT(DISTINCT a.app_code) as count
         FROM applicant a
         LEFT JOIN scholarship_status ss ON a.app_code = ss.app_code AND ss.status_is_active = TRUE
-        WHERE a.app_deleted_at IS NULL
         GROUP BY 
         CASE 
             WHEN ss.status_code IS NULL OR ss.status_code NOT IN ('PENDING', 'APPROVED', 'REJECTED') 
@@ -90,14 +89,14 @@ try {
         }
     }
 
-    // Count total messages (excluding soft deleted ones) (using lowercase)
+    // Count total messages (excluding soft deleted ones)
     $stmt = $pdo->query("SELECT COUNT(*) as total FROM contact_message WHERE contm_deleted_at IS NULL");
     if ($stmt) {
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
         $stats['total_messages'] = $row['total'] ?? 0;
     }
 
-    // Get recycle bin statistics for bar chart (using lowercase)
+    // Get recycle bin statistics for bar chart
     try {
         // Users - deleted vs not deleted
         $stmt = $pdo->query("SELECT COUNT(*) as total FROM users WHERE user_deleted_at IS NOT NULL");
@@ -117,21 +116,25 @@ try {
         $stmt = $pdo->query("SELECT COUNT(*) as total FROM population_table WHERE popt_deleted_at IS NULL");
         $active_population = $stmt ? ($stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0) : 0;
         
-        // Applicants - deleted vs not deleted
-        $stmt = $pdo->query("SELECT COUNT(*) as total FROM applicant WHERE app_deleted_at IS NOT NULL");
-        $deleted_applicants = $stmt ? ($stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0) : 0;
-        $stmt = $pdo->query("SELECT COUNT(*) as total FROM applicant WHERE app_deleted_at IS NULL");
+        // Applicants - REMOVED deleted_at conditions since column doesn't exist
+        $stmt = $pdo->query("SELECT COUNT(*) as total FROM applicant");
         $active_applicants = $stmt ? ($stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0) : 0;
+        $deleted_applicants = 0; // Since there's no soft delete for applicants
         
         // Recycle bin table records
         $stmt = $pdo->query("SELECT COUNT(*) as total FROM recycle_bin");
         $recycle_bin_items = $stmt ? ($stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0) : 0;
         
-        // Scholarships - deleted vs not deleted
-        $stmt = $pdo->query("SELECT COUNT(*) as total FROM scholarship WHERE scholar_deleted_at IS NOT NULL");
-        $deleted_scholarships = $stmt ? ($stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0) : 0;
-        $stmt = $pdo->query("SELECT COUNT(*) as total FROM scholarship WHERE scholar_deleted_at IS NULL");
-        $active_scholarships = $stmt ? ($stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0) : 0;
+        // Scholarships - check if table exists first
+        $deleted_scholarships = 0;
+        $active_scholarships = 0;
+        try {
+            $stmt = $pdo->query("SELECT COUNT(*) as total FROM scholarship");
+            $active_scholarships = $stmt ? ($stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0) : 0;
+        } catch (PDOException $e) {
+            // Table might not exist or have deleted_at column
+            error_log("Scholarship table query error: " . $e->getMessage());
+        }
         
         $recycle_bin_stats = [
             'deleted' => [
@@ -160,7 +163,7 @@ try {
         ];
     }
 
-    // Get recent applicants with CORRECT status handling - FIXED QUERY (using lowercase)
+    // Get recent applicants with CORRECT status handling - FIXED QUERY (REMOVED app_deleted_at condition)
     try {
         $recent_applicants_query = "SELECT 
             a.app_code, 
@@ -173,7 +176,6 @@ try {
             ss.status_date
         FROM applicant a 
         LEFT JOIN scholarship_status ss ON a.app_code = ss.app_code AND ss.status_is_active = TRUE
-        WHERE a.app_deleted_at IS NULL
         ORDER BY a.app_code DESC 
         LIMIT 5";
         
@@ -188,7 +190,7 @@ try {
         $recent_applicants = [];
     }
 
-    // Get recent messages with better error handling (using lowercase)
+    // Get recent messages with better error handling
     try {
         $stmt = $pdo->query("SELECT 
             contm_id,
@@ -209,9 +211,9 @@ try {
         $recent_messages = [];
     }
 
-    // Get ethnic group distribution for chart (using lowercase)
+    // Get ethnic group distribution for chart (REMOVED app_deleted_at condition)
     try {
-        $stmt = $pdo->query("SELECT app_ethno_group, COUNT(*) as count FROM applicant WHERE app_ethno_group IS NOT NULL AND app_deleted_at IS NULL GROUP BY app_ethno_group ORDER BY COUNT(*) DESC LIMIT 5");
+        $stmt = $pdo->query("SELECT app_ethno_group, COUNT(*) as count FROM applicant WHERE app_ethno_group IS NOT NULL GROUP BY app_ethno_group ORDER BY COUNT(*) DESC LIMIT 5");
         if ($stmt) {
             $ethnic_groups = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
@@ -220,7 +222,7 @@ try {
         $ethnic_groups = [];
     }
 
-    // Get population distribution by IP group from population_table (using lowercase)
+    // Get population distribution by IP group from population_table
     try {
         $pop_stmt = $pdo->query("SELECT 
                                     popt_ip_group, 
@@ -259,7 +261,7 @@ try {
     $error_message = "There was an error loading the dashboard data: " . $e->getMessage();
 }
 
-// Log dashboard access (using lowercase)
+// Log dashboard access
 try {
     $log_query = "INSERT INTO user_logs (user_id, log_type, log_details, log_timestamp) 
                  VALUES (:user_id, 'DASHBOARD_ACCESS', 'Admin accessed dashboard', CURRENT_TIMESTAMP)";
@@ -365,7 +367,7 @@ try {
             <!-- Statistics -->
             <div class="row">
                 <div class="col-xl-3 col-md-6">
-                    <div class="card card-dashboard card-stats bg-primary text-white">
+                    <div class="card card-dashboard card-stats bg-primary text-white h-100">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-5">
@@ -388,7 +390,7 @@ try {
                 </div>
                 
                 <div class="col-xl-3 col-md-6">
-                    <div class="card card-dashboard card-stats bg-warning text-white">
+                    <div class="card card-dashboard card-stats bg-warning text-white h-100">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-5">
@@ -411,7 +413,7 @@ try {
                 </div>
                 
                 <div class="col-xl-3 col-md-6">
-                    <div class="card card-dashboard card-stats bg-success text-white">
+                    <div class="card card-dashboard card-stats bg-success text-white h-100">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-5">
@@ -434,7 +436,7 @@ try {
                 </div>
                 
                 <div class="col-xl-3 col-md-6">
-                    <div class="card card-dashboard card-stats bg-info text-white">
+                    <div class="card card-dashboard card-stats bg-info text-white h-100">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-5">
@@ -460,7 +462,7 @@ try {
             <!-- Charts & Analytics -->
             <div class="row mt-4">
                 <div class="col-lg-3">
-                    <div class="card card-dashboard">
+                    <div class="card card-dashboard h-100">
                         <div class="card-header bg-white">
                             <h5 class="card-title mb-0">Application Status</h5>
                         </div>
@@ -473,7 +475,7 @@ try {
                 </div>
                 
                 <div class="col-lg-3">
-                    <div class="card card-dashboard">
+                    <div class="card card-dashboard h-100">
                         <div class="card-header bg-white">
                             <h5 class="card-title mb-0">IP Population by Group</h5>
                         </div>
@@ -486,7 +488,7 @@ try {
                 </div>
                 
                 <div class="col-lg-3">
-                    <div class="card card-dashboard">
+                    <div class="card card-dashboard h-100">
                         <div class="card-header bg-white">
                             <h5 class="card-title mb-0">Applicant Ethnic Groups</h5>
                         </div>
@@ -499,7 +501,7 @@ try {
                 </div>
                 
                 <div class="col-lg-3">
-                    <div class="card card-dashboard">
+                    <div class="card card-dashboard h-100">
                         <div class="card-header bg-white d-flex justify-content-between align-items-center">
                             <h5 class="card-title mb-0">Recycle Bin Overview</h5>
                         </div>
@@ -515,7 +517,7 @@ try {
             <!-- Population Analytics -->
             <div class="row mt-4">
                 <div class="col-lg-8">
-                    <div class="card card-dashboard">
+                    <div class="card card-dashboard h-100">
                         <div class="card-header bg-white">
                             <h5 class="card-title mb-0">Indigenous People Population Comparison</h5>
                         </div>
@@ -528,7 +530,7 @@ try {
                 </div>
                 
                 <div class="col-lg-4">
-                    <div class="card card-dashboard">
+                    <div class="card card-dashboard h-100">
                         <div class="card-header bg-white">
                             <h5 class="card-title mb-0">Population Summary</h5>
                         </div>

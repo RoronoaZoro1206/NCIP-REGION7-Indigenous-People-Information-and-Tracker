@@ -17,8 +17,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         die("Email is required.");
     }
 
-    // Check if user exists - updated to use uppercase table/column names
-    $stmt = $pdo->prepare("SELECT * FROM USERS WHERE USER_EMAIL = ? ORDER BY USER_ID ASC");
+    // Check if user exists - using lowercase table/column names
+    $stmt = $pdo->prepare("select * from users where user_email = ? order by user_id asc");
     $stmt->execute([$email]);
     $user = $stmt->fetch();
 
@@ -27,28 +27,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     // Get user's timezone, use PHP default if not set
-    $userTimezone = $user['USER_TIMEZONE'] ?? 'Asia/Manila'; 
+    $userTimezone = $user['user_timezone'] ?? 'Asia/Manila'; 
     
-    // Generate expiry in user's timezone
+    // Generate expiry in user's timezone (1 hour from now)
     $now = new DateTime('now', new DateTimeZone($userTimezone));
-    $expiryLocal = $now->add(new DateInterval('PT1H'));
+    $expiryLocal = clone $now;
+    $expiryLocal->add(new DateInterval('PT1H'));
     
-    // Convert to UTC for database storage
-    $expiryUTC = (clone $expiryLocal)->setTimezone(new DateTimeZone('Asia/Manila'));
-    
+    // Store the expiry time as-is (don't convert timezone again)
     $token = bin2hex(random_bytes(16));
-    $expiryForDB = $expiryUTC->format('Y-m-d H:i:s');
+    $expiryForDB = $expiryLocal->format('Y-m-d H:i:s');
 
-    // Update token and expiry in DB - updated table/column names
-    $update = $pdo->prepare("UPDATE USERS SET USER_RESET_TOKEN = ?, USER_TOKEN_EXPIRY = ? WHERE USER_EMAIL = ?");
+    // Update token and expiry in DB - using lowercase table/column names
+    $update = $pdo->prepare("update users set user_reset_token = ?, user_token_expiry = ? where user_email = ?");
     $update->execute([$token, $expiryForDB, $email]);
 
-    // Log the password reset request
-    $log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
-                 VALUES (?, 'PASSWORD_RESET_REQUEST', ?, CURRENT_TIMESTAMP)";
-    $log_stmt = $pdo->prepare($log_query);
-    $details = "Password reset requested for email: " . $email;
-    $log_stmt->execute([$user['USER_ID'], $details]);
+    // Log the password reset request (check if user_logs table exists)
+    try {
+        $log_query = "insert into user_logs (user_id, log_type, log_details, log_timestamp) 
+                     values (?, 'PASSWORD_RESET_REQUEST', ?, current_timestamp)";
+        $log_stmt = $pdo->prepare($log_query);
+        $details = "Password reset requested for email: " . $email;
+        $log_stmt->execute([$user['user_id'], $details]);
+    } catch (PDOException $e) {
+        // If user_logs table doesn't exist, just continue without logging
+        error_log("Could not log password reset request: " . $e->getMessage());
+    }
 
     // Prepare PHPMailer
     $mail = new PHPMailer(true);
@@ -65,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // Email content
         $mail->setFrom('lawrenceramirez626@gmail.com', 'NCIP CEBU');
         $mail->addReplyTo('lawrenceramirez626@gmail.com', 'NCIP CEBU');
-        $mail->addAddress($email, $user['USER_USERNAME']);
+        $mail->addAddress($email, $user['user_username']);
 
         $resetLink = "http://localhost/Information%20Management/IM---Copy/front%20end/reset-password.php?token=" . $token;
 
@@ -81,7 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <div style='max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; padding: 30px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);'>
             <p style='color: #333; font-size: 16px; line-height: 1.6; margin-bottom: 20px;'>
               Dear <strong style='color: #2d3436;'>"
-              . htmlspecialchars($user['USER_USERNAME']) .
+              . htmlspecialchars($user['user_username']) .
               "</strong>,
             </p>
         
@@ -121,12 +125,119 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         if (!$mail->send()) {
             file_put_contents(__DIR__ . '/email-errors.log', "[" . date('Y-m-d H:i:s') . "] Warning: " . $mail->ErrorInfo . "\n", FILE_APPEND);
             
-            // Log email failure
-            $error_log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
-                              VALUES (?, 'EMAIL_ERROR', ?, CURRENT_TIMESTAMP)";
-            $error_log_stmt = $pdo->prepare($error_log_query);
-            $error_details = "Failed to send password reset email: " . $mail->ErrorInfo;
-            $error_log_stmt->execute([$user['USER_ID'], $error_details]);
+            // Log email failure (if logging table exists)
+            try {
+                $error_log_query = "insert into user_logs (user_id, log_type, log_details, log_timestamp) 
+                                  values (?, 'EMAIL_ERROR', ?, current_timestamp)";
+                $error_log_stmt = $pdo->prepare($error_log_query);
+                $error_details = "Failed to send password reset email: " . $mail->ErrorInfo;
+                $error_log_stmt->execute([$user['user_id'], $error_details]);
+            } catch (PDOException $e) {
+                error_log("Could not log email error: " . $e->getMessage());
+            }
+            
+            echo <<<HTML
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+              <meta charset="UTF-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+              <title>Email Error</title>
+              <link rel="stylesheet" href="authentication.css">
+              <style>
+                body {
+                  background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+                  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                  margin: 0;
+                  padding: 0;
+                  min-height: 100vh;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                }
+
+                .error-box {
+                  max-width: 450px;
+                  margin: auto;
+                  padding: 40px 30px;
+                  border-radius: 15px;
+                  background: #ffffff;
+                  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+                  text-align: center;
+                  animation: slideIn 0.5s ease-out;
+                }
+
+                @keyframes slideIn {
+                  from {
+                    opacity: 0;
+                    transform: translateY(-30px);
+                  }
+                  to {
+                    opacity: 1;
+                    transform: translateY(0);
+                  }
+                }
+
+                .alert-icon {
+                  font-size: 60px;
+                  margin-bottom: 20px;
+                  animation: shake 1s ease-in-out;
+                }
+
+                @keyframes shake {
+                  0%, 100% { transform: translateX(0); }
+                  25% { transform: translateX(-5px); }
+                  75% { transform: translateX(5px); }
+                }
+
+                .alert-title2 {
+                  font-size: 24px;
+                  color: #e74c3c;
+                  margin-bottom: 20px;
+                  font-weight: 700;
+                }
+
+                .error-box p {
+                  font-size: 16px;
+                  color: #555;
+                  line-height: 1.6;
+                  margin-bottom: 30px;
+                }
+
+                .signup_link a {
+                  display: inline-block;
+                  background-color: #3498db;
+                  color: #fff !important;
+                  text-decoration: none;
+                  padding: 12px 30px;
+                  border-radius: 25px;
+                  font-weight: 600;
+                  font-size: 14px;
+                  transition: all 0.3s ease;
+                  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+                }
+
+                .signup_link a:hover {
+                  background-color: #2980b9;
+                  transform: translateY(-2px);
+                  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+                }
+              </style>
+            </head>
+            <body>
+              <div class="error-box">
+                <div class="alert-icon">⚠️</div>
+                <div class="alert-title2">Message could not be sent</div> 
+                <p>Mailer Error: {$mail->ErrorInfo}<br><br>
+                Please try refreshing your browser!<br><br>
+                If still not working, press Ctrl + F5 or try again later</p>
+                <div class="signup_link">
+                  <a href="form-content.php?show=login">← Back to Login</a>
+                </div>
+              </div>
+            </body>
+            </html>
+HTML;
             
         } else {
             echo <<<HTML
@@ -138,47 +249,93 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               <title>Reset Link Sent</title>
               <link rel="stylesheet" href="authentication.css">
               <style>
-                .center {
-                  max-width: 420px;
+                body {
+                  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                  margin: 0;
+                  padding: 0;
+                  min-height: 100vh;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                }
+
+                .success-box {
+                  max-width: 450px;
                   margin: auto;
                   padding: 40px 30px;
-                  border-radius: 20px;
-                  background: #f9f9f9;
-                  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+                  border-radius: 15px;
+                  background: #ffffff;
+                  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
                   text-align: center;
+                  animation: slideIn 0.5s ease-out;
                 }
-    
-                .center h1 {
-                  font-size: 26px;
+
+                @keyframes slideIn {
+                  from {
+                    opacity: 0;
+                    transform: translateY(-30px);
+                  }
+                  to {
+                    opacity: 1;
+                    transform: translateY(0);
+                  }
+                }
+
+                .success-icon {
+                  font-size: 60px;
+                  margin-bottom: 20px;
+                  animation: bounce 1s ease-in-out;
+                }
+
+                @keyframes bounce {
+                  0%, 20%, 50%, 80%, 100% {
+                    transform: translateY(0);
+                  }
+                  40% {
+                    transform: translateY(-10px);
+                  }
+                  60% {
+                    transform: translateY(-5px);
+                  }
+                }
+
+                .success-title {
+                  font-size: 28px;
                   color: #2ecc71;
-                  margin-bottom: 16px;
+                  margin-bottom: 20px;
+                  font-weight: 700;
                 }
-            
-                .center p {
-                  font-size: 15px;
+
+                .success-box p {
+                  font-size: 16px;
                   color: #555;
                   line-height: 1.6;
-                  margin-bottom: 25px;
+                  margin-bottom: 30px;
                 }
-            
-                .center a input[type="submit"] {
+
+                .signup_link a {
+                  display: inline-block;
                   background-color: #3498db;
-                  color: #fff;
-                  border: none;
+                  color: #fff !important;
+                  text-decoration: none;
                   padding: 12px 30px;
-                  border-radius: 30px;
-                  font-weight: bold;
+                  border-radius: 25px;
+                  font-weight: 600;
                   font-size: 14px;
-                  transition: 0.3s;
+                  transition: all 0.3s ease;
+                  box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
                 }
-            
-                .center a input[type="submit"]:hover {
+
+                .signup_link a:hover {
                   background-color: #2980b9;
+                  transform: translateY(-2px);
+                  box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
                 }
               </style>
             </head>
             <body>
-              <div class="center success-box">
+              <div class="success-box">
                 <div class="success-icon">✅</div>
                 <h2 class="success-title">Reset Link Sent!</h2>
                 <p>We've sent a secure password reset link to your email. <br><br>
@@ -189,14 +346,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               </div>
             </body>
             </html>
-            HTML;
+HTML;
             
-            // Log email success
-            $success_log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
-                               VALUES (?, 'EMAIL_SENT', ?, CURRENT_TIMESTAMP)";
-            $success_log_stmt = $pdo->prepare($success_log_query);
-            $success_details = "Password reset email sent successfully to: " . $email;
-            $success_log_stmt->execute([$user['USER_ID'], $success_details]);
+            // Log email success (if logging table exists)
+            try {
+                $success_log_query = "insert into user_logs (user_id, log_type, log_details, log_timestamp) 
+                                   values (?, 'EMAIL_SENT', ?, current_timestamp)";
+                $success_log_stmt = $pdo->prepare($success_log_query);
+                $success_details = "Password reset email sent successfully to: " . $email;
+                $success_log_stmt->execute([$user['user_id'], $success_details]);
+            } catch (PDOException $e) {
+                error_log("Could not log email success: " . $e->getMessage());
+            }
         }
         
     } catch (Exception $e) {
@@ -206,61 +367,102 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <head>
           <meta charset="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-          <title>Reset Link Sent</title>
+          <title>Email Error</title>
           <link rel="stylesheet" href="authentication.css">
           <style>
-            .center {
-              max-width: 420px;
+            body {
+              background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              margin: 0;
+              padding: 0;
+              min-height: 100vh;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+
+            .error-box {
+              max-width: 450px;
               margin: auto;
               padding: 40px 30px;
-              border-radius: 20px;
-              background: #f9f9f9;
-              box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+              border-radius: 15px;
+              background: #ffffff;
+              box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
               text-align: center;
+              animation: slideIn 0.5s ease-out;
             }
-  
-            .center h1 {
-              font-size: 26px;
-              color: #2ecc71;
-              margin-bottom: 16px;
+
+            @keyframes slideIn {
+              from {
+                opacity: 0;
+                transform: translateY(-30px);
+              }
+              to {
+                opacity: 1;
+                transform: translateY(0);
+              }
             }
-        
-            .center p {
-              font-size: 15px;
+
+            .alert-icon {
+              font-size: 60px;
+              margin-bottom: 20px;
+              animation: shake 1s ease-in-out;
+            }
+
+            @keyframes shake {
+              0%, 100% { transform: translateX(0); }
+              25% { transform: translateX(-5px); }
+              75% { transform: translateX(5px); }
+            }
+
+            .alert-title2 {
+              font-size: 24px;
+              color: #e74c3c;
+              margin-bottom: 20px;
+              font-weight: 700;
+            }
+
+            .error-box p {
+              font-size: 16px;
               color: #555;
               line-height: 1.6;
-              margin-bottom: 25px;
+              margin-bottom: 30px;
             }
-        
-            .center a input[type="submit"] {
+
+            .signup_link a {
+              display: inline-block;
               background-color: #3498db;
-              color: #fff;
-              border: none;
+              color: #fff !important;
+              text-decoration: none;
               padding: 12px 30px;
-              border-radius: 30px;
-              font-weight: bold;
+              border-radius: 25px;
+              font-weight: 600;
               font-size: 14px;
-              transition: 0.3s;
+              transition: all 0.3s ease;
+              box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
             }
-        
-            .center a input[type="submit"]:hover {
+
+            .signup_link a:hover {
               background-color: #2980b9;
+              transform: translateY(-2px);
+              box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
             }
           </style>
         </head>
         <body>
-          <div class="center success-box">
-          <div class="alert-icon">⚠️</div>
-            <div class="alert-title2">Message could not be sent. Mailer Error: {$mail->ErrorInfo}</div> 
-            <p>Please try refreshing your browser!<br><br>
-            If still not working <br> (Press ctrl + f5 or try again later)</p>
+          <div class="error-box">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-title2">Message could not be sent</div> 
+            <p>Mailer Error: {$mail->ErrorInfo}<br><br>
+            Please try refreshing your browser!<br><br>
+            If still not working, press Ctrl + F5 or try again later</p>
             <div class="signup_link">
               <a href="form-content.php?show=login">← Back to Login</a>
             </div>
           </div>
         </body>
         </html>
-        HTML;
+HTML;
         
         file_put_contents(
             __DIR__ . '/email-errors.log',
@@ -268,20 +470,18 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             FILE_APPEND
         );
         
-        // Log exception
-        $exception_log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
-                             VALUES (?, 'EXCEPTION', ?, CURRENT_TIMESTAMP)";
-        $exception_log_stmt = $pdo->prepare($exception_log_query);
-        $exception_details = "Exception during password reset: " . $e->getMessage();
-        $exception_log_stmt->execute([$user['USER_ID'], $exception_details]);
+        // Log exception (if logging table exists)
+        try {
+            $exception_log_query = "insert into user_logs (user_id, log_type, log_details, log_timestamp) 
+                                 values (?, 'EXCEPTION', ?, current_timestamp)";
+            $exception_log_stmt = $pdo->prepare($exception_log_query);
+            $exception_details = "Exception during password reset: " . $e->getMessage();
+            $exception_log_stmt->execute([$user['user_id'], $exception_details]);
+        } catch (PDOException $e) {
+            error_log("Could not log exception: " . $e->getMessage());
+        }
     }
 } else {
-    // Get token cleanup info if available
-    $cleanup = [
-        'cleared' => 0,
-        'currentTime' => date('Y-m-d H:i:s')
-    ];
-    
     // If this is accessed directly, show error
     $errorCode = "direct-access";
     
@@ -290,7 +490,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Link Expired</title>
+        <title>Invalid Access</title>
         <link rel="stylesheet" href="authentication.css">
         <meta http-equiv="refresh" content="5;url=forgot-password.php">
         <style>
@@ -303,13 +503,67 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 margin: 0;
                 font-family: "Poppins", sans-serif;
             }
+
+            .message-box {
+                max-width: 450px;
+                margin: auto;
+                padding: 40px 30px;
+                border-radius: 15px;
+                background: #ffffff;
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                animation: slideIn 0.5s ease-out;
+            }
+
+            @keyframes slideIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(-30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .alert-icon {
+                font-size: 60px;
+                margin-bottom: 20px;
+                animation: bounce 1s ease-in-out infinite;
+            }
+
+            @keyframes bounce {
+                0%, 20%, 50%, 80%, 100% {
+                    transform: translateY(0);
+                }
+                40% {
+                    transform: translateY(-10px);
+                }
+                60% {
+                    transform: translateY(-5px);
+                }
+            }
+
+            .alert-title {
+                font-size: 24px;
+                color: #e74c3c;
+                margin-bottom: 20px;
+                font-weight: 700;
+            }
+
+            .redirect-note {
+                font-size: 16px;
+                color: #555;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
         </style>
     </head>
     <body>
         <div class="message-box">
             <div class="alert-icon">⚠️</div>
-            <div class="alert-title">Link Expired or Invalid</div>
-            <div class="redirect-note">Redirecting you to request a new one in <strong>5 seconds</strong>...</div>
+            <div class="alert-title">Invalid Access</div>
+            <div class="redirect-note">This page cannot be accessed directly.<br><br>Redirecting you to forgot password page in <strong>5 seconds</strong>...</div>
         </div>
         <script>
             setTimeout(function() {

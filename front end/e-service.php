@@ -243,65 +243,68 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         foreach ($educationCategories as $categoryId => $categoryName) {
             $index = $categoryId - 1; // Convert to 0-based index for form fields
             
-            // Always insert education attainment record (even if empty) for proper tracking
-            $eduStmt = $pdo->prepare("
-                INSERT INTO education_attainment (
-                    educ_id, 
-                    app_code
-                ) VALUES (
-                    :category_id, 
-                    :app_code
-                ) RETURNING edua_code
-            ");
-            
-            $eduStmt->bindParam(':category_id', $categoryId);
-            $eduStmt->bindParam(':app_code', $appCode);
-            $eduStmt->execute();
-            
-            $eduCode = null;
-            if ($eduStmt->rowCount() > 0) {
-                $result = $eduStmt->fetch(PDO::FETCH_ASSOC);
-                $eduCode = $result['edua_code'];
+            // Only insert education attainment record if school name is provided
+            if (!empty($_POST['school_name'][$index])) {
+                // Insert education attainment record
+                $eduStmt = $pdo->prepare("
+                    INSERT INTO education_attainment (
+                        educ_id, 
+                        app_code
+                    ) VALUES (
+                        :category_id, 
+                        :app_code
+                    ) RETURNING edua_code
+                ");
+                
+                $eduStmt->bindParam(':category_id', $categoryId);
+                $eduStmt->bindParam(':app_code', $appCode);
+                $eduStmt->execute();
+                
+                $eduCode = null;
+                if ($eduStmt->rowCount() > 0) {
+                    $result = $eduStmt->fetch(PDO::FETCH_ASSOC);
+                    $eduCode = $result['edua_code'];
+                }
+                
+                if (!$eduCode) {
+                    throw new Exception("Failed to get edua_code after insertion for category: " . $categoryName);
+                }
+                
+                // Insert school details
+                $schoolStmt = $pdo->prepare("
+                    INSERT INTO school (
+                        sch_name, 
+                        sch_address, 
+                        sch_year_grad, 
+                        sch_grade_avg, 
+                        sch_rank, 
+                        edua_code
+                    ) VALUES (
+                        :name, 
+                        :address, 
+                        :year_grad, 
+                        :grade_avg, 
+                        :rank, 
+                        :edua_code
+                    )
+                ");
+                
+                // Handle fields properly
+                $schoolName = $_POST['school_name'][$index];
+                $schoolAddress = !empty($_POST['school_address'][$index]) ? $_POST['school_address'][$index] : null;
+                $yearGraduated = !empty($_POST['year_graduated'][$index]) ? (int)$_POST['year_graduated'][$index] : null;
+                $gradeAverage = !empty($_POST['grade_average'][$index]) ? (float)$_POST['grade_average'][$index] : null;
+                $rank = !empty($_POST['rank'][$index]) ? $_POST['rank'][$index] : null;
+                
+                $schoolStmt->bindParam(':name', $schoolName);
+                $schoolStmt->bindParam(':address', $schoolAddress);
+                $schoolStmt->bindParam(':year_grad', $yearGraduated);
+                $schoolStmt->bindParam(':grade_avg', $gradeAverage);
+                $schoolStmt->bindParam(':rank', $rank);
+                $schoolStmt->bindParam(':edua_code', $eduCode);
+                
+                $schoolStmt->execute();
             }
-            
-            if (!$eduCode) {
-                throw new Exception("Failed to get edua_code after insertion for category: " . $categoryName);
-            }
-            
-            // Insert school details (even if empty - store as NULL/empty for tracking)
-            $schoolStmt = $pdo->prepare("
-                INSERT INTO school (
-                    sch_name, 
-                    sch_address, 
-                    sch_year_grad, 
-                    sch_grade_avg, 
-                    sch_rank, 
-                    edua_code
-                ) VALUES (
-                    :name, 
-                    :address, 
-                    :year_grad, 
-                    :grade_avg, 
-                    :rank, 
-                    :edua_code
-                )
-            ");
-            
-            // Handle empty fields properly
-            $schoolName = !empty($_POST['school_name'][$index]) ? $_POST['school_name'][$index] : null;
-            $schoolAddress = !empty($_POST['school_address'][$index]) ? $_POST['school_address'][$index] : null;
-            $yearGraduated = !empty($_POST['year_graduated'][$index]) ? (int)$_POST['year_graduated'][$index] : null;
-            $gradeAverage = !empty($_POST['grade_average'][$index]) ? (float)$_POST['grade_average'][$index] : null;
-            $rank = !empty($_POST['rank'][$index]) ? $_POST['rank'][$index] : null;
-            
-            $schoolStmt->bindParam(':name', $schoolName);
-            $schoolStmt->bindParam(':address', $schoolAddress);
-            $schoolStmt->bindParam(':year_grad', $yearGraduated);
-            $schoolStmt->bindParam(':grade_avg', $gradeAverage);
-            $schoolStmt->bindParam(':rank', $rank);
-            $schoolStmt->bindParam(':edua_code', $eduCode);
-            
-            $schoolStmt->execute();
         }
         
         // 5. Insert family background
@@ -1300,7 +1303,7 @@ try {
                 <input type="number" name="year_graduated[<?php echo $index; ?>]" min="1900" max="<?php echo date('Y'); ?>" style="width: 100%;" autocomplete="off">             
             </td>             
             <td>                 
-                <input type="number" name="grade_average[<?php echo $index; ?>]" min="0" max="100" style="width: 100%;" autocomplete="off">             
+                <input type="number" name="grade_average[<?php echo $index; ?>]" min="0" max="100" step="0.01" style="width: 100%;" autocomplete="off">              
             </td>             
             <td>                 
                 <input type="text" name="rank[<?php echo $index; ?>]" style="width: 100%;" autocomplete="off">             
@@ -1985,7 +1988,7 @@ document.addEventListener('DOMContentLoaded', function() {
     incomeInputs.forEach(function(input) {
         // Allow only numeric input and decimal point while typing
         input.addEventListener('keypress', function(e) {
-            // Allow backspace, delete, tab, escape, enter
+            // Allow backspace, scan my #sym:Semester  #sym:GetSemester  #sym:GetSemesterName  #sym:GetSemesters  #sym:SaveSemester  #file:Semester.cshtml  #file:SemesterManagement.js and fix that Duplicate Semester. only make use of duplicate semester validation if im adding a NEW semester but if im editing an existing semester then don't give me the duplicate semester validation because sometimes im gonna adjust to make the status current and maintain the 	Start Date and end date and the what kind of semester in edit so dont give me that duplicate semester. unless im adding a new semester via "Add New Semester" button then that's the time you will use the duplicate semester error validation, tab, escape, enter
             if ([8, 9, 27, 13, 46].indexOf(e.keyCode) !== -1 ||
                 // Allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
                 (e.keyCode === 65 && e.ctrlKey === true) ||

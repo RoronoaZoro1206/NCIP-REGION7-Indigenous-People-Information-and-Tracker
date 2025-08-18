@@ -182,7 +182,7 @@ if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin)
     <?php include 'components/header.php'; ?>
 
         <!-- BEGIN FLEXSLIDER SLIDER -->
-        <div id="slider-polaroid-0" class="slider slider-polaroid polaroid no-responsive" style="height:400px;">
+        <div id="slider-polaroid-0" class="slider slider-polaroid polaroid no-responsive" style="height:400px; margin-top: -20px; margin-bottom: 20px;">
             <div class="thumbs  container">
                 <div class="thumb">
                     <img src="images/slider/flexslider/1-150x150.png" alt="images/slider/flexslider/1-150x150.png" />
@@ -193,7 +193,7 @@ if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin)
                     <img src="images/slider/flexslider/3-150x150.png" alt="images/slider/flexslider/3-150x150.png" />
                     <div class="slide-content container align-right" style="background-image:url('images/slider/flexslider/3.png');">
                         <div class="text" style="margin-left: auto; margin-top: -50px;">
-                            <h2 style="font-size: 2rem; font-weight: 600; line-height: 1.5; color: #ffffff;">
+                            <h2 style="font-size: 2rem; font-weight: 600; line-height: 1.5; color: black;">
                                 <span style="font-size: 2.5rem; color: #ffffff;">“</span>
                                 We do not inherit the Earth from our ancestors, we borrow it from our children
                                 <span style="font-size: 2.5rem; color: #ffffff;">”</span>
@@ -229,7 +229,7 @@ if (isset($_GET['switch_role']) && $_GET['switch_role'] === 'USER' && $is_admin)
                     <img src="images/slider/flexslider/4-150x150.png" alt="images/slider/flexslider/4-150x150.png" />
                     <div class="slide-content container align-left" style="background-image:url('images/slider/flexslider/4.png');">
                         <div class="text" style="margin-right: auto; margin-top: -50px;">
-                            <h2 style="font-size: 1.5rem; font-weight: 600; line-height: 1.5; color: #ffffff;">
+                            <h2 style="font-size: 1.5rem; font-weight: 600; line-height: 1.5; color: black;">
                                 <span style="font-size: 2rem; color: #ffffff;">“</span>
                                 Everything we need, we do and everything of our culture and tradition is connected into it. It serves as our market, hospital, church, and school. If we do not have land, we’ll lose everything
                                 <span style="font-size: 2rem; color: #ffffff;">”</span>

@@ -1,5 +1,7 @@
 <?php
 require_once 'db.php';
+// Bring in unified logger
+try { require_once __DIR__ . '/logger.php'; } catch (Throwable $e) { /* ignore */ }
 
 try {
     $stmt = $pdo->prepare("
@@ -18,6 +20,9 @@ try {
         $log_query = "INSERT INTO USER_LOGS (LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
                      VALUES ('TOKEN_CLEANUP', 'Expired token cleanup initiated', CURRENT_TIMESTAMP)";
         $pdo->exec($log_query);
+        if (function_exists('log_user_event')) {
+            log_user_event($pdo, 'TOKEN_CLEANUP', 'Expired token cleanup initiated');
+        }
         
         // Run the cleanup script
         shell_exec('php "' . $cleanup_script . '"');
@@ -34,6 +39,9 @@ try {
         $log_stmt = $pdo->prepare($log_query);
         $log_stmt->bindParam(":details", $error_message);
         $log_stmt->execute();
+        if (function_exists('log_user_event')) {
+            log_user_event($pdo, 'ERROR', $error_message);
+        }
     } catch (PDOException $inner_e) {
         // If even logging fails, just write to error log
         error_log("Failed to log token checker error: " . $inner_e->getMessage());

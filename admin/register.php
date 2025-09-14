@@ -20,6 +20,9 @@ $pdo = null;
 $username = "";
 $email = "";
 
+// Include shared logger
+try { require_once __DIR__ . '/../front end/logger.php'; } catch (Throwable $e) { /* ignore */ }
+
 try {
     // Include the database configuration
     require_once "config/database.php";
@@ -65,22 +68,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $pdo !== null) {
                 $register_success = "Registration successful! You can now login with your credentials.";
                 $username = "";
                 $email = "";
+                if (function_exists('log_user_event')) {
+                    $ip = $_SERVER['REMOTE_ADDR'] ?? null;
+                    log_user_event($pdo, 'REGISTRATION', 'New USER account created successfully', (int)$user_id, $ip);
+                }
             } else {
                 $register_error = "Registration failed. Please try again.";
                 $errors['registration'] = $register_error;
+                if (function_exists('log_user_event')) {
+                    $ip = $_SERVER['REMOTE_ADDR'] ?? null;
+                    $who = $username !== '' ? ("username=" . $username . ($email? ", email=".$email : '')) : '';
+                    log_user_event($pdo, 'REGISTRATION_FAILED', 'Registration failed ' . $who, null, $ip);
+                }
             }
         } else {
             // Display first error in alert
             $register_error = array_values($errors)[0];
+            if (function_exists('log_user_event')) {
+                $ip = $_SERVER['REMOTE_ADDR'] ?? null;
+                $who = $username !== '' ? ("username=" . $username . ($email? ", email=".$email : '')) : '';
+                log_user_event($pdo, 'REGISTRATION_VALIDATION_ERROR', $register_error . ' ' . $who, null, $ip);
+            }
         }
     } catch (PDOException $e) {
         $register_error = "Registration failed: Database error occurred.";
         $errors['database'] = $register_error;
         error_log("Registration PDO Error: " . $e->getMessage());
+        if (function_exists('log_user_event')) {
+            $ip = $_SERVER['REMOTE_ADDR'] ?? null;
+            log_user_event($pdo, 'EXCEPTION', 'Registration PDO Error', null, $ip);
+        }
     } catch (Exception $e) {
         $register_error = "Registration failed: " . $e->getMessage();
         $errors['general'] = $register_error;
         error_log("Registration Error: " . $e->getMessage());
+        if (function_exists('log_user_event')) {
+            $ip = $_SERVER['REMOTE_ADDR'] ?? null;
+            log_user_event($pdo, 'EXCEPTION', 'Registration Error: ' . $e->getMessage(), null, $ip);
+        }
     }
 }
 

@@ -39,6 +39,9 @@ try {
     }
 }
 
+// Include shared logger
+try { require_once __DIR__ . '/../front end/logger.php'; } catch (Throwable $e) { /* ignore */ }
+
 // Process login form
 if ($_SERVER["REQUEST_METHOD"] == "POST" && $pdo !== null) {
     $username = trim($_POST["username"]);
@@ -76,14 +79,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $pdo !== null) {
                 $_SESSION["username"] = $user[$username_field];
                 $_SESSION["role"] = $user[$role_field];
                 
-                // Log the successful login
+                // Log the successful login (DB + file)
                 $user_ip = getUserIP();
-                $log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP, LOG_IP_ADDRESS) 
-                            VALUES (:user_id, 'LOGIN', 'Admin login successful', CURRENT_TIMESTAMP, :ip)";
-                $log_stmt = $pdo->prepare($log_query);
-                $log_stmt->bindParam(":user_id", $user[$user_id_field]);
-                $log_stmt->bindParam(":ip", $user_ip);
-                $log_stmt->execute();
+                if (function_exists('log_user_event')) {
+                    log_user_event($pdo, 'LOGIN', 'Admin login successful', (int)$user[$user_id_field], $user_ip);
+                }
                 
                 header("Location: index.php");
                 exit();
@@ -94,15 +94,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && $pdo !== null) {
         if (!empty($errors)) {
             $user_ip = getUserIP();
             $error_type = isset($errors["account_deleted"]) ? 'LOGIN_ATTEMPT_DELETED' : 'LOGIN_ATTEMPT_FAILED';
-            $error_detail = isset($errors["account_deleted"]) ? 'Login attempt on deleted account: ' . $username : 'Failed login attempt for username: ' . $username;
-            
-            $log_query = "INSERT INTO USER_LOGS (LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP, LOG_IP_ADDRESS) 
-                         VALUES (:log_type, :log_details, CURRENT_TIMESTAMP, :ip)";
-            $log_stmt = $pdo->prepare($log_query);
-            $log_stmt->bindParam(":log_type", $error_type);
-            $log_stmt->bindParam(":log_details", $error_detail);
-            $log_stmt->bindParam(":ip", $user_ip);
-            $log_stmt->execute();
+            $error_detail = isset($errors["account_deleted"]) ? ('Login attempt on deleted account: ' . $username) : ('Failed login attempt for username: ' . $username);
+            if (function_exists('log_user_event')) {
+                // no user id on failure
+                log_user_event($pdo, $error_type, $error_detail, null, $user_ip);
+            }
         }
         
         // Display first error

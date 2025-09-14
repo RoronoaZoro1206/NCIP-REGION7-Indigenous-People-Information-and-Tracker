@@ -6,7 +6,11 @@ function render_message(){
 
         $message = $_SESSION["signup_success"];
 
-        echo '<h5 style="color:dodgerblue">' . $message . '</h5>';
+          // Success notice uses the same layout as the green box in form-content.php
+          echo '<div class="success-message">'
+              . "<i class='bx bx-check-circle'></i> "
+              . htmlspecialchars($message)
+              . '</div>';
 
         unset($_SESSION["signup_success"]);
 
@@ -16,11 +20,13 @@ function render_message(){
 
         $errors = $_SESSION["login_errors"];
 
-        foreach($errors as $error) {
-
-            echo '<h5 style="color:firebrick">' . $error . '</h5>';
-
-        }
+          // Error notice matches the success layout but in red
+          foreach($errors as $error) {
+                echo '<div class="error-message">'
+                    . "<i class='bx bx-error-circle'></i> "
+                    . htmlspecialchars($error)
+                    . '</div>';
+          }
 
         unset($_SESSION["login_errors"]);
 

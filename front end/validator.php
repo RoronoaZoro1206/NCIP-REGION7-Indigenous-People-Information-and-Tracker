@@ -95,34 +95,50 @@ class LoginValidator {
         $errors = [];
 
         require_once "user-models.php";
+    // Bring in unified logger for consistent DB logging of auth events
+    // This is safe even if logger is missing; we'll suppress any issues.
+    try { require_once "logger.php"; } catch (Throwable $e) { /* ignore */ }
+    $client_ip = $_SERVER['HTTP_CLIENT_IP'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
 
         if (empty($this->username) || empty($this->password)) {
             $errors["incomplete_form"] = "Please fill all the fields";
+            // Log incomplete form submission as a failed attempt
+            if (function_exists('log_user_event')) {
+                $details = "Missing username and/or password for username: " . ($this->username ?: '');
+                log_user_event($this->pdo, 'LOGIN_ATTEMPT_FAILED', $details, null, $client_ip);
+            }
         }
 
         $user = $this->get_user_data();
 
         if (!$user) {
             $errors["invalid_username"] = "Invalid username entered";
+            // Log invalid username attempt
+            if (function_exists('log_user_event')) {
+                $details = "Invalid username entered: " . $this->username;
+                log_user_event($this->pdo, 'LOGIN_ATTEMPT_FAILED', $details, null, $client_ip);
+            }
         } else {
             // Check password
             if (!password_verify($this->password, $user["user_pwd"])) {
                 $errors["invalid_password"] = "Invalid password entered";
+                // Log invalid password attempt, associate with user if we have ID
+                if (function_exists('log_user_event')) {
+                    $details = "Invalid password for username: " . $this->username;
+                    $uid = isset($user['user_id']) ? (int)$user['user_id'] : null;
+                    log_user_event($this->pdo, 'LOGIN_ATTEMPT_FAILED', $details, $uid, $client_ip);
+                }
             }
             
             // Check role if a specific role is required
             if (!empty($this->required_role) && strtoupper($user["user_role"]) !== strtoupper($this->required_role)) {
                 $errors["insufficient_privileges"] = "You don't have the required permissions to access this area";
                 
-                // Log unauthorized access attempt
-                try {
-                    $log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP) 
-                                  VALUES (?, 'UNAUTHORIZED_ACCESS', ?, CURRENT_TIMESTAMP)";
-                    $log_stmt = $this->pdo->prepare($log_query);
+                // Log unauthorized access attempt via unified logger
+                if (function_exists('log_user_event')) {
+                    $uid = isset($user['user_id']) ? (int)$user['user_id'] : null;
                     $details = "Attempted to access " . $this->required_role . " area with " . $user["user_role"] . " privileges";
-                    $log_stmt->execute([$user["user_id"], $details]);
-                } catch (PDOException $e) {
-                    error_log("Failed to log unauthorized access: " . $e->getMessage());
+                    log_user_event($this->pdo, 'UNAUTHORIZED_ACCESS', $details, $uid, $client_ip);
                 }
             }
         }
@@ -133,17 +149,11 @@ class LoginValidator {
             die();
         }
         
-        // Log successful login
-        if ($user) {
-            try {
-                $log_query = "insert into user_logs (user_id, log_type, log_details, log_timestamp) 
-                             values (?, 'LOGIN', ?, current_timestamp)";
-                $log_stmt = $this->pdo->prepare($log_query);
-                $details = "Successful login by " . $user["user_username"] . " with " . $user["user_role"] . " role";
-                $log_stmt->execute([$user["user_id"], $details]);
-            } catch (PDOException $e) {
-                error_log("Failed to log successful login: " . $e->getMessage());
-            }
+        // Log successful login (keep for backward compatibility; note that callers may also log)
+        if ($user && function_exists('log_user_event')) {
+            $uid = isset($user['user_id']) ? (int)$user['user_id'] : null;
+            $details = "Successful login by " . $user["user_username"] . " with " . $user["user_role"] . " role";
+            log_user_event($this->pdo, 'LOGIN', $details, $uid, $client_ip);
         }
         
         return $user;

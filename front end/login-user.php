@@ -9,6 +9,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $is_admin_login = isset($_POST["admin_login"]) && $_POST["admin_login"] === "true";
 
     if (!$username || !$password) {
+        // Attempt logging for missing credentials
+        try {
+            require_once 'logger.php';
+            if (function_exists('log_user_event')) {
+                $client_ip = $_SERVER['HTTP_CLIENT_IP'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
+                // No DB yet; we'll try to load PDO below if needed. This is best-effort.
+                log_user_event(null, 'LOGIN_ATTEMPT_FAILED', 'Missing username and/or password', null, $client_ip);
+            }
+        } catch (Throwable $e) { /* ignore */ }
         $_SESSION["error_message"] = "Username and Password are required.";
         if ($is_admin_login) {
             header("Location: ../admin/login.php");
@@ -19,9 +28,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     try {
-        require_once 'db.php';
+    require_once 'db.php';
         require_once 'user-models.php';
         require_once 'validator.php';
+    // Unified logger
+    try { require_once 'logger.php'; } catch (Throwable $e) { /* ignore */ }
 
         // If this is an admin login request, specify ADMIN as the required role
         $required_role = $is_admin_login ? 'ADMIN' : '';
@@ -37,19 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION["user_role"] = $user["user_role"];
         $_SESSION["login_time"] = time();
         
-        // Get client IP address for logging
-        $client_ip = $_SERVER['HTTP_CLIENT_IP'] ?? $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'Unknown';
-        
-        // Log successful login with IP address
-        $log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP, LOG_IP_ADDRESS) 
-                     VALUES (:user_id, 'LOGIN', :details, CURRENT_TIMESTAMP, :ip_address)";
-        $log_stmt = $pdo->prepare($log_query);
-        $details = "User " . $username . " logged in successfully via " . 
-                   ($is_admin_login ? "admin login" : "regular login");
-        $log_stmt->bindParam(":user_id", $user["user_id"]);
-        $log_stmt->bindParam(":details", $details);
-        $log_stmt->bindParam(":ip_address", $client_ip);
-        $log_stmt->execute();
+    // Successful login logging is performed inside validator.php to centralize behavior.
         
         // Clear any previous error messages
         unset($_SESSION["error_message"]);
@@ -73,20 +72,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Log database error with more details
         error_log("Login PDO error: " . $e->getMessage() . " | IP: " . $client_ip . " | Username: " . $username);
         
-        // Log failed login attempt in database if possible
+        // Log failed login attempt via unified logger (DB if available)
         try {
-            if (isset($pdo)) {
-                $error_log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP, LOG_IP_ADDRESS) 
-                                   VALUES (NULL, 'LOGIN_ERROR', :details, CURRENT_TIMESTAMP, :ip_address)";
-                $error_log_stmt = $pdo->prepare($error_log_query);
+            if (function_exists('log_user_event')) {
                 $error_details = "Failed login attempt for username: " . $username . " | Error: " . $e->getMessage();
-                $error_log_stmt->bindParam(":details", $error_details);
-                $error_log_stmt->bindParam(":ip_address", $client_ip);
-                $error_log_stmt->execute();
+                log_user_event(isset($pdo) ? $pdo : null, 'LOGIN_ERROR', $error_details, null, $client_ip);
             }
-        } catch (Exception $log_error) {
-            // If logging fails, just log to error log
-            error_log("Failed to log login error to database: " . $log_error->getMessage());
+        } catch (Throwable $log_error) {
+            error_log("Failed to log login error: " . $log_error->getMessage());
         }
         
         $_SESSION["error_message"] = "An error occurred during login. Please try again.";
@@ -104,19 +97,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         error_log("Login validation error: " . $e->getMessage() . " | IP: " . $client_ip . " | Username: " . $username);
         
-        // Log failed login attempt
+        // Log failed login attempt via unified logger
         try {
-            if (isset($pdo)) {
-                $error_log_query = "INSERT INTO USER_LOGS (USER_ID, LOG_TYPE, LOG_DETAILS, LOG_TIMESTAMP, LOG_IP_ADDRESS) 
-                                   VALUES (NULL, 'LOGIN_FAILED', :details, CURRENT_TIMESTAMP, :ip_address)";
-                $error_log_stmt = $pdo->prepare($error_log_query);
+            if (function_exists('log_user_event')) {
                 $error_details = "Login failed for username: " . $username . " | Reason: " . $e->getMessage();
-                $error_log_stmt->bindParam(":details", $error_details);
-                $error_log_stmt->bindParam(":ip_address", $client_ip);
-                $error_log_stmt->execute();
+                log_user_event(isset($pdo) ? $pdo : null, 'LOGIN_ATTEMPT_FAILED', $error_details, null, $client_ip);
             }
-        } catch (Exception $log_error) {
-            error_log("Failed to log login failure to database: " . $log_error->getMessage());
+        } catch (Throwable $log_error) {
+            error_log("Failed to log login failure: " . $log_error->getMessage());
         }
         
         $_SESSION["error_message"] = $e->getMessage();

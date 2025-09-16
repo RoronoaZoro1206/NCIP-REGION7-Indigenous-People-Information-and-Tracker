@@ -15,6 +15,7 @@
     "minimum-stability": "stable",
     "require": {
         "phpmailer/phpmailer": "^6.10",
-        "phpoffice/phpspreadsheet": "^4.2"
+        "phpoffice/phpspreadsheet": "^4.2",
+        "psr/log": "3.0"
     }
 }

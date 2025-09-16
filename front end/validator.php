@@ -164,6 +164,7 @@ class LoginValidator {
  * Admin validator class for admin-specific registrations
  * Extends RegisterValidator with additional admin-specific validations
  */
+if (!class_exists('AdminRegisterValidator')) {
 class AdminRegisterValidator extends RegisterValidator {
     private $verification_code;
     private const ADMIN_VERIFICATION_CODE = 'NcipCebuConnect#2025'; // Secret admin verification code
@@ -220,6 +221,7 @@ class AdminRegisterValidator extends RegisterValidator {
         
         return "ADMIN"; // Return the admin role
     }
+}
 }
 
 /**

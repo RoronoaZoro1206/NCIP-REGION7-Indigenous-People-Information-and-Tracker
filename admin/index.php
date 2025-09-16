@@ -261,13 +261,34 @@ try {
     $error_message = "There was an error loading the dashboard data: " . $e->getMessage();
 }
 
-// Log dashboard access
+// Log dashboard access (single entry only)
 try {
-    $log_query = "INSERT INTO user_logs (user_id, log_type, log_details, log_timestamp) 
-                 VALUES (:user_id, 'DASHBOARD_ACCESS', 'Admin accessed dashboard', CURRENT_TIMESTAMP)";
-    $log_stmt = $pdo->prepare($log_query);
-    $log_stmt->bindParam(":user_id", $_SESSION["user_id"]);
-    $log_stmt->execute();
+    // Compute client IP
+    $client_ip = 'Unknown';
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        $client_ip = $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        $parts = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+        $client_ip = trim($parts[0]);
+    } elseif (!empty($_SERVER['REMOTE_ADDR'])) {
+        $client_ip = $_SERVER['REMOTE_ADDR'];
+    }
+
+    // Prefer unified logger; fall back to direct DB insert if unavailable
+    $logged = false;
+    try { require_once __DIR__ . '/../front end/logger.php'; } catch (Throwable $e) { /* ignore */ }
+    if (function_exists('log_user_event')) {
+        log_user_event($pdo, 'DASHBOARD_ACCESS', 'Admin accessed dashboard', (int)$_SESSION['user_id'], $client_ip);
+        $logged = true;
+    }
+    if (!$logged) {
+        $log_query = "INSERT INTO user_logs (user_id, log_type, log_details, log_timestamp, log_ip_address) 
+                     VALUES (:user_id, 'DASHBOARD_ACCESS', 'Admin accessed dashboard', CURRENT_TIMESTAMP, :ip)";
+        $log_stmt = $pdo->prepare($log_query);
+        $log_stmt->bindParam(":user_id", $_SESSION["user_id"], PDO::PARAM_INT);
+        $log_stmt->bindParam(":ip", $client_ip, PDO::PARAM_STR);
+        $log_stmt->execute();
+    }
 } catch (PDOException $e) {
     error_log("Could not log dashboard access: " . $e->getMessage());
 }

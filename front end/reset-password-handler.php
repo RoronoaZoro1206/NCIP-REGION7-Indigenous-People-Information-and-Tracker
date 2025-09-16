@@ -307,7 +307,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           height: 100%;
           background: #2ecc71;
           border-radius: 2px;
-          animation: countdown-progress 5s linear;
+          /* Ensure the bar progresses and stays at 0 when finished */
+          animation: countdown-progress 10s linear forwards;
         }
 
         @keyframes countdown-progress {
@@ -331,7 +332,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="countdown-container">
           <p class="countdown-text">
             Redirecting to {$loginText} in 
-            <span class="countdown-number" id="countdown">5</span> 
+            <span class="countdown-number" id="countdown">10</span> 
             seconds...
           </p>
           <div class="progress-bar">
@@ -347,9 +348,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       </div>
 
       <script>
-        let countdown = 10;
+        const TOTAL_SECONDS = 10; // keep this in sync with the CSS animation duration
+        let countdown = TOTAL_SECONDS;
         let interval;
         const countdownEl = document.getElementById('countdown');
+        // Sync displayed number and ensure the progress animation duration matches
+        countdownEl.textContent = TOTAL_SECONDS;
+        const progressEl = document.querySelector('.progress-fill');
+        if (progressEl) {
+          // Override any stylesheet value to avoid mismatch if TOTAL_SECONDS changes
+          progressEl.style.animation = 'countdown-progress ' + TOTAL_SECONDS + 's linear forwards';
+        }
         
         function startCountdown() {
           interval = setInterval(() => {

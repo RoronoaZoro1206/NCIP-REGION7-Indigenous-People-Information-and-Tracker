@@ -13,6 +13,16 @@ loadEnv();
 try { require_once __DIR__ . '/logger.php'; } catch (Throwable $e) { /* ignore */ }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+  // Determine client IP once for consistent logging
+  $client_ip = 'Unknown';
+  if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+    $client_ip = $_SERVER['HTTP_CLIENT_IP'];
+  } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+    $parts = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+    $client_ip = trim($parts[0]);
+  } elseif (!empty($_SERVER['REMOTE_ADDR'])) {
+    $client_ip = $_SERVER['REMOTE_ADDR'];
+  }
     $email = trim($_POST["email"]);
 
     if (empty($email)) {
@@ -44,19 +54,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $update = $pdo->prepare("update users set user_reset_token = ?, user_token_expiry = ? where user_email = ?");
     $update->execute([$token, $expiryForDB, $email]);
 
-    // Log the password reset request (check if user_logs table exists)
+  // Log the password reset request exactly once with IP
   try {
-    $log_query = "insert into user_logs (user_id, log_type, log_details, log_timestamp) 
-           values (?, 'PASSWORD_RESET_REQUEST', ?, current_timestamp)";
-    $log_stmt = $pdo->prepare($log_query);
     $details = "Password reset requested for email: " . $email;
-    $log_stmt->execute([$user['user_id'], $details]);
-    if (function_exists('log_user_event')) { log_user_event($pdo, 'PASSWORD_RESET_REQUEST', $details, (int)$user['user_id']); }
-  } catch (PDOException $e) {
-        // If user_logs table doesn't exist, just continue without logging
-        error_log("Could not log password reset request: " . $e->getMessage());
-    if (function_exists('log_user_event')) { log_user_event(null, 'PASSWORD_RESET_REQUEST', "Password reset requested for email: {$email}"); }
+    $logged = false;
+    if (function_exists('log_user_event')) {
+      log_user_event($pdo, 'PASSWORD_RESET_REQUEST', $details, (int)$user['user_id'], $client_ip);
+      $logged = true;
     }
+    if (!$logged) {
+      $log_query = "insert into user_logs (user_id, log_type, log_details, log_timestamp, log_ip_address) 
+               values (?, 'PASSWORD_RESET_REQUEST', ?, current_timestamp, ?)";
+      $log_stmt = $pdo->prepare($log_query);
+      $log_stmt->execute([$user['user_id'], $details, $client_ip]);
+    }
+  } catch (PDOException $e) {
+    // If DB logging fails, at least mirror to file via unified logger without PDO
+    error_log("Could not log password reset request: " . $e->getMessage());
+    if (function_exists('log_user_event')) { log_user_event(null, 'PASSWORD_RESET_REQUEST', "Password reset requested for email: {$email}", (int)$user['user_id'], $client_ip); }
+  }
 
     // Prepare PHPMailer
     $mail = new PHPMailer(true);
@@ -129,18 +145,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
   if (!$mail->send()) {
             file_put_contents(__DIR__ . '/email-errors.log', "[" . date('Y-m-d H:i:s') . "] Warning: " . $mail->ErrorInfo . "\n", FILE_APPEND);
             
-            // Log email failure (if logging table exists)
-            try {
-                $error_log_query = "insert into user_logs (user_id, log_type, log_details, log_timestamp) 
-                                  values (?, 'EMAIL_ERROR', ?, current_timestamp)";
-                $error_log_stmt = $pdo->prepare($error_log_query);
-                $error_details = "Failed to send password reset email: " . $mail->ErrorInfo;
-                $error_log_stmt->execute([$user['user_id'], $error_details]);
-    if (function_exists('log_user_event')) { log_user_event($pdo, 'EMAIL_ERROR', $error_details, (int)$user['user_id']); }
-            } catch (PDOException $e) {
-                error_log("Could not log email error: " . $e->getMessage());
-    if (function_exists('log_user_event')) { log_user_event(null, 'EMAIL_ERROR', "Failed to send password reset email: " . $mail->ErrorInfo); }
-            }
+      // Log email failure once
+      try {
+        $error_details = "Failed to send password reset email: " . $mail->ErrorInfo;
+        $logged = false;
+        if (function_exists('log_user_event')) {
+          log_user_event($pdo, 'EMAIL_ERROR', $error_details, (int)$user['user_id'], $client_ip);
+          $logged = true;
+        }
+        if (!$logged) {
+          $error_log_query = "insert into user_logs (user_id, log_type, log_details, log_timestamp, log_ip_address) 
+                    values (?, 'EMAIL_ERROR', ?, current_timestamp, ?)";
+          $error_log_stmt = $pdo->prepare($error_log_query);
+          $error_log_stmt->execute([$user['user_id'], $error_details, $client_ip]);
+        }
+      } catch (PDOException $e) {
+        error_log("Could not log email error: " . $e->getMessage());
+        if (function_exists('log_user_event')) { log_user_event(null, 'EMAIL_ERROR', "Failed to send password reset email: " . $mail->ErrorInfo, (int)$user['user_id'], $client_ip); }
+      }
             
             echo <<<HTML
             <!DOCTYPE html>
@@ -354,18 +376,24 @@ HTML;
             </html>
 HTML;
             
-      // Log email success (if logging table exists)
-            try {
-                $success_log_query = "insert into user_logs (user_id, log_type, log_details, log_timestamp) 
-                                   values (?, 'EMAIL_SENT', ?, current_timestamp)";
-                $success_log_stmt = $pdo->prepare($success_log_query);
-                $success_details = "Password reset email sent successfully to: " . $email;
-                $success_log_stmt->execute([$user['user_id'], $success_details]);
-        if (function_exists('log_user_event')) { log_user_event($pdo, 'EMAIL_SENT', $success_details, (int)$user['user_id']); }
-            } catch (PDOException $e) {
-                error_log("Could not log email success: " . $e->getMessage());
-        if (function_exists('log_user_event')) { log_user_event(null, 'EMAIL_SENT', "Email sent to: {$email}"); }
-            }
+    // Log email success once
+      try {
+        $success_details = "Password reset email sent successfully to: " . $email;
+        $logged = false;
+        if (function_exists('log_user_event')) {
+          log_user_event($pdo, 'EMAIL_SENT', $success_details, (int)$user['user_id'], $client_ip);
+          $logged = true;
+        }
+        if (!$logged) {
+          $success_log_query = "insert into user_logs (user_id, log_type, log_details, log_timestamp, log_ip_address) 
+                     values (?, 'EMAIL_SENT', ?, current_timestamp, ?)";
+          $success_log_stmt = $pdo->prepare($success_log_query);
+          $success_log_stmt->execute([$user['user_id'], $success_details, $client_ip]);
+        }
+      } catch (PDOException $e) {
+        error_log("Could not log email success: " . $e->getMessage());
+        if (function_exists('log_user_event')) { log_user_event(null, 'EMAIL_SENT', "Email sent to: {$email}", (int)$user['user_id'], $client_ip); }
+      }
         }
         
     } catch (Exception $e) {
@@ -478,18 +506,24 @@ HTML;
             FILE_APPEND
         );
         
-    // Log exception (if logging table exists)
-        try {
-            $exception_log_query = "insert into user_logs (user_id, log_type, log_details, log_timestamp) 
-                                 values (?, 'EXCEPTION', ?, current_timestamp)";
-            $exception_log_stmt = $pdo->prepare($exception_log_query);
-            $exception_details = "Exception during password reset: " . $e->getMessage();
-            $exception_log_stmt->execute([$user['user_id'], $exception_details]);
-      if (function_exists('log_user_event')) { log_user_event($pdo, 'EXCEPTION', $exception_details, (int)$user['user_id']); }
-        } catch (PDOException $e) {
-            error_log("Could not log exception: " . $e->getMessage());
-      if (function_exists('log_user_event')) { log_user_event(null, 'EXCEPTION', 'Exception during password reset (DB logging failed).'); }
-        }
+  // Log exception once
+    try {
+      $exception_details = "Exception during password reset: " . $e->getMessage();
+      $logged = false;
+      if (function_exists('log_user_event')) {
+        log_user_event($pdo, 'EXCEPTION', $exception_details, (int)$user['user_id'], $client_ip);
+        $logged = true;
+      }
+      if (!$logged) {
+        $exception_log_query = "insert into user_logs (user_id, log_type, log_details, log_timestamp, log_ip_address) 
+                   values (?, 'EXCEPTION', ?, current_timestamp, ?)";
+        $exception_log_stmt = $pdo->prepare($exception_log_query);
+        $exception_log_stmt->execute([$user['user_id'], $exception_details, $client_ip]);
+      }
+    } catch (PDOException $e) {
+      error_log("Could not log exception: " . $e->getMessage());
+      if (function_exists('log_user_event')) { log_user_event(null, 'EXCEPTION', 'Exception during password reset (DB logging failed).', (int)$user['user_id'], $client_ip); }
+    }
     }
 } else {
     // If this is accessed directly, show error

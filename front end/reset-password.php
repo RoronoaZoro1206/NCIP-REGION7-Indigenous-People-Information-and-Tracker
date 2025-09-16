@@ -9,7 +9,7 @@ if (session_status() === PHP_SESSION_NONE) {
 $token = $_GET['token'] ?? '';
 $cleanup = ['cleared' => 0, 'currentTime' => 'unknown'];
 
-$logFile = __DIR__ . '/../../cleanup-log.txt';
+$logFile = __DIR__ . '/cleanup-log.txt';
 if (file_exists($logFile)) {
     $lines = file($logFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     $lines = array_reverse($lines);

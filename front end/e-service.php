@@ -141,9 +141,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             ) RETURNING APP_CODE
         ");
         
-        // Process signature verification
-        $formSigned = isset($_POST['form_signed']) ? true : false;
-        $signatureDate = !empty($_POST['signature_date']) ? $_POST['signature_date'] : null;
+    // Process signature verification
+    $formSigned = isset($_POST['form_signed']) ? true : false;
+    // APP_SIGNATURE_DATE is NOT NULL with default CURRENT_DATE; when empty, use today's date
+    $signatureDate = !empty($_POST['signature_date']) ? $_POST['signature_date'] : $currentDate;
         
         $applicantStmt->bindParam(':last_name', $_POST['last_name']);
         $applicantStmt->bindParam(':first_name', $_POST['first_name']);

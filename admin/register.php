@@ -4,8 +4,8 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Check if already logged in
-if (isset($_SESSION["user_id"])) {
+// Check if already logged in as ADMIN only; allow regular users to access admin registration
+if (isset($_SESSION["user_id"]) && isset($_SESSION["role"]) && strtoupper($_SESSION["role"]) === 'ADMIN') {
     header("Location: index.php");
     exit();
 }

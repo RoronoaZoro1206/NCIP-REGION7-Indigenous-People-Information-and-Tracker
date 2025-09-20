@@ -53,6 +53,8 @@ if (!in_array($new_status, $allowed_statuses)) {
 try {
     // Include database connection
     include "../../config/database.php";
+    // Include unified logger for consistent logging with IP
+    try { require_once __DIR__ . '/../../../front end/logger.php'; } catch (Throwable $e) { /* ignore */ }
     
     // Get the current status before updating
     $current_status_query = "SELECT contm_status, contm_name, contm_email 
@@ -112,15 +114,24 @@ try {
         // Set the "all" count to show inbox messages (excluding archived)
         $status_counts['all'] = $total_inbox_messages;
         
-        // Log the status update activity
+        // Log the status update activity (include IP)
         try {
-            $log_query = "INSERT INTO user_logs (user_id, log_type, log_details, log_timestamp) 
-                         VALUES (:user_id, 'UPDATE_CONTACT_STATUS', :details, CURRENT_TIMESTAMP)";
-            $log_stmt = $pdo->prepare($log_query);
             $details = "Updated contact message status from {$old_status} to {$new_status}: {$message_data['contm_name']} ({$message_data['contm_email']}) - ID: {$message_id}";
-            $log_stmt->bindParam(":user_id", $_SESSION["user_id"], PDO::PARAM_INT);
-            $log_stmt->bindParam(":details", $details, PDO::PARAM_STR);
-            $log_stmt->execute();
+            $client_ip = function_exists('get_client_ip') ? get_client_ip() : ($_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN');
+            $logged = false;
+            if (function_exists('log_user_event')) {
+                log_user_event($pdo, 'UPDATE_CONTACT_STATUS', $details, (int)$_SESSION['user_id'], $client_ip);
+                $logged = true;
+            }
+            if (!$logged) {
+                $log_query = "INSERT INTO user_logs (user_id, log_type, log_details, log_timestamp, log_ip_address) 
+                             VALUES (:user_id, 'UPDATE_CONTACT_STATUS', :details, CURRENT_TIMESTAMP, :ip)";
+                $log_stmt = $pdo->prepare($log_query);
+                $log_stmt->bindValue(":user_id", (int)$_SESSION["user_id"], PDO::PARAM_INT);
+                $log_stmt->bindValue(":details", $details, PDO::PARAM_STR);
+                $log_stmt->bindValue(":ip", $client_ip, PDO::PARAM_STR);
+                $log_stmt->execute();
+            }
         } catch (Exception $log_error) {
             error_log("Failed to log status update: " . $log_error->getMessage());
             // Don't fail the request for logging errors

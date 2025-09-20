@@ -18,7 +18,6 @@ $stmt->execute(['now' => $currentTimeSQL]);
 
 $cleared = $stmt->rowCount(); 
 
-
 $logMessage = "[" . $currentTime . "] Cleaned $cleared expired token(s)\n";
 file_put_contents(__DIR__ . '/cleanup-log.txt', $logMessage, FILE_APPEND);
 

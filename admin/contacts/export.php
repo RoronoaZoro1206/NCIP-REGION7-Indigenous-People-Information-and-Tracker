@@ -6,6 +6,8 @@ if (session_status() === PHP_SESSION_NONE) {
 
 require_once '../../vendor/autoload.php';
 include "../config/database.php";
+// Include unified logger for consistent logging with IP capture
+try { require_once __DIR__ . '/../../front end/logger.php'; } catch (Throwable $e) { /* ignore */ }
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -394,23 +396,31 @@ try {
         $sheet->getRowDimension($row->getRowIndex())->setRowHeight(-1);
     }
     
-    // Log the export activity
+    // Log the export activity with IP
     try {
-        $log_query = "INSERT INTO user_logs (user_id, log_type, log_details, log_timestamp) 
-                     VALUES (:user_id, 'EXPORT_CONTACT_MESSAGES', :details, CURRENT_TIMESTAMP)";
-        $log_stmt = $pdo->prepare($log_query);
-        
         $filter_info = [];
         if (!empty($status_filter)) $filter_info[] = "Status: {$status_filter}";
         if (!empty($search)) $filter_info[] = "Search: {$search}";
         if ($export_type !== 'all') $filter_info[] = "Type: {$export_type}";
-        
-        $details = "Exported " . count($messages) . " contact messages" . 
+
+        $details = "Exported " . count($messages) . " contact messages" .
                   (!empty($filter_info) ? " (Filters: " . implode(', ', $filter_info) . ")" : "");
-        
-        $log_stmt->bindParam(":user_id", $_SESSION["user_id"]);
-        $log_stmt->bindParam(":details", $details);
-        $log_stmt->execute();
+
+        $client_ip = function_exists('get_client_ip') ? get_client_ip() : ($_SERVER['REMOTE_ADDR'] ?? 'UNKNOWN');
+        $logged = false;
+        if (function_exists('log_user_event')) {
+            log_user_event($pdo, 'EXPORT_CONTACT_MESSAGES', $details, (int)($_SESSION['user_id'] ?? 0), $client_ip);
+            $logged = true;
+        }
+        if (!$logged) {
+            $log_query = "INSERT INTO user_logs (user_id, log_type, log_details, log_timestamp, log_ip_address) 
+                         VALUES (:user_id, 'EXPORT_CONTACT_MESSAGES', :details, CURRENT_TIMESTAMP, :ip)";
+            $log_stmt = $pdo->prepare($log_query);
+            $log_stmt->bindValue(":user_id", (int)($_SESSION["user_id"] ?? 0), PDO::PARAM_INT);
+            $log_stmt->bindValue(":details", $details, PDO::PARAM_STR);
+            $log_stmt->bindValue(":ip", $client_ip, PDO::PARAM_STR);
+            $log_stmt->execute();
+        }
     } catch (Exception $log_error) {
         error_log("Failed to log export activity: " . $log_error->getMessage());
     }
